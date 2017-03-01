@@ -3,7 +3,10 @@
   "description": "This element provides filter box in glyconnect",
   "main": "glyconnect-filter.html",
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.4.0"
+    "polymer": "Polymer/polymer#^1.4.0",
+    "paper-item": "^1.2.1",
+    "paper-listbox": "^1.1.2",
+    "paper-dropdown-menu": "^1.5.0"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
