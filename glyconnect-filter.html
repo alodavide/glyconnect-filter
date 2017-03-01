@@ -1,0 +1,87 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../paper-listbox/paper-listbox.html">
+<link rel="import" href="../paper-item/paper-item.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
+
+
+<!--
+`glyconnect-filter`
+This element provides filter box in glyconnect
+
+@demo demo/index.html 
+-->
+
+<dom-module id="glyconnect-filter">
+  <template>
+    <style is="custom-style" include="iron-flex"></style>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <div class="horizontal layout">
+    <paper-dropdown-menu label="Type" style="padding-right: 10px;">
+      <paper-listbox class="dropdown-content" selected="{{type}}" attr-for-selected="glycantype">
+        <paper-item glycantype="nglycan">N-Glycan</paper-item>
+        <paper-item glycantype="oglycan">O-Glycan</paper-item>
+      </paper-listbox>
+    </paper-dropdown-menu>
+
+    <paper-dropdown-menu label="Core">
+      <paper-listbox class="dropdown-content" selected="{{coreSelected}}" attr-for-selected="core">
+        <template is="dom-repeat" items="{{coreType}}">
+          <paper-item core="{{item.shortName}}">{{item.name}}</paper-item>
+        </template>
+      </paper-listbox>
+    </paper-dropdown-menu>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'glyconnect-filter',
+
+      properties: {
+        type: {
+          type: String,
+          observer: "_typeChange"
+        },
+        coreSelected: {
+          type: String,
+          observer: "_coreSelectedChange"
+        },
+      },
+
+      _typeChange: function(){
+        if(this.type == 'oglycan'){
+          this.coreType = [
+            {shortName: 'core1', name: 'Core 1'},
+            {shortName: 'core2', name: 'Core 2'},
+            {shortName: 'core3', name: 'Core 3'},
+            {shortName: 'core4', name: 'Core 4'}
+        ];
+        } else {
+          this.coreType = [
+            {shortName: 'hybrid', name: 'Hybrid'},
+            {shortName: 'complex', name: 'Complex'},
+            {shortName: 'hmannose', name: 'High Mannose'}
+          ];
+        }
+      },
+      _coreSelectedChange: function(){
+        console.log(this.coreSelected);
+      },
+
+      _filterCall: function(){
+        //call server Julien
+      }
+
+      /* Possible Advanced Feature
+          - server call for populate drop-down multi selections
+       */
+
+    });
+  </script>
+</dom-module>
