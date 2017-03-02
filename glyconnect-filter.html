@@ -28,13 +28,22 @@ This element provides filter box in glyconnect
       </paper-listbox>
     </paper-dropdown-menu>
 
-    <paper-dropdown-menu label="Core">
+    <paper-dropdown-menu label="Core" style="padding-right: 10px;">
       <paper-listbox class="dropdown-content" selected="{{coreSelected}}" attr-for-selected="core">
         <template is="dom-repeat" items="{{coreType}}">
           <paper-item core="{{item.shortName}}">{{item.name}}</paper-item>
         </template>
       </paper-listbox>
     </paper-dropdown-menu>
+
+    <paper-dropdown-menu label="Properties">
+      <paper-listbox class="dropdown-content" selected="{{propertySelected}}" attr-for-selected="property">
+        <template is="dom-repeat" items="{{prop}}">
+          <paper-item core="{{item.shortName}}">{{item.name}}</paper-item>
+        </template>
+      </paper-listbox>
+    </paper-dropdown-menu>
+
     </div>
   </template>
 
@@ -52,15 +61,18 @@ This element provides filter box in glyconnect
           type: String,
           observer: "_coreSelectedChange"
         },
+        propertySelected: {
+          type: String,
+          observer: "_propertySelectedChange"
+        },
       },
 
       _typeChange: function(){
         if(this.type == 'oglycan'){
           this.coreType = [
-            {shortName: 'core1', name: 'Core 1'},
-            {shortName: 'core2', name: 'Core 2'},
-            {shortName: 'core3', name: 'Core 3'},
-            {shortName: 'core4', name: 'Core 4'}
+            {shortName: 'core0', name: 'Core 1'},
+            {shortName: 'core1', name: 'Core 2'},
+            {shortName: 'core1', name: 'Core 3'},
         ];
         } else {
           this.coreType = [
@@ -71,9 +83,43 @@ This element provides filter box in glyconnect
         }
       },
       _coreSelectedChange: function(){
+        if(this.coreSelected == 'core0'){
+          this.prop = [
+            {shortName: 'fuco', name: 'Fucosylated'},
+            {shortName: 'nonfuco', name: 'Non-fucosylated'},
+            {shortName: 'nonsialic', name: 'Non-sialylated'},
+        ];
+        } else if (this.coreSelected == 'core1'){
+          this.prop = [
+            {shortName: 'nonfuco', name: 'Non-fucosylated'},
+            {shortName: 'nonsialic', name: 'Non-sialylated'},
+          ];
+        } else if (this.coreSelected == 'core2'){
+          this.prop = [
+            {shortName: 'nonfuco', name: 'Non-fucosylated'},
+            {shortName: 'nonsialic', name: 'Non-sialylated'},
+          ];
+        } else if (this.coreSelected == 'hybrid'){
+          this.prop = [
+            {shortName: 'nonfuco', name: 'Non-fucosylated'},
+            {shortName: 'nonsialic', name: 'Non-sialylated'},
+          ];
+        } else if (this.coreSelected == 'complex'){
+          this.prop = [
+            {shortName: 'nonfuco', name: 'Non-fucosylated'},
+            {shortName: 'nonsialic', name: 'Non-sialylated'},
+          ];
+        }else if (this.coreSelected == 'hmannose'){
+          this.prop = [
+            {shortName: 'nonfuco', name: 'Non-fucosylated'},
+            {shortName: 'nonsialic', name: 'Non-sialylated'},
+          ];
+        }
         console.log(this.coreSelected);
       },
-
+      _propertySelectedChange: function(){
+        console.log(this.propertySelected);
+      },
       _filterCall: function(){
         //call server Julien
       }
