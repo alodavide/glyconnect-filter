@@ -9,7 +9,7 @@
 `glyconnect-filter`
 This element provides filter box in glyconnect
 
-@demo demo/index.html 
+@demo demo/index.html
 -->
 
 <dom-module id="glyconnect-filter">
@@ -28,26 +28,34 @@ This element provides filter box in glyconnect
             on-response="handleResponse"
     ></iron-ajax>
     <div class="horizontal layout">
-    <paper-dropdown-menu label="Type" style="padding-right: 10px;">
+    <paper-dropdown-menu label="Type" style="padding-right: 20px;">
       <paper-listbox class="dropdown-content" selected="{{typeSelected}}" attr-for-selected="glycantype">
         <template is="dom-repeat" items="{{glycanType}}">
-          <paper-item glycantype="{{item.shortName}}">{{item.name}}</paper-item>
+          <paper-item glycantype="{{item}}">{{item}}</paper-item>
         </template>
       </paper-listbox>
     </paper-dropdown-menu>
 
-    <paper-dropdown-menu label="Core" style="padding-right: 10px;">
+    <paper-dropdown-menu label="Core" style="padding-right: 20px;">
       <paper-listbox class="dropdown-content" selected="{{coreSelected}}" attr-for-selected="core">
         <template is="dom-repeat" items="{{coreType}}">
-          <paper-item core="{{item.shortName}}">{{item.name}}</paper-item>
+          <paper-item core="{{item}}">{{item}}</paper-item>
         </template>
       </paper-listbox>
     </paper-dropdown-menu>
 
-    <paper-dropdown-menu label="Properties">
+    <paper-dropdown-menu label="Properties" style="padding-right: 20px;">
       <paper-listbox class="dropdown-content" selected="{{propertySelected}}" attr-for-selected="property">
         <template is="dom-repeat" items="{{prop}}">
-          <paper-item property="{{item.shortName}}">{{item.name}}</paper-item>
+          <paper-item property="{{item}}">{{item}}</paper-item>
+        </template>
+      </paper-listbox>
+    </paper-dropdown-menu>
+
+    <paper-dropdown-menu label="Determinants">
+      <paper-listbox class="dropdown-content" selected="{{deterSelected}}" attr-for-selected="determinants">
+        <template is="dom-repeat" items="{{deter}}">
+          <paper-item determinants="{{item}}">{{item}}</paper-item>
         </template>
       </paper-listbox>
     </paper-dropdown-menu>
@@ -73,6 +81,10 @@ This element provides filter box in glyconnect
           type: String,
           observer: "_propertySelectedChange"
         },
+        deterSelected: {
+          type: String,
+          observer: "_propertySelectedChange"
+        },
         prop: {
           type: String
         }
@@ -88,57 +100,17 @@ This element provides filter box in glyconnect
       },
 
       _typeChange: function(){
-        console.log(this.typeSelected);
-        if(this.typeSelected == 'oglycan'){
-          this.coreType = [
-            {shortName: 'core0', name: 'Core 1'},
-            {shortName: 'core1', name: 'Core 2'},
-            {shortName: 'core1', name: 'Core 3'},
-        ];
-        } else {
-          this.coreType = [
-            {shortName: 'hybrid', name: 'Hybrid'},
-            {shortName: 'complex', name: 'Complex'},
-            {shortName: 'hmannose', name: 'High Mannose'}
-          ];
-        }
+        this.coreType = this.globalDictionary[this.typeSelected];
       },
+
       _coreSelectedChange: function(){
-        if(this.coreSelected == 'core0'){
-          this.prop = [
-            {shortName: 'fuco', name: 'Fucosylated'},
-            {shortName: 'nonfuco', name: 'Non-fucosylated'},
-            {shortName: 'nonsialic', name: 'Non-sialylated'},
-        ];
-        } else if (this.coreSelected == 'core1'){
-          this.prop = [
-            {shortName: 'nonfuco', name: 'Non-fucosylated'},
-            {shortName: 'nonsialic', name: 'Non-sialylated'},
-          ];
-        } else if (this.coreSelected == 'core2'){
-          this.prop = [
-            {shortName: 'nonfuco', name: 'Non-fucosylated'},
-            {shortName: 'nonsialic', name: 'Non-sialylated'},
-          ];
-        } else if (this.coreSelected == 'hybrid'){
-          this.prop = [
-            {shortName: 'nonfuco', name: 'Non-fucosylated'},
-            {shortName: 'nonsialic', name: 'Non-sialylated'},
-          ];
-        } else if (this.coreSelected == 'complex'){
-          this.prop = [
-            {shortName: 'nonfuco', name: 'Non-fucosylated'},
-            {shortName: 'nonsialic', name: 'Non-sialylated'},
-          ];
-        }else if (this.coreSelected == 'hmannose'){
-          this.prop = [
-            {shortName: 'nonfuco', name: 'Non-fucosylated'},
-            {shortName: 'nonsialic', name: 'Non-sialylated'},
-          ];
-        }
-        console.log(this.coreSelected);
+        this.prop = this.globalDictionary[this.typeSelected+'_'+this.coreSelected];
       },
       _propertySelectedChange: function(){
+        this.deter = this.globalDictionary[this.typeSelected+'_'+this.coreSelected+'_'+this.propertySelected];
+        console.log(this.deter);
+        console.log(this.coreSelected);
+        console.log(this.typeSelected);
         console.log(this.propertySelected);
       },
       _filterCall: function(){
