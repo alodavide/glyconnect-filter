@@ -3,7 +3,7 @@
 <link rel="import" href="../paper-listbox/paper-listbox.html">
 <link rel="import" href="../paper-item/paper-item.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
-
+<link rel="import" href="../iron-ajax/iron-ajax.html">
 
 <!--
 `glyconnect-filter`
@@ -20,11 +20,19 @@ This element provides filter box in glyconnect
         display: block;
       }
     </style>
+    <iron-ajax
+            id="ajaxDictionary"
+            handle-as="json"
+            method="GET"
+            last-response="{{globalDictionary}}"
+            on-response="handleResponse"
+    ></iron-ajax>
     <div class="horizontal layout">
     <paper-dropdown-menu label="Type" style="padding-right: 10px;">
-      <paper-listbox class="dropdown-content" selected="{{type}}" attr-for-selected="glycantype">
-        <paper-item glycantype="nglycan">N-Glycan</paper-item>
-        <paper-item glycantype="oglycan">O-Glycan</paper-item>
+      <paper-listbox class="dropdown-content" selected="{{typeSelected}}" attr-for-selected="glycantype">
+        <template is="dom-repeat" items="{{glycanType}}">
+          <paper-item glycantype="{{item.shortName}}">{{item.name}}</paper-item>
+        </template>
       </paper-listbox>
     </paper-dropdown-menu>
 
@@ -39,7 +47,7 @@ This element provides filter box in glyconnect
     <paper-dropdown-menu label="Properties">
       <paper-listbox class="dropdown-content" selected="{{propertySelected}}" attr-for-selected="property">
         <template is="dom-repeat" items="{{prop}}">
-          <paper-item core="{{item.shortName}}">{{item.name}}</paper-item>
+          <paper-item property="{{item.shortName}}">{{item.name}}</paper-item>
         </template>
       </paper-listbox>
     </paper-dropdown-menu>
@@ -53,7 +61,7 @@ This element provides filter box in glyconnect
       is: 'glyconnect-filter',
 
       properties: {
-        type: {
+        typeSelected: {
           type: String,
           observer: "_typeChange"
         },
@@ -65,10 +73,23 @@ This element provides filter box in glyconnect
           type: String,
           observer: "_propertySelectedChange"
         },
+        prop: {
+          type: String
+        }
+      },
+
+      attached: function(){
+        this.$.ajaxDictionary.url = this.resolveUrl('dictionary/globalDictionary.json');
+        this.$.ajaxDictionary.generateRequest();
+      },
+
+      handleResponse: function(){
+        this.glycanType = this.globalDictionary.type;
       },
 
       _typeChange: function(){
-        if(this.type == 'oglycan'){
+        console.log(this.typeSelected);
+        if(this.typeSelected == 'oglycan'){
           this.coreType = [
             {shortName: 'core0', name: 'Core 1'},
             {shortName: 'core1', name: 'Core 2'},
