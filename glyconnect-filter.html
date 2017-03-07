@@ -4,6 +4,11 @@
 <link rel="import" href="../paper-item/paper-item.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../paper-header-panel/paper-header-panel.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-collapse/iron-collapse.html">
+
 
 <!--
 `glyconnect-filter`
@@ -19,6 +24,55 @@ This element provides filter box in glyconnect
       :host {
         display: block;
       }
+      iron-icon[disabled]{
+        display: none;
+      }
+      paper-button.indigo {
+        background-color: var(--paper-indigo-500);
+        color: white;
+        --paper-button-raised-keyboard-focus: {
+            color: white !important;
+        };
+      }
+      paper-button#filterToggleButton {
+        width: 100%;
+      }
+      .paper-header {
+        font-family: "Roboto";
+        height: 45px;
+        font-size: 20px;
+        padding: 0 10px;
+        color: red;
+        transition: height 0.2s;
+      }
+      paper-button#generateButton {
+            height: 50%;
+            margin: 15px 30px;
+        }
+      #filterToggleButton {
+        min-width: 760px;
+      }
+
+      #glycanFilterHeader {
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 25px;
+      }
+      #glycanFilterBox{
+        border: 1px solid black;
+        margin-left: 16px;
+        margin-right: 36px;
+        min-width: 758px;
+        border-radius: 0 0 5px 5px;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+      }
+      #rangeBox {
+        padding: 30px 20px 20px 20px;
+      }
+      #clearIcon {
+        margin: 10px 10px 0 0;
+        float: right;
+      }
     </style>
     <iron-ajax
             id="ajaxDictionary"
@@ -27,40 +81,52 @@ This element provides filter box in glyconnect
             last-response="{{globalDictionary}}"
             on-response="handleResponse"
     ></iron-ajax>
-    <div class="horizontal layout">
-    <paper-dropdown-menu label="Type" style="padding-right: 20px;">
-      <paper-listbox class="dropdown-content" selected="{{typeSelected}}" attr-for-selected="glycantype">
-        <template is="dom-repeat" items="{{glycanType}}">
-          <paper-item glycantype="{{item}}">{{item}}</paper-item>
-        </template>
-      </paper-listbox>
-    </paper-dropdown-menu>
+        <paper-header-panel id="glycanFilterPanel" class="blue" mode="seamed">
+                <div id="glycanFilterHeader" class="paper-header">
+                    <paper-button id="filterToggleButton" class="indigo" on-click="_toggleGlycanFilter" toggles raised>
+                        <iron-icon id="expandIcon" icon="icons:chevron-right" alt="unfold" ></iron-icon>
+                        <iron-icon id="foldIcon" icon="icons:expand-more" alt="fold" disabled></iron-icon>
+                        Glycan property filters
+                    </paper-button>
+                </div>
+            </paper-header-panel>
+            <iron-collapse id="glycanFilterBox" class="horizontal center-justified">
+                <iron-icon id="clearIcon" icon="icons:autorenew" alt="reset" on-click="_reset"></iron-icon>
+                <div id="rangeBox" class="layout horizontal">
+                        <paper-dropdown-menu label="Type" style="padding-right: 20px;">
+                          <paper-listbox class="dropdown-content" selected="{{typeSelected}}" attr-for-selected="glycantype">
+                            <template is="dom-repeat" items="{{glycanType}}">
+                              <paper-item glycantype="{{item}}">{{item}}</paper-item>
+                            </template>
+                          </paper-listbox>
+                        </paper-dropdown-menu>
 
-    <paper-dropdown-menu label="Core" style="padding-right: 20px;">
-      <paper-listbox class="dropdown-content" selected="{{coreSelected}}" attr-for-selected="core">
-        <template is="dom-repeat" items="{{coreType}}">
-          <paper-item core="{{item}}">{{item}}</paper-item>
-        </template>
-      </paper-listbox>
-    </paper-dropdown-menu>
+                        <paper-dropdown-menu label="Core" style="padding-right: 20px;">
+                          <paper-listbox class="dropdown-content" selected="{{coreSelected}}" attr-for-selected="core">
+                            <template is="dom-repeat" items="{{coreType}}">
+                              <paper-item core="{{item}}">{{item}}</paper-item>
+                            </template>
+                          </paper-listbox>
+                        </paper-dropdown-menu>
 
-    <paper-dropdown-menu label="Properties" style="padding-right: 20px;">
-      <paper-listbox class="dropdown-content" selected="{{propertySelected}}" attr-for-selected="property">
-        <template is="dom-repeat" items="{{prop}}">
-          <paper-item property="{{item}}">{{item}}</paper-item>
-        </template>
-      </paper-listbox>
-    </paper-dropdown-menu>
+                        <paper-dropdown-menu label="Properties" style="padding-right: 20px;">
+                          <paper-listbox class="dropdown-content" selected="{{propertySelected}}" attr-for-selected="property">
+                            <template is="dom-repeat" items="{{prop}}">
+                              <paper-item property="{{item}}">{{item}}</paper-item>
+                            </template>
+                          </paper-listbox>
+                        </paper-dropdown-menu>
 
-    <paper-dropdown-menu label="Determinants">
-      <paper-listbox class="dropdown-content" selected="{{deterSelected}}" attr-for-selected="determinants">
-        <template is="dom-repeat" items="{{deter}}">
-          <paper-item determinants="{{item}}">{{item}}</paper-item>
-        </template>
-      </paper-listbox>
-    </paper-dropdown-menu>
-
-    </div>
+                        <paper-dropdown-menu label="Determinants">
+                          <paper-listbox class="dropdown-content" selected="{{deterSelected}}" attr-for-selected="determinants">
+                            <template is="dom-repeat" items="{{deter}}">
+                              <paper-item determinants="{{item}}">{{item}}</paper-item>
+                            </template>
+                          </paper-listbox>
+                        </paper-dropdown-menu>
+                        <paper-button id="generateButton" class="indigo" on-tap="generate">Generate</paper-button>
+                    </div>
+       </iron-collapse>
   </template>
 
   <script>
@@ -99,6 +165,22 @@ This element provides filter box in glyconnect
         this.glycanType = this.globalDictionary.type;
       },
 
+      _toggleGlycanFilter: function () {
+        this.$.glycanFilterBox.toggle();
+        if(this.$.foldIcon.hasAttribute('disabled')){
+            this.$.expandIcon.setAttribute('disabled', 'true');
+            this.$.foldIcon.removeAttribute('disabled');
+        }else{
+            this.$.foldIcon.setAttribute('disabled', 'true');
+            this.$.expandIcon.removeAttribute('disabled');
+        }
+      },
+      _reset: function () {
+        this.typeSelected = null;
+        this.coreSelected = null;
+        this.propertySelected = null;
+        this.deterSelected = null;
+      },
       _typeChange: function(){
         this.coreType = this.globalDictionary[this.typeSelected];
       },
@@ -108,13 +190,9 @@ This element provides filter box in glyconnect
       },
       _propertySelectedChange: function(){
         this.deter = this.globalDictionary[this.typeSelected+'_'+this.coreSelected+'_'+this.propertySelected];
-        console.log(this.deter);
-        console.log(this.coreSelected);
-        console.log(this.typeSelected);
-        console.log(this.propertySelected);
       },
-      _filterCall: function(){
-        //call server Julien
+      _generate: function(){
+
       }
 
       /* Possible Advanced Feature
