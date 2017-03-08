@@ -81,6 +81,7 @@ This element provides filter box in glyconnect
             last-response="{{globalDictionary}}"
             on-response="handleResponse"
     ></iron-ajax>
+
         <paper-header-panel id="glycanFilterPanel" class="blue" mode="seamed">
                 <div id="glycanFilterHeader" class="paper-header">
                     <paper-button id="filterToggleButton" class="indigo" on-click="_toggleGlycanFilter" toggles raised>
@@ -124,7 +125,16 @@ This element provides filter box in glyconnect
                             </template>
                           </paper-listbox>
                         </paper-dropdown-menu>
-                        <paper-button id="generateButton" class="indigo" on-tap="generate">Generate</paper-button>
+                        <template id="t" is="dom-bind">
+                          <textarea value="{{dataToPost::input}}"></textarea>
+                          <paper-button id="generateButton" class="indigo" on-tap="generate">Generate</paper-button>
+                          <iron-ajax
+                                  id="ajaxKey"
+                                  method="POST"
+                                  url=''
+                                  on-response="handleComposition"
+                          ></iron-ajax>
+                        </template>
                     </div>
        </iron-collapse>
   </template>
@@ -192,8 +202,31 @@ This element provides filter box in glyconnect
         this.deter = this.globalDictionary[this.typeSelected+'_'+this.coreSelected+'_'+this.propertySelected];
       },
       _generate: function(){
+          console.loge(deter)
 
       }
+      (function (document) {
+      'use strict';
+      document.addEventListener('WebComponentsReady', function() {
+
+          // We have to bind the template with the model
+          var t = document.querySelector('#t');
+          var ajaxRequest = t.$.dataAjax;
+
+          // make the iron-ajax call
+          t.postData = function() {
+            ajaxRequest.body = {
+              'text': t.dataToPost;
+            }
+            ajaxRequest.generateRequest();
+          }
+
+          //callback on request complete
+          t.postComplete = function(){
+            alert('whoa! request complete');
+          }
+      });
+      })(document);
 
       /* Possible Advanced Feature
           - server call for populate drop-down multi selections
