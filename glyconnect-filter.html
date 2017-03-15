@@ -125,7 +125,7 @@ This element provides filter box in glyconnect
                             </template>
                           </paper-listbox>
                         </paper-dropdown-menu>
-                        <template id="t" is="dom-bind">
+                        <!-- <template id="t" is="dom-bind">
                           <textarea value="{{dataToPost::input}}"></textarea>
                           <paper-button id="generateButton" class="indigo" on-tap="generate">Generate</paper-button>
                           <iron-ajax
@@ -134,7 +134,7 @@ This element provides filter box in glyconnect
                                   url=''
                                   on-response="handleComposition"
                           ></iron-ajax>
-                        </template>
+                        </template> -->
                     </div>
        </iron-collapse>
   </template>
@@ -204,29 +204,29 @@ This element provides filter box in glyconnect
       _generate: function(){
           console.loge(deter)
 
-      }
-      (function (document) {
-      'use strict';
-      document.addEventListener('WebComponentsReady', function() {
-
-          // We have to bind the template with the model
-          var t = document.querySelector('#t');
-          var ajaxRequest = t.$.dataAjax;
-
-          // make the iron-ajax call
-          t.postData = function() {
-            ajaxRequest.body = {
-              'text': t.dataToPost;
-            }
-            ajaxRequest.generateRequest();
-          }
-
-          //callback on request complete
-          t.postComplete = function(){
-            alert('whoa! request complete');
-          }
-      });
-      })(document);
+      };
+      // (function (document) {
+      // 'use strict';
+      // document.addEventListener('WebComponentsReady', function() {
+      //
+      //     // We have to bind the template with the model
+      //     var t = document.querySelector('#t');
+      //     var ajaxRequest = t.$.dataAjax;
+      //
+      //     // make the iron-ajax call
+      //     t.postData = function() {
+      //       ajaxRequest.body = {
+      //         'text': t.dataToPost;
+      //       }
+      //       ajaxRequest.generateRequest();
+      //     }
+      //
+      //     //callback on request complete
+      //     t.postComplete = function(){
+      //       alert('whoa! request complete');
+      //     }
+      // });
+      // })(document);
 
       /* Possible Advanced Feature
           - server call for populate drop-down multi selections
