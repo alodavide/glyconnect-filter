@@ -43,9 +43,10 @@ This element provides filter box in glyconnect
       }
       .enzymeSelected{
           padding: 5px;
-          @apply(--layout-vertical);
+          @apply(--layout-horizontal);
+          @apply(--layout-wrap);
           min-height: 300px;
-          width: 300px;
+          width: 700px;
           align-items: right;
       }
 
@@ -110,67 +111,88 @@ This element provides filter box in glyconnect
             on-response="handleResponse"
     ></iron-ajax>
 
-        <paper-header-panel id="glycanFilterPanel" class="blue" mode="seamed">
-                <div id="glycanFilterHeader" class="paper-header">
-                    <paper-button id="filterToggleButton" class="indigo" on-click="_toggleGlycanFilter" toggles raised>
-                        <iron-icon id="expandIcon" icon="icons:chevron-right" alt="unfold" ></iron-icon>
-                        <iron-icon id="foldIcon" icon="icons:expand-more" alt="fold" disabled></iron-icon>
-                        Glycan property filters
-                    </paper-button>
-                </div>
-            </paper-header-panel>
-            <iron-collapse id="glycanFilterBox" class="horizontal center-justified">
-                <iron-icon id="clearIcon" icon="icons:autorenew" alt="reset" on-click="_reset"></iron-icon>
-                <div id="rangeBox" class="layout horizontal">
-                        <paper-dropdown-menu label="Type" style="padding-right: 20px;">
-                          <paper-listbox class="dropdown-content" selected="{{typeSelected}}" attr-for-selected="glycantype">
-                            <template is="dom-repeat" items="{{glycanType}}">
-                              <paper-item glycantype="{{item}}">{{item}}</paper-item>
-                            </template>
-                          </paper-listbox>
-                        </paper-dropdown-menu>
+      <paper-header-panel id="glycanFilterPanel" class="blue" mode="seamed">
+              <div id="glycanFilterHeader" class="paper-header">
+                  <paper-button id="filterToggleButton" class="indigo" on-click="_toggleGlycanFilter" toggles raised>
+                      <iron-icon id="expandIcon" icon="icons:chevron-right" alt="unfold" ></iron-icon>
+                      <iron-icon id="foldIcon" icon="icons:expand-more" alt="fold" disabled></iron-icon>
+                      Glycan property filters
+                  </paper-button>
+              </div>
+      </paper-header-panel>
+          <iron-collapse id="glycanFilterBox" class="horizontal center-justified">
+              <iron-icon id="clearIcon" icon="icons:autorenew" alt="reset" on-click="_reset"></iron-icon>
+              <div id="rangeBox" class="layout horizontal">
+                      <paper-dropdown-menu label="Type" style="padding-right: 20px;">
+                        <paper-listbox class="dropdown-content" selected="{{typeSelected}}" attr-for-selected="glycantype">
+                          <template is="dom-repeat" items="{{glycanType}}">
+                            <paper-item glycantype="{{item}}">{{item}}</paper-item>
+                          </template>
+                        </paper-listbox>
+                      </paper-dropdown-menu>
 
-                        <paper-dropdown-menu label="Core" style="padding-right: 20px;">
-                          <paper-listbox class="dropdown-content" selected="{{coreSelected}}" attr-for-selected="core">
-                            <template is="dom-repeat" items="{{coreType}}">
-                              <paper-item core="{{item}}">{{item}}</paper-item>
-                            </template>
-                          </paper-listbox>
-                        </paper-dropdown-menu>
+                      <paper-dropdown-menu label="Core" style="padding-right: 20px;">
+                        <paper-listbox class="dropdown-content" selected="{{coreSelected}}" attr-for-selected="core">
+                          <template is="dom-repeat" items="{{coreType}}">
+                            <paper-item core="{{item}}">{{item}}</paper-item>
+                          </template>
+                        </paper-listbox>
+                      </paper-dropdown-menu>
 
-                        <paper-dropdown-menu label="Properties" style="padding-right: 20px;">
-                          <paper-listbox class="dropdown-content" selected="{{propertySelected}}" attr-for-selected="property">
-                            <template is="dom-repeat" items="{{prop}}">
-                              <paper-item property="{{item}}">{{item}}</paper-item>
-                            </template>
-                          </paper-listbox>
-                        </paper-dropdown-menu>
+                      <paper-dropdown-menu label="Properties" style="padding-right: 20px;">
+                        <paper-listbox class="dropdown-content" selected="{{propertySelected}}" attr-for-selected="property">
+                          <template is="dom-repeat" items="{{prop}}">
+                            <paper-item property="{{item}}">{{item}}</paper-item>
+                          </template>
+                        </paper-listbox>
+                      </paper-dropdown-menu>
 
-                        <paper-dropdown-menu label="Determinants">
-                          <paper-listbox class="dropdown-content" selected="{{deterSelected}}" attr-for-selected="determinants">
-                            <template is="dom-repeat" items="{{deter}}">
-                              <paper-item determinants="{{item}}">{{item}}</paper-item>
-                            </template>
-                          </paper-listbox>
-                        </paper-dropdown-menu>
-                        <!-- <template id="t" is="dom-bind">
-                          <textarea value="{{dataToPost::input}}"></textarea>
-                          <paper-button id="generateButton" class="indigo" on-tap="generate">Generate</paper-button>
-                          <iron-ajax
-                                  id="ajaxKey"
-                                  method="POST"
-                                  url=''
-                                  on-response="handleComposition"
-                          ></iron-ajax>
-                        </template> -->
-                    </div>
-       </iron-collapse>
-       <div class="layout horizontal">
+                      <paper-dropdown-menu label="Determinants">
+                        <paper-listbox class="dropdown-content" selected="{{deterSelected}}" attr-for-selected="determinants">
+                          <template is="dom-repeat" items="{{deter}}">
+                            <paper-item determinants="{{item}}">{{item}}</paper-item>
+                          </template>
+                        </paper-listbox>
+                      </paper-dropdown-menu>
+                      <!-- <template id="t" is="dom-bind">
+                        <textarea value="{{dataToPost::input}}"></textarea>
+                        <paper-button id="generateButton" class="indigo" on-tap="generate">Generate</paper-button>
+                        <iron-ajax
+                                id="ajaxKey"
+                                method="POST"
+                                url=''
+                                on-response="handleComposition"
+                        ></iron-ajax>
+                      </template> -->
+              </div>
+          </iron-collapse>
+       <br><br>
+       <paper-header-panel id="glycanTypeFilter" class="blue" mode="seamed">
+               <div id="glycanFilterHeader" class="paper-header">
+                   <paper-button id="filterToggleButton" class="indigo" on-click="_toggleGlycanProp" toggles raised>
+                       <iron-icon id="expandIcon" icon="icons:chevron-right" alt="unfold" ></iron-icon>
+                       <iron-icon id="foldIcon" icon="icons:expand-more" alt="fold" disabled></iron-icon>
+                       N-linked glycans
+                   </paper-button>
+               </div>
+      </paper-header-panel>
+         <iron-collapse id="glycanFilterProp" class="horizontal center-justified">
+         <iron-icon id="clearIcon" icon="icons:autorenew" alt="reset" on-click="_reset"></iron-icon>
+         <div class="layout horizontal flex" >
+          <paper-material elevation="2" style="height: 200px" class="flex">
+               <paper-toolbar>
+                   <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
+                   <span class="title">N-Glycan</span>
+               </paper-toolbar>
+               <sortable-list id="selected" group="test"  animation="150" class="enzymeSelected"></sortable-list>
+           </paper-material>
 
+         </div>
+         <div class="layout horizontal">
             <paper-material elevation="2" style="height: 100%" class="flex">
                 <paper-toolbar>
                     <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
-                    <span class="title">Enzyme pool</span>
+                    <span class="title">Properties</span>
                 </paper-toolbar>
                 <sortable-list id="list" group="test" animation="150" class="enzymeList" >
                     <template is="dom-repeat" items="{{glycanType}}">
@@ -181,14 +203,103 @@ This element provides filter box in glyconnect
                     </template>
                 </sortable-list>
             </paper-material>
-            <paper-material elevation="2">
+            <paper-material elevation="2" style="height: 100%" class="flex">
                 <paper-toolbar>
-                    <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
-                    <span class="title">Enzyme Digestion List</span>
+                    <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
+                    <span class="title">Properties</span>
                 </paper-toolbar>
-                <sortable-list id="selected" group="test"  animation="150" class="enzymeSelected"></sortable-list>
+                <sortable-list id="list" group="test" animation="150" class="enzymeList" >
+                    <template is="dom-repeat" items="{{glycanType}}">
+                        <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
+                            <ul>
+                              <li glycanType="{{item}}">{{item}}</li>
+                            </ul>
+                    </template>
+                </sortable-list>
             </paper-material>
-      </div>
+            <paper-material elevation="2" style="height: 100%" class="flex">
+                <paper-toolbar>
+                    <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
+                    <span class="title">Properties</span>
+                </paper-toolbar>
+                <sortable-list id="list" group="test" animation="150" class="enzymeList" >
+                    <template is="dom-repeat" items="{{glycanType}}">
+                        <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
+                            <ul>
+                              <li glycanType="{{item}}">{{item}}</li>
+                            </ul>
+                    </template>
+                </sortable-list>
+            </paper-material>
+        </div>
+      </iron-collapse>
+      <br><br>
+      <paper-header-panel id="glycanTypeFilter" class="blue" mode="seamed">
+              <div id="glycanFilterHeader" class="paper-header">
+                  <paper-button id="filterToggleButton" class="indigo" on-click="_toggleOGlycan" toggles raised>
+                      <iron-icon id="expandIcon" icon="icons:chevron-right" alt="unfold" ></iron-icon>
+                      <iron-icon id="foldIcon" icon="icons:expand-more" alt="fold" disabled></iron-icon>
+                      O-linked glycans
+                  </paper-button>
+              </div>
+     </paper-header-panel>
+        <iron-collapse id="glycanFilterO" class="horizontal center-justified">
+        <iron-icon id="clearIcon" icon="icons:autorenew" alt="reset" on-click="_reset"></iron-icon>
+        <div class="layout horizontal flex" >
+         <paper-material elevation="2" style="height: 200px" class="flex">
+              <paper-toolbar>
+                  <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
+                  <span class="title">O-Glycan</span>
+              </paper-toolbar>
+              <sortable-list id="selected" group="test"  animation="150" class="enzymeSelected"></sortable-list>
+          </paper-material>
+
+        </div>
+        <div class="layout horizontal">
+           <paper-material elevation="2" style="height: 100%" class="flex">
+               <paper-toolbar>
+                   <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
+                   <span class="title">Core</span>
+               </paper-toolbar>
+               <sortable-list id="list" group="test" animation="150" class="enzymeList" >
+                   <template is="dom-repeat" items="{{glycanType}}">
+                       <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
+                           <ul>
+                             <li glycanType="{{item}}">{{item}}</li>
+                           </ul>
+                   </template>
+               </sortable-list>
+           </paper-material>
+           <paper-material elevation="2" style="height: 100%" class="flex">
+               <paper-toolbar>
+                   <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
+                   <span class="title">Structural properties</span>
+               </paper-toolbar>
+               <sortable-list id="list" group="test" animation="150" class="enzymeList" >
+                   <template is="dom-repeat" items="{{glycanType}}">
+                       <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
+                           <ul>
+                             <li glycanType="{{item}}">{{item}}</li>
+                           </ul>
+                   </template>
+               </sortable-list>
+           </paper-material>
+           <paper-material elevation="2" style="height: 100%" class="flex">
+               <paper-toolbar>
+                   <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
+                   <span class="title">Determinants</span>
+               </paper-toolbar>
+               <sortable-list id="list" group="test" animation="150" class="enzymeList" >
+                   <template is="dom-repeat" items="{{glycanType}}">
+                       <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
+                           <ul>
+                             <li glycanType="{{item}}">{{item}}</li>
+                           </ul>
+                   </template>
+               </sortable-list>
+           </paper-material>
+       </div>
+     </iron-collapse>
   </template>
 
   <script>
@@ -231,6 +342,26 @@ This element provides filter box in glyconnect
 
       _toggleGlycanFilter: function () {
         this.$.glycanFilterBox.toggle();
+        if(this.$.foldIcon.hasAttribute('disabled')){
+            this.$.expandIcon.setAttribute('disabled', 'true');
+            this.$.foldIcon.removeAttribute('disabled');
+        }else{
+            this.$.foldIcon.setAttribute('disabled', 'true');
+            this.$.expandIcon.removeAttribute('disabled');
+        }
+      },
+      _toggleGlycanProp: function () {
+        this.$.glycanFilterProp.toggle();
+        if(this.$.foldIcon.hasAttribute('disabled')){
+            this.$.expandIcon.setAttribute('disabled', 'true');
+            this.$.foldIcon.removeAttribute('disabled');
+        }else{
+            this.$.foldIcon.setAttribute('disabled', 'true');
+            this.$.expandIcon.removeAttribute('disabled');
+        }
+      },
+      _toggleOGlycan: function () {
+        this.$.glycanFilterO.toggle();
         if(this.$.foldIcon.hasAttribute('disabled')){
             this.$.expandIcon.setAttribute('disabled', 'true');
             this.$.foldIcon.removeAttribute('disabled');
