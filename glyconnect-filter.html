@@ -107,69 +107,13 @@ This element provides filter box in glyconnect
             id="ajaxDictionary"
             handle-as="json"
             method="GET"
-            last-response="{{globalDictionary}}"
+            last-response="{{jsonGlobalProperties}}"
             on-response="handleResponse"
     ></iron-ajax>
 
-      <paper-header-panel id="glycanFilterPanel" class="blue" mode="seamed">
-              <div id="glycanFilterHeader" class="paper-header">
-                  <paper-button id="filterToggleButton" class="indigo" on-click="_toggleGlycanFilter" toggles raised>
-                      <iron-icon id="expandIcon" icon="icons:chevron-right" alt="unfold" ></iron-icon>
-                      <iron-icon id="foldIcon" icon="icons:expand-more" alt="fold" disabled></iron-icon>
-                      Glycan property filters
-                  </paper-button>
-              </div>
-      </paper-header-panel>
-          <iron-collapse id="glycanFilterBox" class="horizontal center-justified">
-              <iron-icon id="clearIcon" icon="icons:autorenew" alt="reset" on-click="_reset"></iron-icon>
-              <div id="rangeBox" class="layout horizontal">
-                      <paper-dropdown-menu label="Type" style="padding-right: 20px;">
-                        <paper-listbox class="dropdown-content" selected="{{typeSelected}}" attr-for-selected="glycantype">
-                          <template is="dom-repeat" items="{{glycanType}}">
-                            <paper-item glycantype="{{item}}">{{item}}</paper-item>
-                          </template>
-                        </paper-listbox>
-                      </paper-dropdown-menu>
-
-                      <paper-dropdown-menu label="Core" style="padding-right: 20px;">
-                        <paper-listbox class="dropdown-content" selected="{{coreSelected}}" attr-for-selected="core">
-                          <template is="dom-repeat" items="{{coreType}}">
-                            <paper-item core="{{item}}">{{item}}</paper-item>
-                          </template>
-                        </paper-listbox>
-                      </paper-dropdown-menu>
-
-                      <paper-dropdown-menu label="Properties" style="padding-right: 20px;">
-                        <paper-listbox class="dropdown-content" selected="{{propertySelected}}" attr-for-selected="property">
-                          <template is="dom-repeat" items="{{prop}}">
-                            <paper-item property="{{item}}">{{item}}</paper-item>
-                          </template>
-                        </paper-listbox>
-                      </paper-dropdown-menu>
-
-                      <paper-dropdown-menu label="Determinants">
-                        <paper-listbox class="dropdown-content" selected="{{deterSelected}}" attr-for-selected="determinants">
-                          <template is="dom-repeat" items="{{deter}}">
-                            <paper-item determinants="{{item}}">{{item}}</paper-item>
-                          </template>
-                        </paper-listbox>
-                      </paper-dropdown-menu>
-                      <!-- <template id="t" is="dom-bind">
-                        <textarea value="{{dataToPost::input}}"></textarea>
-                        <paper-button id="generateButton" class="indigo" on-tap="generate">Generate</paper-button>
-                        <iron-ajax
-                                id="ajaxKey"
-                                method="POST"
-                                url=''
-                                on-response="handleComposition"
-                        ></iron-ajax>
-                      </template> -->
-              </div>
-          </iron-collapse>
-       <br><br>
        <paper-header-panel id="glycanTypeFilter" class="blue" mode="seamed">
                <div id="glycanFilterHeader" class="paper-header">
-                   <paper-button id="filterToggleButton" class="indigo" on-click="_toggleGlycanProp" toggles raised>
+                   <paper-button id="filterToggleButton" class="indigo" on-click="_toggleNGlycan" toggles raised>
                        <iron-icon id="expandIcon" icon="icons:chevron-right" alt="unfold" ></iron-icon>
                        <iron-icon id="foldIcon" icon="icons:expand-more" alt="fold" disabled></iron-icon>
                        N-linked glycans
@@ -182,7 +126,7 @@ This element provides filter box in glyconnect
           <paper-material elevation="2" style="height: 200px" class="flex">
                <paper-toolbar>
                    <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
-                   <span class="title">N-Glycan</span>
+                   <span id=""class="title">N-Glycan</span>
                </paper-toolbar>
                <sortable-list id="selected" group="test"  animation="150" class="enzymeSelected"></sortable-list>
            </paper-material>
@@ -192,13 +136,13 @@ This element provides filter box in glyconnect
             <paper-material elevation="2" style="height: 100%" class="flex">
                 <paper-toolbar>
                     <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
-                    <span class="title">Properties</span>
+                    <span class="title">Core</span>
                 </paper-toolbar>
                 <sortable-list id="list" group="test" animation="150" class="enzymeList" >
-                    <template is="dom-repeat" items="{{glycanType}}">
+                    <template is="dom-repeat" items="{{coreTypeN}}">
                         <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
                             <ul>
-                              <li glycanType="{{item}}">{{item}}</li>
+                              <li coreTypeN="{{item}}">{{item}}</li>
                             </ul>
                     </template>
                 </sortable-list>
@@ -206,13 +150,13 @@ This element provides filter box in glyconnect
             <paper-material elevation="2" style="height: 100%" class="flex">
                 <paper-toolbar>
                     <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
-                    <span class="title">Properties</span>
+                    <span class="title">Structural properties</span>
                 </paper-toolbar>
                 <sortable-list id="list" group="test" animation="150" class="enzymeList" >
-                    <template is="dom-repeat" items="{{glycanType}}">
+                    <template is="dom-repeat" items="{{propN}}">
                         <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
                             <ul>
-                              <li glycanType="{{item}}">{{item}}</li>
+                              <li propN="{{item}}">{{item}}</li>
                             </ul>
                     </template>
                 </sortable-list>
@@ -220,13 +164,13 @@ This element provides filter box in glyconnect
             <paper-material elevation="2" style="height: 100%" class="flex">
                 <paper-toolbar>
                     <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
-                    <span class="title">Properties</span>
+                    <span class="title">Determinants</span>
                 </paper-toolbar>
                 <sortable-list id="list" group="test" animation="150" class="enzymeList" >
-                    <template is="dom-repeat" items="{{glycanType}}">
+                    <template is="dom-repeat" items="{{detN}}">
                         <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
                             <ul>
-                              <li glycanType="{{item}}">{{item}}</li>
+                              <li detN="{{item}}">{{item}}</li>
                             </ul>
                     </template>
                 </sortable-list>
@@ -262,10 +206,10 @@ This element provides filter box in glyconnect
                    <span class="title">Core</span>
                </paper-toolbar>
                <sortable-list id="list" group="test" animation="150" class="enzymeList" >
-                   <template is="dom-repeat" items="{{glycanType}}">
+                   <template is="dom-repeat" items="{{coreTypeO}}">
                        <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
                            <ul>
-                             <li glycanType="{{item}}">{{item}}</li>
+                             <li coreTypeO="{{item}}">{{item}}</li>
                            </ul>
                    </template>
                </sortable-list>
@@ -275,11 +219,11 @@ This element provides filter box in glyconnect
                    <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
                    <span class="title">Structural properties</span>
                </paper-toolbar>
-               <sortable-list id="list" group="test" animation="150" class="enzymeList" >
-                   <template is="dom-repeat" items="{{glycanType}}">
+               <sortable-list id="list" group="test" animation="150" class="enzymeList">
+                   <template is="dom-repeat" items="{{propO}}">
                        <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
                            <ul>
-                             <li glycanType="{{item}}">{{item}}</li>
+                             <li propO="{{item}}">{{item}}</li>
                            </ul>
                    </template>
                </sortable-list>
@@ -290,16 +234,83 @@ This element provides filter box in glyconnect
                    <span class="title">Determinants</span>
                </paper-toolbar>
                <sortable-list id="list" group="test" animation="150" class="enzymeList" >
-                   <template is="dom-repeat" items="{{glycanType}}">
+                   <template is="dom-repeat" items="{{detO}}">
                        <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
                            <ul>
-                             <li glycanType="{{item}}">{{item}}</li>
+                             <li detO="{{item}}">{{item}}</li>
                            </ul>
                    </template>
                </sortable-list>
            </paper-material>
        </div>
      </iron-collapse>
+     <br><br>
+     <paper-header-panel id="glycanTypeFilter" class="blue" mode="seamed">
+             <div id="glycanFilterHeader" class="paper-header">
+                 <paper-button id="filterToggleButton" class="indigo" on-click="_toggleNOGlycan" toggles raised>
+                     <iron-icon id="expandIcon" icon="icons:chevron-right" alt="unfold" ></iron-icon>
+                     <iron-icon id="foldIcon" icon="icons:expand-more" alt="fold" disabled></iron-icon>
+                     N-linked/O-linked glycans
+                 </paper-button>
+             </div>
+    </paper-header-panel>
+       <iron-collapse id="glycanFilterNO" class="horizontal center-justified">
+       <iron-icon id="clearIcon" icon="icons:autorenew" alt="reset" on-click="_reset"></iron-icon>
+       <div class="layout horizontal flex" >
+        <paper-material elevation="2" style="height: 200px" class="flex">
+             <paper-toolbar>
+                 <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
+                 <span class="title">N-linked/O-linked Glycan</span>
+             </paper-toolbar>
+             <sortable-list id="selected" group="test"  animation="150" class="enzymeSelected"></sortable-list>
+         </paper-material>
+
+       </div>
+       <div class="layout horizontal">
+          <paper-material elevation="2" style="height: 100%" class="flex">
+              <paper-toolbar>
+                  <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
+                  <span class="title">Core</span>
+              </paper-toolbar>
+              <sortable-list id="list" group="test" animation="150" class="enzymeList" >
+                  <template is="dom-repeat" items="{{coreTypeNO}}">
+                      <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
+                          <ul>
+                            <li coreTypeNO="{{item}}">{{item}}</li>
+                          </ul>
+                  </template>
+              </sortable-list>
+          </paper-material>
+          <paper-material elevation="2" style="height: 100%" class="flex">
+              <paper-toolbar>
+                  <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
+                  <span class="title">Structural properties</span>
+              </paper-toolbar>
+              <sortable-list id="list" group="test" animation="150" class="enzymeList">
+                  <template is="dom-repeat" items="{{propNO}}">
+                      <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
+                          <ul>
+                            <li propNO="{{item}}">{{item}}</li>
+                          </ul>
+                  </template>
+              </sortable-list>
+          </paper-material>
+          <paper-material elevation="2" style="height: 100%" class="flex">
+              <paper-toolbar>
+                  <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
+                  <span class="title">Determinants</span>
+              </paper-toolbar>
+              <sortable-list id="list" group="test" animation="150" class="enzymeList" >
+                  <template is="dom-repeat" items="{{detNO}}">
+                      <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
+                          <ul>
+                            <li detNO="{{item}}">{{item}}</li>
+                          </ul>
+                  </template>
+              </sortable-list>
+          </paper-material>
+      </div>
+    </iron-collapse>
   </template>
 
   <script>
@@ -307,50 +318,27 @@ This element provides filter box in glyconnect
 
       is: 'glyconnect-filter',
 
-      properties: {
-        typeSelected: {
-          type: String,
-          observer: "_typeChange"
-        },
-        coreSelected: {
-          type: String,
-          observer: "_coreSelectedChange"
-        },
-        propertySelected: {
-          type: String,
-          observer: "_propertySelectedChange"
-        },
-        deterSelected: {
-          type: String,
-          observer: "_propertySelectedChange"
-        },
-        prop: {
-          type: String
-        }
-      },
       selectedEnzymeArray: function(){
           return this.$.selected._sortable.toArray();
       },
       attached: function(){
-        this.$.ajaxDictionary.url = this.resolveUrl('dictionary/globalDictionary.json');
+        this.$.ajaxDictionary.url = this.resolveUrl('dictionary/jsonGlobalProperties.json');
         this.$.ajaxDictionary.generateRequest();
       },
 
       handleResponse: function(){
-        this.glycanType = this.globalDictionary.type;
+        this.coreTypeO = this.jsonGlobalProperties['O-linked']['core'];
+        this.coreTypeN = this.jsonGlobalProperties['N-linked']['core'];
+        this.propO = this.jsonGlobalProperties['O-linked']['prop'];
+        this.propN = this.jsonGlobalProperties['N-linked']['prop'];
+        this.detO = this.jsonGlobalProperties['O-linked']['det'];
+        this.detN = this.jsonGlobalProperties['N-linked']['det'];
+        this.propNO = this.jsonGlobalProperties['N-linked/O-linked']['prop'];
+        this.detNO = this.jsonGlobalProperties['N-linked/O-linked']['det'];
+        this.coreTypeNO = this.jsonGlobalProperties['N-linked/O-linked']['det'];
       },
 
-      _toggleGlycanFilter: function () {
-        this.$.glycanFilterBox.toggle();
-        if(this.$.foldIcon.hasAttribute('disabled')){
-            this.$.expandIcon.setAttribute('disabled', 'true');
-            this.$.foldIcon.removeAttribute('disabled');
-        }else{
-            this.$.foldIcon.setAttribute('disabled', 'true');
-            this.$.expandIcon.removeAttribute('disabled');
-        }
-      },
-      _toggleGlycanProp: function () {
+      _toggleNGlycan: function () {
         this.$.glycanFilterProp.toggle();
         if(this.$.foldIcon.hasAttribute('disabled')){
             this.$.expandIcon.setAttribute('disabled', 'true');
@@ -370,26 +358,36 @@ This element provides filter box in glyconnect
             this.$.expandIcon.removeAttribute('disabled');
         }
       },
-      _reset: function () {
-        this.typeSelected = null;
-        this.coreSelected = null;
-        this.propertySelected = null;
-        this.deterSelected = null;
+      _toggleNOGlycan: function () {
+        this.$.glycanFilterNO.toggle();
+        if(this.$.foldIcon.hasAttribute('disabled')){
+            this.$.expandIcon.setAttribute('disabled', 'true');
+            this.$.foldIcon.removeAttribute('disabled');
+        }else{
+            this.$.foldIcon.setAttribute('disabled', 'true');
+            this.$.expandIcon.removeAttribute('disabled');
+        }
       },
-      _typeChange: function(){
-        this.coreType = this.globalDictionary[this.typeSelected];
-      },
-
-      _coreSelectedChange: function(){
-        this.prop = this.globalDictionary[this.typeSelected+'_'+this.coreSelected];
-      },
-      _propertySelectedChange: function(){
-        this.deter = this.globalDictionary[this.typeSelected+'_'+this.coreSelected+'_'+this.propertySelected];
-      },
-      _generate: function(){
-          console.loge(deter)
-
-      },
+      // _reset: function () {
+      //   this.typeSelected = null;
+      //   this.coreSelected = null;
+      //   this.propertySelected = null;
+      //   this.deterSelected = null;
+      // },
+      // _typeChange: function(){
+      //   this.coreType = this.globalDictionary[this.typeSelected];
+      // },
+      //
+      // _coreSelectedChange: function(){
+      //   this.prop = this.globalDictionary[this.typeSelected+'_'+this.coreSelected];
+      // },
+      // _propertySelectedChange: function(){
+      //   this.deter = this.globalDictionary[this.typeSelected+'_'+this.coreSelected+'_'+this.propertySelected];
+      // },
+      // _generate: function(){
+      //     console.loge(deter)
+      //
+      // },
       // (function (document) {
       // 'use strict';
       // document.addEventListener('WebComponentsReady', function() {
