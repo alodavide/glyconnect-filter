@@ -9,6 +9,7 @@
 <link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../iron-collapse/iron-collapse.html">
 <link rel="import" href="../sortable-list/sortable-list.html">
+<link rel="import" href="../paper-card/paper-card.html">
 
 
 <!--
@@ -101,6 +102,15 @@ This element provides filter box in glyconnect
       #clearIcon {
         margin: 10px 10px 0 0;
         float: right;
+      }
+      #notes > paper-card {
+        background-color: #00cc00;
+        font-size: 16px;
+        padding: 15px 15px 15px 15px;
+        /*box-sizing: border-box;*/
+        min-width: 150px;
+        margin: 10px;
+        flex: 0 0 auto;
       }
     </style>
     <iron-ajax
@@ -233,12 +243,10 @@ This element provides filter box in glyconnect
                    <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
                    <span class="title">Determinants</span>
                </paper-toolbar>
-               <sortable-list id="list" group="test" animation="150" class="enzymeList" >
+               <sortable-list id="list" group="test" animation="150" class="enzymeList">
                    <template is="dom-repeat" items="{{detO}}">
                        <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
-                           <ul>
-                             <li detO="{{item}}">{{item}}</li>
-                           </ul>
+                        <div id="notes"><paper-card detO="{{item}}">{{item}}</paper-card></div>
                    </template>
                </sortable-list>
            </paper-material>
@@ -275,9 +283,7 @@ This element provides filter box in glyconnect
               <sortable-list id="list" group="test" animation="150" class="enzymeList" >
                   <template is="dom-repeat" items="{{coreTypeNO}}">
                       <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
-                          <ul>
-                            <li coreTypeNO="{{item}}">{{item}}</li>
-                          </ul>
+                            <paper-card heading="{{item}}" coreTypeNO="{{item}}"></paper-card>
                   </template>
               </sortable-list>
           </paper-material>
