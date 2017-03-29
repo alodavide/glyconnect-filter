@@ -75,10 +75,10 @@ This element provides filter box in glyconnect
         color: red;
         transition: height 0.2s;
       }
-      paper-button#generateButton {
-            height: 50%;
-            margin: 15px 30px;
-        }
+      paper-button#updateButton {
+        height: 50%;
+        margin: 15px 30px;
+      }
       #filterToggleButton {
         min-width: 760px;
       }
@@ -103,51 +103,15 @@ This element provides filter box in glyconnect
         margin: 10px 10px 0 0;
         float: right;
       }
-      .orange {
-        background-color: #ff9933;
+      .card {
+        /*background-color: #cc3300;*/
         font-size: 16px;
         padding: 15px 15px 15px 15px;
         /*box-sizing: border-box;*/
-        min-width: 150px;
         margin: 10px;
         flex: 0 0 auto;
       }
-      .blu {
-        background-color: #0099ff;
-        font-size: 16px;
-        padding: 15px 15px 15px 15px;
-        /*box-sizing: border-box;*/
-        min-width: 150px;
-        margin: 10px;
-        flex: 0 0 auto;
-      }
-      .yellow {
-        background-color: #ffcc00;
-        font-size: 16px;
-        padding: 15px 15px 15px 15px;
-        /*box-sizing: border-box;*/
-        min-width: 150px;
-        margin: 10px;
-        flex: 0 0 auto;
-      }
-      .purple {
-        background-color: #9966ff;
-        font-size: 16px;
-        padding: 15px 15px 15px 15px;
-        /*box-sizing: border-box;*/
-        min-width: 150px;
-        margin: 10px;
-        flex: 0 0 auto;
-      }
-      .red {
-        background-color: #cc3300;
-        font-size: 16px;
-        padding: 15px 15px 15px 15px;
-        /*box-sizing: border-box;*/
-        min-width: 150px;
-        margin: 10px;
-        flex: 0 0 auto;
-      }
+
     </style>
     <iron-ajax
             id="ajaxDictionary"
@@ -169,14 +133,14 @@ This element provides filter box in glyconnect
          <iron-collapse id="glycanFilterProp" class="horizontal center-justified">
          <iron-icon id="clearIcon" icon="icons:autorenew" alt="reset" on-click="_reset"></iron-icon>
          <div class="layout horizontal flex" >
-          <paper-material elevation="2" style="height: 200px" class="flex">
+          <paper-material elevation="2" style="height: 300px" class="flex">
                <paper-toolbar>
                    <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
                    <span id=""class="title">N-Glycan</span>
                </paper-toolbar>
-               <sortable-list id="selected" group="test"  animation="150" class="enzymeSelected"></sortable-list>
+               <div><paper-button id="updateButton" class="indigo" on-tap="selectedPropN">Search</paper-button></div>
+               <sortable-list id="selectedN" group="test"  animation="150" class="enzymeSelected"></sortable-list>
            </paper-material>
-
          </div>
          <div class="layout horizontal">
             <paper-material elevation="2" style="height: 100%" class="flex">
@@ -186,8 +150,10 @@ This element provides filter box in glyconnect
                 </paper-toolbar>
                 <sortable-list id="list" group="test" animation="150" >
                     <template is="dom-repeat" items="{{coreTypeN}}">
+                      <div data-id$="{{item.name}}" >
                         <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
-                        <div><paper-card detO="{{item}}" class$="{{item.class}}">{{item.name}}</paper-card></div>
+                        <paper-card coreTypeN="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
+                      </div>
                     </template>
                 </sortable-list>
             </paper-material>
@@ -198,8 +164,10 @@ This element provides filter box in glyconnect
                 </paper-toolbar>
                 <sortable-list id="list" group="test" animation="150" class="enzymeList" >
                     <template is="dom-repeat" items="{{propN}}">
+                      <div data-id$="{{item.name}}" >
                         <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
-                        <div><paper-card detO="{{item}}" class$="{{item.class}}">{{item.name}}</paper-card></div>
+                         <paper-card propN="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
+                      </div>
                     </template>
                 </sortable-list>
             </paper-material>
@@ -210,8 +178,10 @@ This element provides filter box in glyconnect
                 </paper-toolbar>
                 <sortable-list id="list" group="test" animation="150" class="enzymeList" >
                     <template is="dom-repeat" items="{{detN}}">
+                      <div data-id$="{{item.name}}" >
                         <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
-                        <div><paper-card detO="{{item}}" class$="{{item.class}}">{{item.name}}</paper-card></div>
+                         <paper-card detN="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
+                      </div>
                     </template>
                 </sortable-list>
             </paper-material>
@@ -234,8 +204,10 @@ This element provides filter box in glyconnect
               <paper-toolbar>
                   <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
                   <span class="title">O-Glycan</span>
+                  <div><paper-button id="updateButton" class="indigo" on-tap="selectedPropO">Search</paper-button></div>
+                  <sortable-list id="selectedO" group="test"  animation="150" class="enzymeSelected"></sortable-list>
               </paper-toolbar>
-              <sortable-list id="selected" group="test"  animation="150" class="enzymeSelected"></sortable-list>
+              <sortable-list group="test"  animation="150" class="enzymeSelected"></sortable-list>
           </paper-material>
 
         </div>
@@ -247,8 +219,10 @@ This element provides filter box in glyconnect
                </paper-toolbar>
                <sortable-list id="list" group="test" animation="150" class="enzymeList" >
                    <template is="dom-repeat" items="{{coreTypeO}}">
+                     <div data-id$="{{item.name}}" >
                        <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
-                       <div><paper-card detO="{{item}}" class$="{{item.class}}">{{item.name}}</paper-card></div>
+                       <paper-card coreTypeO="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}} </paper-card>
+                     </div>
                    </template>
                </sortable-list>
            </paper-material>
@@ -259,8 +233,10 @@ This element provides filter box in glyconnect
                </paper-toolbar>
                <sortable-list id="list" group="test" animation="150" class="enzymeList">
                    <template is="dom-repeat" items="{{propO}}">
+                     <div data-id$="{{item.name}}" >
                        <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
-                       <div><paper-card detO="{{item}}" class$="{{item.class}}">{{item.name}}</paper-card></div>
+                       <paper-card propO="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
+                     </div>
                    </template>
                </sortable-list>
            </paper-material>
@@ -271,8 +247,10 @@ This element provides filter box in glyconnect
                </paper-toolbar>
                <sortable-list id="list" group="test" animation="150" class="enzymeList">
                    <template is="dom-repeat" items="{{detO}}">
+                     <div data-id$="{{item.name}}" >
                        <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
-                        <div><paper-card detO="{{item}}" class$="{{item.class}}">{{item.name}}</paper-card></div>
+                        <paper-card detO="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
+                     </div>
                    </template>
                </sortable-list>
            </paper-material>
@@ -295,8 +273,10 @@ This element provides filter box in glyconnect
              <paper-toolbar>
                  <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
                  <span class="title"> Non-attached to proteins</span>
+                 <div><paper-button id="updateButton" class="indigo" on-tap="selectedPropNP">Search</paper-button></div>
+                 <sortable-list id="selectedNP" group="test"  animation="150" class="enzymeSelected"></sortable-list>
              </paper-toolbar>
-             <sortable-list id="selected" group="test"  animation="150" class="enzymeSelected"></sortable-list>
+             <sortable-list group="test"  animation="150" class="enzymeSelected"></sortable-list>
          </paper-material>
 
        </div>
@@ -308,8 +288,10 @@ This element provides filter box in glyconnect
               </paper-toolbar>
               <sortable-list id="list" group="test" animation="150" class="enzymeList" >
                   <template is="dom-repeat" items="{{coreTypeNO}}">
+                    <div data-id$="{{item.name}},{{item.color}}" >
                       <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
-                            <paper-card heading="{{item}}" coreTypeNO="{{item}}"></paper-card>
+                      <paper-card coreTypeNO="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
+                    </div>
                   </template>
               </sortable-list>
           </paper-material>
@@ -320,24 +302,24 @@ This element provides filter box in glyconnect
               </paper-toolbar>
               <sortable-list id="list" group="test" animation="150" class="enzymeList">
                   <template is="dom-repeat" items="{{propNO}}">
+                    <div data-id$="{{item.name}},{{item.color}}" >
                       <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
-                          <ul>
-                            <li propNO="{{item}}">{{item}}</li>
-                          </ul>
+                      <paper-card propNO="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
+                    </div>
                   </template>
               </sortable-list>
           </paper-material>
           <paper-material elevation="2" style="height: 100%" class="flex">
               <paper-toolbar>
-                  <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
+                  <paper-icon-button dupdateButtonisabled icon="icons:folder-open" style="color: white"></paper-icon-button>
                   <span class="title">Determinants</span>
               </paper-toolbar>
               <sortable-list id="list" group="test" animation="150" class="enzymeList" >
                   <template is="dom-repeat" items="{{detNO}}">
+                    <div data-id$="{{item.name}},{{item.color}}" >
                       <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
-                          <ul>
-                            <li detNO="{{item}}">{{item}}</li>
-                          </ul>
+                      <paper-card detNO="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
+                    </div>
                   </template>
               </sortable-list>
           </paper-material>
@@ -349,15 +331,68 @@ This element provides filter box in glyconnect
     Polymer({
 
       is: 'glyconnect-filter',
-
-      selectedEnzymeArray: function(){
-          return this.$.selected._sortable.toArray();
+      selectedPropN: function(){
+          console.log(this.$.selectedN._sortable.toArray());
+          // return this.$.selected._sortable.toArray();
+      },
+      selectedPropO: function(){
+          console.log(this.$.selectedO._sortable.toArray());
+          // return this.$.selected._sortable.toArray();
+      },
+      selectedPropNP: function(){
+          colorToName = {};
+          colornamelist = this.$.selectedNP._sortable.toArray();
+          for (i = 0; i < colornamelist.length; i++) {
+            var cn = colornamelist[i];
+            var cns = cn.split(",");
+            if (cns[1] in colorToName) {
+              colorToName[cns[1]].push(cns[0]);
+            } else {
+              colorToName[cns[1]] =[cns[0]];
+            };
+          };
+          var keys = Object.keys(colorToName);
+          // var colorCount = {};
+          var queries = [];
+          var temporary = [];
+          for (i = 0; i < keys.length; i++) {
+            console.log(colorToName[keys[i]]);
+            if (temporary.length == 0 && queries.length == 0) {
+              queries.push(colorToName[keys[i]]);
+              console.log(queries);
+            } else if (temporary == undefined && queries !== undefined) {
+                temporary.push(colorToName[keys[i]]);
+                console.log(queries);
+                console.log(temporary);
+              };
+            // }else if (temporary != [] && queries != []) {
+            //   var intermediate = [];
+            //   for (i = 0; i < temporary.length; i++) {
+            //     for (j = 0; j < queries.length; j++){
+            //       intermediate.push(temporary[i]+","+queries[j]);
+            //     };
+            //   console.log(temporary);
+            //   };
+            //   queries = intermediate;
+            //   console.log(temporary);
+            //   temporary = [];
+            //   console.log(queries);
+            //   console.log(temporary);
+            // };
+          };
+          // return this.$.selected._sortable.toArray();
+      },
+      queryBuild: function() {
+        for (i = 0; i < temporary.length; i++) {
+          var que = temporary[i]+colorToName[keys[i]];
+          console.log(que);
+          queries.push(que);
+        };
       },
       attached: function(){
         this.$.ajaxDictionary.url = this.resolveUrl('dictionary/jsonGlobalProperties.json');
         this.$.ajaxDictionary.generateRequest();
       },
-
       handleResponse: function(){
         this.coreTypeO = this.jsonGlobalProperties['O-linked']['core'];
         this.coreTypeN = this.jsonGlobalProperties['N-linked']['core'];
@@ -367,7 +402,7 @@ This element provides filter box in glyconnect
         this.detN = this.jsonGlobalProperties['N-linked']['det'];
         this.propNO = this.jsonGlobalProperties['Non-attached to proteins']['prop'];
         this.detNO = this.jsonGlobalProperties['Non-attached to proteins']['det'];
-        this.coreTypeNO = this.jsonGlobalProperties['Non-attached to proteins']['det'];
+        this.coreTypeNO = this.jsonGlobalProperties['Non-attached to proteins']['core'];
       },
 
       _toggleNGlycan: function () {
