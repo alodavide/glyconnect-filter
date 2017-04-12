@@ -70,8 +70,8 @@ This element provides filter box in glyconnect
       .paper-header {
         font-family: "Roboto";
         height: 45px;
-        font-size: 20px;
-        padding: 0 10px;
+        font-size: 20px;The Polymer logo.
+        padding: 0 10px;The Polymer logo.
         color: red;
         transition: height 0.2s;
       }
@@ -339,49 +339,7 @@ This element provides filter box in glyconnect
           console.log(this.$.selectedO._sortable.toArray());
           // return this.$.selected._sortable.toArray();
       },
-      selectedPropNP: function(){
-          colorToName = {};
-          colornamelist = this.$.selectedNP._sortable.toArray();
-          for (i = 0; i < colornamelist.length; i++) {
-            var cn = colornamelist[i];
-            var cns = cn.split(",");
-            if (cns[1] in colorToName) {
-              colorToName[cns[1]].push(cns[0]);
-            } else {
-              colorToName[cns[1]] =[cns[0]];
-            };
-          };
-          var keys = Object.keys(colorToName);
-          // var colorCount = {};
-          var queries = [];
-          var temporary = [];
-          for (i = 0; i < keys.length; i++) {
-            console.log(colorToName[keys[i]]);
-            if (temporary.length == 0 && queries.length == 0) {
-              queries.push(colorToName[keys[i]]);
-              console.log(queries);
-            } else if (temporary == undefined && queries !== undefined) {
-                temporary.push(colorToName[keys[i]]);
-                console.log(queries);
-                console.log(temporary);
-              };
-            // }else if (temporary != [] && queries != []) {
-            //   var intermediate = [];
-            //   for (i = 0; i < temporary.length; i++) {
-            //     for (j = 0; j < queries.length; j++){
-            //       intermediate.push(temporary[i]+","+queries[j]);
-            //     };
-            //   console.log(temporary);
-            //   };
-            //   queries = intermediate;
-            //   console.log(temporary);
-            //   temporary = [];
-            //   console.log(queries);
-            //   console.log(temporary);
-            // };
-          };
-          // return this.$.selected._sortable.toArray();
-      },
+
       queryBuild: function() {
         for (i = 0; i < temporary.length; i++) {
           var que = temporary[i]+colorToName[keys[i]];
@@ -400,9 +358,9 @@ This element provides filter box in glyconnect
         this.propN = this.jsonGlobalProperties['N-linked']['prop'];
         this.detO = this.jsonGlobalProperties['O-linked']['det'];
         this.detN = this.jsonGlobalProperties['N-linked']['det'];
-        this.propNO = this.jsonGlobalProperties['Non-attached to proteins']['prop'];
-        this.detNO = this.jsonGlobalProperties['Non-attached to proteins']['det'];
-        this.coreTypeNO = this.jsonGlobalProperties['Non-attached to proteins']['core'];
+        this.propNO = this.jsonGlobalProperties['Non attached to proteins']['prop'];
+        this.detNO = this.jsonGlobalProperties['Non attached to proteins']['det'];
+        this.coreTypeNO = this.jsonGlobalProperties['Non attached to proteins']['core'];
       },
 
       _toggleNGlycan: function () {
