@@ -149,7 +149,7 @@ This element provides filter box in glyconnect
                     <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
                     <span class="title">Core</span>
                 </paper-toolbar>
-                <sortable-list id="list" group="test" animation="150" >
+                <sortable-list id="list" group="test" animation="150" class="enzymeList">
                     <template is="dom-repeat" items="{{coreTypeN}}">
                       <div data-id$="{{item.name}}" >
                         <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
@@ -340,7 +340,10 @@ This element provides filter box in glyconnect
           console.log(this.$.selectedO._sortable.toArray());
           // return this.$.selected._sortable.toArray();
       },
-
+      selectedPropNP: function(){
+          console.log(this.$.selectedNP._sortable.toArray());
+          // return this.$.selected._sortable.toArray();
+      },
       queryBuild: function() {
         for (i = 0; i < temporary.length; i++) {
           var que = temporary[i]+colorToName[keys[i]];
