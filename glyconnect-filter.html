@@ -99,10 +99,6 @@ This element provides filter box in glyconnect
       #rangeBox {
         padding: 30px 20px 20px 20px;
       }
-      #clearIcon {
-        margin: 10px 10px 0 0;
-        float: right;
-      }
       .card {
         /*background-color: #cc3300;*/
         font-size: 16px;
@@ -132,7 +128,6 @@ This element provides filter box in glyconnect
                </div>
       </paper-header-panel>
          <iron-collapse id="glycanFilterN" class="horizontal center-justified">
-         <iron-icon id="clearIcon" icon="icons:autorenew" alt="reset" on-click="_reset"></iron-icon>
          <div class="layout horizontal flex" >
           <paper-material elevation="2" class="flex">
                <paper-toolbar>
@@ -198,8 +193,7 @@ This element provides filter box in glyconnect
                   </paper-button>
               </div>
      </paper-header-panel>
-        <iron-collapse id="glycanFilterO" class="horizontal center-justified">
-        <iron-icon id="clearIcon" icon="icons:autorenew" alt="reset" on-click="_reset"></iron-icon>
+      <iron-collapse id="glycanFilterO" class="horizontal center-justified">
         <div class="layout horizontal flex" >
          <paper-material elevation="2" class="flex">
               <paper-toolbar>
@@ -267,7 +261,6 @@ This element provides filter box in glyconnect
              </div>
     </paper-header-panel>
        <iron-collapse id="glycanFilterNO" class="horizontal center-justified">
-       <iron-icon id="clearIcon" icon="icons:autorenew" alt="reset" on-click="_reset"></iron-icon>
        <div class="layout horizontal flex" >
         <paper-material elevation="2" class="flex">
              <paper-toolbar>
@@ -394,12 +387,10 @@ This element provides filter box in glyconnect
             this.$.expandIcon.removeAttribute('disabled');
         }
       },
-      _reset: function () {
-        this.selectedN = null;
-        // this.coreSelected = null;
-        // this.propertySelected = null;
-        // this.deterSelected = null;
-      },
+      // _reset: function () {
+      //   this.selectedN = null;
+      //   console.log("ciao");
+      // },
       // _typeChange: function(){
       //   this.coreType = this.globalDictionary[this.typeSelected];
       // },
