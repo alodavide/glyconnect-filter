@@ -279,7 +279,7 @@ This element provides filter box in glyconnect
               </paper-toolbar>
               <sortable-list id="list" group="test" animation="150" class="enzymeList" >
                   <template is="dom-repeat" items="{{coreTypeNP}}">
-                    <div data-id$="{{item.name}}" >
+                    <div data-id$="glycanCore={{item.name}}" >
                       <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
                       <paper-card coreTypeNP="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
                     </div>
@@ -331,6 +331,7 @@ This element provides filter box in glyconnect
           // return this.$.selected._sortable.toArray();
       },
       selectedPropNP: function(){
+          this.glycantype="glycanType=N-LINKED"
           console.log(this.$.selectedNP._sortable.toArray());
           // return this.$.selected._sortable.toArray();
       },
