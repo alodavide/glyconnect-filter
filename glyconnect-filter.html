@@ -10,8 +10,6 @@
 <link rel="import" href="../iron-collapse/iron-collapse.html">
 <link rel="import" href="../sortable-list/sortable-list.html">
 <link rel="import" href="../paper-card/paper-card.html">
-
-
 <!--
 `glyconnect-filter`
 This element provides filter box in glyconnect
@@ -117,6 +115,16 @@ This element provides filter box in glyconnect
             last-response="{{jsonGlobalProperties}}"
             on-response="handleResponse"
     ></iron-ajax>
+    <!-- <template is="dom-repeat" items="[[repos]]">
+        <span>blabla</span>
+    </template> -->
+    <iron-ajax
+        id="requestStruct"
+        url="http://mendel.isb-sib.ch:8083/api/glycosylations?composition=22100000000000"
+        params=""
+        handle-as="json"
+        on-response="handleResponseStructure">
+    </iron-ajax>
 
        <paper-header-panel id="glycanTypeFilter" class="blue" mode="seamed">
                <div id="glycanFilterHeader" class="paper-header">
@@ -135,7 +143,9 @@ This element provides filter box in glyconnect
                    <span class="title">N-Glycan</span>
                </paper-toolbar>
                <sortable-list id="selectedN" group="test"  animation="150" class="enzymeSelected"></sortable-list>
-               <div class="horizontal end-justified layout"><paper-button id="updateButton" class="indigo" on-tap="selectedPropN">Search</paper-button></div>
+               <div class="horizontal end-justified layout">
+                 <template id="t" is="dom-bind">
+                   <paper-button id="updateButton" class="indigo" on-tap="selectedPropN">Search</paper-button></div>
            </paper-material>
          </div>
          <div class="layout horizontal">
@@ -322,6 +332,21 @@ This element provides filter box in glyconnect
     Polymer({
 
       is: 'glyconnect-filter',
+      properties: {
+          repos: {
+              type: Array
+          }
+      },
+      // ready: function () {
+      //     this.$.requestRepos.generateRequest();
+      // },
+      attached: function(){
+        this.$.requestStruct.generateRequest();
+      },
+      handleResponseStructure: function (data) {
+          this.repos = data.detail.response;
+          console.log(this.repos)
+      },
       selectedPropN: function(){
           console.log(this.$.selectedN._sortable.toArray());
           // return this.$.selected._sortable.toArray();
