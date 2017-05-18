@@ -118,13 +118,7 @@ This element provides filter box in glyconnect
     <!-- <template is="dom-repeat" items="[[repos]]">
         <span>blabla</span>
     </template> -->
-    <iron-ajax
-        id="requestStruct"
-        url="http://mendel.isb-sib.ch:8083/api/glycosylations?composition=22100000000000"
-        params=""
-        handle-as="json"
-        on-response="handleResponseStructure">
-    </iron-ajax>
+
 
        <paper-header-panel id="glycanTypeFilter" class="blue" mode="seamed">
                <div id="glycanFilterHeader" class="paper-header">
@@ -144,9 +138,14 @@ This element provides filter box in glyconnect
                </paper-toolbar>
                <sortable-list id="selectedN" group="test"  animation="150" class="enzymeSelected"></sortable-list>
                <div class="horizontal end-justified layout">
-                 <template id="t" is="dom-bind">
                    <paper-button id="updateButton" class="indigo" on-tap="selectedPropN">Search</paper-button>
-                 </template>
+                   <iron-ajax
+                     id="requestStruct"
+                     url="http://mendel.isb-sib.ch:8083/api/glycosylations?glycanType=n-linked"
+                     params=''
+                     handle-as="json"
+                     last-response="{{data}}"
+                     on-response="handleStruct"></iron-ajax>
                </div>
            </paper-material>
          </div>
@@ -158,7 +157,7 @@ This element provides filter box in glyconnect
                 </paper-toolbar>
                 <sortable-list id="list" group="test" animation="150" class="enzymeList">
                     <template is="dom-repeat" items="{{coreTypeN}}">
-                      <div data-id$="{{item.name}}" >
+                      <div data-id$="{{item.class}}={{item.name}}" >
                         <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
                         <paper-card coreTypeN="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
                       </div>
@@ -172,7 +171,7 @@ This element provides filter box in glyconnect
                 </paper-toolbar>
                 <sortable-list id="list" group="test" animation="150" class="enzymeList" >
                     <template is="dom-repeat" items="{{propN}}">
-                      <div data-id$="{{item.name}}" >
+                      <div data-id$="{{item.class}}={{item.name}}" >
                         <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
                          <paper-card propN="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
                       </div>
@@ -186,7 +185,7 @@ This element provides filter box in glyconnect
                 </paper-toolbar>
                 <sortable-list id="list" group="test" animation="150" class="enzymeList" >
                     <template is="dom-repeat" items="{{detN}}">
-                      <div data-id$="{{item.name}}" >
+                      <div data-id$="{{item.class}}={{item.name}}" >
                         <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
                          <paper-card detN="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
                       </div>
@@ -213,7 +212,15 @@ This element provides filter box in glyconnect
                   <span class="title">O-Glycan</span>
               </paper-toolbar>
               <sortable-list id="selectedO" group="test"  animation="150" class="enzymeSelected"></sortable-list>
-              <div class="horizontal end-justified layout"><paper-button id="updateButton" class="indigo" on-tap="selectedPropO">Search</paper-button></div>
+              <div class="horizontal end-justified layout"><paper-button id="updateButton" class="indigo" on-tap="selectedPropO">Search</paper-button>
+                <iron-ajax
+                  id="requestStructO"
+                  url="http://mendel.isb-sib.ch:8083/api/glycosylations?glycanType=o-linked"
+                  params=''
+                  handle-as="json"
+                  last-response="{{data}}"
+                  on-response="handleStruct"></iron-ajax>
+              </div>
           </paper-material>
 
         </div>
@@ -280,7 +287,15 @@ This element provides filter box in glyconnect
                  <span class="title"> Non-attached to proteins</span>
              </paper-toolbar>
                  <sortable-list id="selectedNP" group="test"  animation="150" class="enzymeSelected"></sortable-list>
-                <div class="horizontal end-justified layout"><paper-button id="updateButton" class="indigo" on-tap="selectedPropNP">Search</paper-button></div>
+                <div class="horizontal end-justified layout"><paper-button id="updateButton" class="indigo" on-tap="selectedPropNP">Search</paper-button>
+                  <iron-ajax
+                    id="requestStructNP"
+                    url="http://mendel.isb-sib.ch:8083/api/glycosylations?glycanType=n"
+                    params=''
+                    handle-as="json"
+                    last-response="{{data}}"
+                    on-response="handleStruct"></iron-ajax>
+                </div>
          </paper-material>
        </div>
        <div class="layout horizontal">
@@ -339,19 +354,25 @@ This element provides filter box in glyconnect
               type: Array
           }
       },
-      // ready: function () {
-      //     this.$.requestRepos.generateRequest();
-      // },
-      attached: function(){
-        this.$.requestStruct.generateRequest();
-      },
-      handleResponseStructure: function (data) {
-          this.repos = data.detail.response;
-          console.log(this.repos)
-      },
       selectedPropN: function(){
-          console.log(this.$.selectedN._sortable.toArray());
-          // return this.$.selected._sortable.toArray();
+        var selN = this.$.selectedN._sortable.toArray();
+                 // var selN = this.$.selectedN._sortable.toArray();
+        console.log(selN)
+        var selList = [];
+        for (i = 0; i < selN.length; i++) {
+          var x = selN[i];
+          console.log(x);
+          var s = x.split("=");
+          for (y = 0; y < s.length; y++) {
+            selList.push(s[y])
+          };
+        };
+        console.log(selList);
+        this.$.myAjaxElement.set( 'params', {"access_token": this.access_token });
+        this.$.myAjaxElement.generateRequest();
+        // console.log(this.$.requestStruct.set( 'params', par));
+        // this.$.requestStruct.generateRequest();
+          // return this.$.selected._sortable.toArrayconsole.log("ciao")();
       },
       selectedPropO: function(){
           console.log(this.$.selectedO._sortable.toArray());
@@ -362,13 +383,6 @@ This element provides filter box in glyconnect
           console.log(this.$.selectedNP._sortable.toArray());
           // return this.$.selected._sortable.toArray();
       },
-      // queryBuild: function() {
-      //   for (i = 0; i < temporary.length; i++) {
-      //     var que = temporary[i]+colorToName[keys[i]];
-      //     console.log(que);
-      //     queries.push(que);
-      //   };
-      // },
       attached: function(){
         this.$.ajaxDictionary.url = this.resolveUrl('dictionary/jsonGlobalProperties.json');
         this.$.ajaxDictionary.generateRequest();
@@ -384,7 +398,9 @@ This element provides filter box in glyconnect
         this.detNP = this.jsonGlobalProperties['Non attached to proteins']['det'];
         this.coreTypeNP = this.jsonGlobalProperties['Non attached to proteins']['core'];
       },
-
+      handleStruct: function(){
+        console.log(this.data);
+      },
       _toggleNGlycan: function () {
         this.$.glycanFilterN.toggle();
         if(this.$.foldIcon.hasAttribute('disabled')){
@@ -415,51 +431,6 @@ This element provides filter box in glyconnect
             this.$.expandIcon.removeAttribute('disabled');
         }
       },
-      // _reset: function () {
-      //   this.selectedN = null;
-      //   console.log("ciao");
-      // },
-      // _typeChange: function(){
-      //   this.coreType = this.globalDictionary[this.typeSelected];
-      // },
-      //
-      // _coreSelectedChange: function(){
-      //   this.prop = this.globalDictionary[this.typeSelected+'_'+this.coreSelected];
-      // },
-      // _propertySelectedChange: function(){
-      //   this.deter = this.globalDictionary[this.typeSelected+'_'+this.coreSelected+'_'+this.propertySelected];
-      // },
-      // _generate: function(){
-      //     console.loge(deter)
-      //
-      // },
-      // (function (document) {
-      // 'use strict';
-      // document.addEventListener('WebComponentsReady', function() {
-      //
-      //     // We have to bind the template with the model
-      //     var t = document.querySelector('#t');
-      //     var ajaxRequest = t.$.dataAjax;
-      //
-      //     // make the iron-ajax call
-      //     t.postData = function() {
-      //       ajaxRequest.body = {
-      //         'text': t.dataToPost;
-      //       }
-      //       ajaxRequest.generateRequest();
-      //     }
-      //
-      //     //callback on request complete
-      //     t.postComplete = function(){
-      //       alert('whoa! request complete');
-      //     }
-      // });
-      // })(document);
-
-      /* Possible Advanced Feature
-          - server call for populate drop-down multi selections
-       */
-
     });
   </script>
 </dom-module>
