@@ -232,7 +232,7 @@ This element provides filter box in glyconnect
                </paper-toolbar>
                <sortable-list id="list" group="test" animation="150" class="enzymeList" >
                    <template is="dom-repeat" items="{{coreTypeO}}">
-                     <div data-id$="{{item.name}}" >
+                     <div data-id$="{{item.class}}={{item.name}}" >
                        <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
                        <paper-card coreTypeO="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}} </paper-card>
                      </div>
@@ -246,7 +246,7 @@ This element provides filter box in glyconnect
                </paper-toolbar>
                <sortable-list id="list" group="test" animation="150" class="enzymeList">
                    <template is="dom-repeat" items="{{propO}}">
-                     <div data-id$="{{item.name}}" >
+                     <div data-id$="{{item.class}}={{item.name}}" >
                        <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
                        <paper-card propO="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
                      </div>
@@ -260,7 +260,7 @@ This element provides filter box in glyconnect
                </paper-toolbar>
                <sortable-list id="list" group="test" animation="150" class="enzymeList">
                    <template is="dom-repeat" items="{{detO}}">
-                     <div data-id$="{{item.name}}" >
+                     <div data-id$="{{item.class}}={{item.name}}" >
                        <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
                         <paper-card detO="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
                      </div>
@@ -290,7 +290,7 @@ This element provides filter box in glyconnect
                 <div class="horizontal end-justified layout"><paper-button id="updateButton" class="indigo" on-tap="selectedPropNP">Search</paper-button>
                   <iron-ajax
                     id="requestStructNP"
-                    url="http://mendel.isb-sib.ch:8083/api/glycosylations?glycanType=n"
+                    url="http://mendel.isb-sib.ch:8083/api/glycosylations?glycanType=free"
                     params=''
                     handle-as="json"
                     last-response="{{data}}"
@@ -306,7 +306,7 @@ This element provides filter box in glyconnect
               </paper-toolbar>
               <sortable-list id="list" group="test" animation="150" class="enzymeList" >
                   <template is="dom-repeat" items="{{coreTypeNP}}">
-                    <div data-id$="glycanCore={{item.name}}" >
+                    <div data-id$="{{item.class}}={{item.name}}" >
                       <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
                       <paper-card coreTypeNP="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
                     </div>
@@ -320,7 +320,7 @@ This element provides filter box in glyconnect
               </paper-toolbar>
               <sortable-list id="list" group="test" animation="150" class="enzymeList">
                   <template is="dom-repeat" items="{{propNP}}">
-                    <div data-id$="{{item.name}}" >
+                    <div data-id$="{{item.class}}={{item.name}}" >
                       <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
                       <paper-card propNP="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
                     </div>
@@ -334,7 +334,7 @@ This element provides filter box in glyconnect
               </paper-toolbar>
               <sortable-list id="list" group="test" animation="150" class="enzymeList" >
                   <template is="dom-repeat" items="{{detNP}}">
-                    <div data-id$="{{item.name}}" >
+                    <div data-id$="{{item.class}}={{item.name}}">
                       <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
                       <paper-card detNP="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
                     </div>
@@ -356,32 +356,30 @@ This element provides filter box in glyconnect
       },
       selectedPropN: function(){
         var selN = this.$.selectedN._sortable.toArray();
-                 // var selN = this.$.selectedN._sortable.toArray();
-        console.log(selN)
-        var selList = [];
-        for (i = 0; i < selN.length; i++) {
-          var x = selN[i];
-          console.log(x);
-          var s = x.split("=");
-          for (y = 0; y < s.length; y++) {
-            selList.push(s[y])
-          };
-        };
-        console.log(selList);
-        this.$.myAjaxElement.set( 'params', {"access_token": this.access_token });
-        this.$.myAjaxElement.generateRequest();
-        // console.log(this.$.requestStruct.set( 'params', par));
-        // this.$.requestStruct.generateRequest();
-          // return this.$.selected._sortable.toArrayconsole.log("ciao")();
+        this.param(selN, this.$.requestStruct);
       },
       selectedPropO: function(){
-          console.log(this.$.selectedO._sortable.toArray());
-          // return this.$.selected._sortable.toArray();
+        var selO = this.$.selectedO._sortable.toArray();
+        this.param(selO, this.$.requestStructO);
       },
       selectedPropNP: function(){
-          this.glycantype="glycanType=N-LINKED"
-          console.log(this.$.selectedNP._sortable.toArray());
-          // return this.$.selected._sortable.toArray();
+        var selNP = this.$.selectedNP._sortable.toArray();
+        this.param(selNP, this.$.requestStructNP);
+      },
+      param: function(propArray, requestType){
+        var myJson = {};
+        for (i = 0; i < propArray.length; i++) {
+          var x = propArray[i];
+          var s = x.split("=");
+          if (s[0] in myJson) {
+            myJson[s[0]].push(s[1])
+          } else {
+            myJson[s[0]]=[s[1]];
+          };
+        };
+        console.log(myJson);
+        requestType.set( 'params', myJson);
+        requestType.generateRequest();
       },
       attached: function(){
         this.$.ajaxDictionary.url = this.resolveUrl('dictionary/jsonGlobalProperties.json');
