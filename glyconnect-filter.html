@@ -68,8 +68,8 @@ This element provides filter box in glyconnect
       .paper-header {
         font-family: "Roboto";
         height: 45px;
-        font-size: 20px;The Polymer logo.
-        padding: 0 10px;The Polymer logo.
+        font-size: 20px;
+        padding: 0 10px;
         color: red;
         transition: height 0.2s;
       }
@@ -105,6 +105,9 @@ This element provides filter box in glyconnect
         margin: 10px;
         flex: 0 0 auto;
         color: white;
+      }
+      [upside-down] {
+          transform: rotate(180deg);
       }
 
     </style>
@@ -144,8 +147,8 @@ This element provides filter box in glyconnect
                      url="http://mendel.isb-sib.ch:8083/api/glycosylations?glycanType=n-linked"
                      params=''
                      handle-as="json"
-                     last-response="{{data}}"
-                     on-response="handleStruct"></iron-ajax>
+                     last-response="{{octData}}"
+                     ></iron-ajax>
                </div>
            </paper-material>
          </div>
@@ -218,8 +221,8 @@ This element provides filter box in glyconnect
                   url="http://mendel.isb-sib.ch:8083/api/glycosylations?glycanType=o-linked"
                   params=''
                   handle-as="json"
-                  last-response="{{data}}"
-                  on-response="handleStruct"></iron-ajax>
+                  last-response="{{octData}}"
+                  ></iron-ajax>
               </div>
           </paper-material>
 
@@ -293,8 +296,8 @@ This element provides filter box in glyconnect
                     url="http://mendel.isb-sib.ch:8083/api/glycosylations?glycanType=free"
                     params=''
                     handle-as="json"
-                    last-response="{{data}}"
-                    on-response="handleStruct"></iron-ajax>
+                    last-response="{{octData}}"
+                    ></iron-ajax>
                 </div>
          </paper-material>
        </div>
@@ -314,10 +317,13 @@ This element provides filter box in glyconnect
               </sortable-list>
           </paper-material>
           <paper-material elevation="2" style="height: 100%" class="flex">
-              <paper-toolbar>
+            <paper-toolbar>
+                <div class="layout horizontal">
                   <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
-                  <span class="title">Structural properties</span>
-              </paper-toolbar>
+                  <span class="title" style="padding-top: 12px;">Structural properties</span><paper-icon-button on-tap="toggleMenu" id="menuIcon" icon="expand-more"></paper-icon-button>
+                </div>
+            </paper-toolbar>
+            <iron-collapse id="menu">
               <sortable-list id="list" group="test" animation="150" class="enzymeList">
                   <template is="dom-repeat" items="{{propNP}}">
                     <div data-id$="{{item.class}}={{item.name}}" >
@@ -326,12 +332,16 @@ This element provides filter box in glyconnect
                     </div>
                   </template>
               </sortable-list>
+            </iron-collapse>
           </paper-material>
-          <paper-material elevation="2" style="height: 100%" class="flex">
-              <paper-toolbar>
+          <paper-material elevation="2" style="height: 100%" class="flex" >
+            <paper-toolbar>
+                <div class="layout horizontal">
                   <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
-                  <span class="title">Determinants</span>
-              </paper-toolbar>
+                  <span class="title" style="padding-top: 12px;">Determinants</span><paper-icon-button id="menuIcon" on-tap="toggleMenu" icon="expand-more"></paper-icon-button>
+                </div>
+            </paper-toolbar>
+            <iron-collapse id="menu">
               <sortable-list id="list" group="test" animation="150" class="enzymeList" >
                   <template is="dom-repeat" items="{{detNP}}">
                     <div data-id$="{{item.class}}={{item.name}}">
@@ -340,6 +350,7 @@ This element provides filter box in glyconnect
                     </div>
                   </template>
               </sortable-list>
+            </iron-collapse>
           </paper-material>
       </div>
     </iron-collapse>
@@ -352,7 +363,24 @@ This element provides filter box in glyconnect
       properties: {
           repos: {
               type: Array
+          },
+          octData: {
+            type: Object,
+            notify: true,
+            reflectToAttribute: true
           }
+      },
+      toggleMenu: function(){
+        var id = Polymer.dom(this.root).querySelectorAll('iron-collapse')[4].id;
+        console.log(id);
+        var idIc = Polymer.dom(this.root).querySelectorAll('paper-icon-button')[12].id;
+        console.log(idIc);
+        this.$.menu.toggle();
+        if (this.$.menuIcon.hasAttribute('upside-down')) {
+            this.$.menuIcon.removeAttribute('upside-down');
+        } else {
+            this.$.menuIcon.setAttribute('upside-down', '');
+        }
       },
       selectedPropN: function(){
         var selN = this.$.selectedN._sortable.toArray();
@@ -377,7 +405,6 @@ This element provides filter box in glyconnect
             myJson[s[0]]=[s[1]];
           };
         };
-        console.log(myJson);
         requestType.set( 'params', myJson);
         requestType.generateRequest();
       },
@@ -396,31 +423,20 @@ This element provides filter box in glyconnect
         this.detNP = this.jsonGlobalProperties['Non attached to proteins']['det'];
         this.coreTypeNP = this.jsonGlobalProperties['Non attached to proteins']['core'];
       },
-      handleStruct: function(){
-        console.log(this.data);
-      },
       _toggleNGlycan: function () {
-        this.$.glycanFilterN.toggle();
-        if(this.$.foldIcon.hasAttribute('disabled')){
-            this.$.expandIcon.setAttribute('disabled', 'true');
-            this.$.foldIcon.removeAttribute('disabled');
-        }else{
-            this.$.foldIcon.setAttribute('disabled', 'true');
-            this.$.expandIcon.removeAttribute('disabled');
-        }
+        togn=this.$.glycanFilterN
+        this.tog(togn)
       },
       _toggleOGlycan: function () {
-        this.$.glycanFilterO.toggle();
-        if(this.$.foldIcon.hasAttribute('disabled')){
-            this.$.expandIcon.setAttribute('disabled', 'true');
-            this.$.foldIcon.removeAttribute('disabled');
-        }else{
-            this.$.foldIcon.setAttribute('disabled', 'true');
-            this.$.expandIcon.removeAttribute('disabled');
-        }
+        togo=this.$.glycanFilterO;
+        this.tog(togo)
       },
       _toggleNOGlycan: function () {
-        this.$.glycanFilterNO.toggle();
+        togno=this.$.glycanFilterNO;
+        this.tog(togno)
+      },
+      tog: function (toggleType) {
+        toggleType.toggle();
         if(this.$.foldIcon.hasAttribute('disabled')){
             this.$.expandIcon.setAttribute('disabled', 'true');
             this.$.foldIcon.removeAttribute('disabled');
