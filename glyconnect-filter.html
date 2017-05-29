@@ -329,7 +329,7 @@ This element provides filter box in glyconnect
                  <paper-tab>Determinants</paper-tab>
              </paper-tabs>
              <iron-pages selected="{{selected}}">
-               <paper-material id="optnpCorIcon" elevation="2" class="flex" style="background: #eeeeee;">
+                <paper-material id="optnpCorIcon" elevation="2" class="flex" style="background: #eeeeee;">
                        <sortable-list id="list" group="test" animation="150" class="enzymeList" >
                            <template is="dom-repeat" items="{{coreTypeO}}">
                              <div data-id$="{{item.class}}={{item.name}}">
@@ -339,46 +339,26 @@ This element provides filter box in glyconnect
                            </template>
                        </sortable-list>
                  </paper-material>
-                 <div style="margin: 0 auto;width: 800px;">
-                     <bs-timeline>
-                         <bs-timeline-entry title="N-Core" badge="plus" >
-                             <paper-card style="width: 200px;" elevation="0" image="{{imgsrc}}/enzymes/step0.png">
-                             </paper-card>
-                         </bs-timeline-entry>
-                         <bs-timeline-entry title="Enzyme: GnTI" badge="plus" inverse="true" time ="">
-                             <paper-card style="width: 200px;" elevation="0" image="{{imgsrc}}/enzymes/step1.png">
-                             </paper-card>
-                         </bs-timeline-entry>
-                         <bs-timeline-entry title="Enzyme: GnTIV" badge="plus">
-                             <paper-card style="width: 200px;" elevation="0" image="{{imgsrc}}/enzymes/step2.png">
-                             </paper-card>
-                         </bs-timeline-entry>
-                         <bs-timeline-entry title="Enzyme: β4GalT1" badge="plus" inverse="true" time ="">
-                             <paper-card style="width: 200px;" elevation="0" image="{{imgsrc}}/enzymes/step3.png">
-                             </paper-card>
-                         </bs-timeline-entry>
-                         <bs-timeline-entry title="Enzyme: α 1-6 fucosidase" badge="plus">
-                             <paper-card style="width: 200px;" elevation="0" image="{{imgsrc}}/enzymes/step4.png">
-                             </paper-card>
-                         </bs-timeline-entry>
-                     </bs-timeline>
-                 </div>
-                 <div>
-                     <paper-material elevation="2" class="flex" style="background: #eeeeee;">
-                         <template is="dom-repeat" items="{{pictures}}">
-                             <paper-card image="{{imgsrc}}/family/{{item}}.png" class="red">
-                             </paper-card>
+                 <paper-material id="optnpPropIcon" elevation="2" style="height: 100%" class="flex">
+                     <sortable-list id="list" group="test" animation="150" class="enzymeList" >
+                         <template is="dom-repeat" items="{{propNP}}">
+                           <div data-id$="{{item.class}}={{item.name}}">
+                             <!-- Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
+                             <paper-card propNP="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
+                           </div>
                          </template>
-                     </paper-material>
-                 </div>
-                 <div>
-                     <paper-material elevation="2" class="flex" >
-                         <div class="layout wrap">
-                             <paper-card image="{{imgsrc}}/sankey/structure_3381.png"  style="margin: 10px;" elevation="0">
-                             </paper-card>
-                         </div>
-                     </paper-material>
-                 </div>
+                     </sortable-list>
+                 </paper-material>
+                 <paper-material id="optnpDetIcon" elevation="2" style="height: 100%" class="flex" >
+                     <sortable-list id="list" group="test" animation="150" class="enzymeList" >
+                         <template is="dom-repeat" items="{{detNP}}">
+                           <div data-id$="{{item.class}}={{item.name}}">
+                             <!-- Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
+                             <paper-card detNP="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
+                           </div>
+                         </template>
+                     </sortable-list>
+                 </paper-material>
              </iron-pages>
          </div>
        <!-- <div class="layout horizontal flex" >
