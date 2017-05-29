@@ -123,6 +123,7 @@ This element provides filter box in glyconnect
           --paper-tabs-selection-bar-color: red;
           --paper-tabs-selection-bar-height: 50px;
           border-radius: 100px;
+          min-width: 760px;
       }
     </style>
     <iron-ajax
@@ -234,7 +235,7 @@ This element provides filter box in glyconnect
           </paper-material>
         </div>
         <div class="layout vertical flex">
-            <paper-tabs class="indigo" selected="{{selected}}"  no-bar>
+            <paper-tabs id="tabs" selected="{{selected}}"  no-bar>
                 <paper-tab>Cores</paper-tab>
                 <paper-tab style="background-color: #337ab7;">Structural properties</paper-tab>
                 <paper-tab>Determinants</paper-tab>
