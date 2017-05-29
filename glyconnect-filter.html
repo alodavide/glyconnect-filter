@@ -58,9 +58,6 @@ This element provides filter box in glyconnect
       paper-button#filterToggleButton {
         width: 100%;
       }
-      /*ul {
-        list-style-type: none;
-      }*/
       .paper-header {
         font-family: "Roboto";
         height: 45px;
@@ -82,17 +79,6 @@ This element provides filter box in glyconnect
         font-weight: 500;
         line-height: 25px;
       }
-      /*#glycanFilterBox{
-        border: 1px solid black;
-        margin-left: 16px;
-        margin-right: 36px;
-        min-width: 758px;
-        border-radius: 0 0 5px 5px;
-        border: 1px solid rgba(0, 0, 0, 0.2);
-      }
-      #rangeBox {
-        padding: 30px 20px 20px 20px;
-      }*/
       .card {
         /*background-color: #cc3300;*/
         font-size: 16px;
@@ -123,7 +109,6 @@ This element provides filter box in glyconnect
           --paper-tabs-selection-bar-color: red;
           --paper-tabs-selection-bar-height: 50px;
           border-radius: 100px;
-          min-width: 760px;
       }
     </style>
     <iron-ajax
@@ -235,7 +220,7 @@ This element provides filter box in glyconnect
           </paper-material>
         </div>
         <div class="layout vertical flex">
-            <paper-tabs id="tabs" selected="{{selected}}"  no-bar>
+            <paper-tabs class="indigo" selected="{{selected}}"  no-bar>
                 <paper-tab>Cores</paper-tab>
                 <paper-tab style="background-color: #337ab7;">Structural properties</paper-tab>
                 <paper-tab>Determinants</paper-tab>
