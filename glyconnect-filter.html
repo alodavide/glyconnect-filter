@@ -10,6 +10,9 @@
 <link rel="import" href="../iron-collapse/iron-collapse.html">
 <link rel="import" href="../sortable-list/sortable-list.html">
 <link rel="import" href="../paper-card/paper-card.html">
+<link rel="import" href="../paper-tabs/paper-tabs.html">
+<link rel="import" href="../iron-pages/iron-pages.html">
+
 <!--
 `glyconnect-filter`
 This element provides filter box in glyconnect
@@ -109,7 +112,26 @@ This element provides filter box in glyconnect
       [upside-down] {
           transform: rotate(180deg);
       }
-
+      .indigo {
+          background-color: var(--paper-indigo-500);
+          color: white;
+          border-radius:5px;
+          --paper-button-raised-keyboard-focus: {
+              background-color: var(--paper-pink-a200) !important;
+              color: white !important;
+          };
+      }
+      paper-tab.iron-selected {
+          color: #ffff8d;
+      }
+      paper-tab {
+          font-size: 22px;
+      }
+      paper-tabs{
+          --paper-tabs-selection-bar-color: red;
+          --paper-tabs-selection-bar-height: 50px;
+          border-radius: 100px;
+      }
     </style>
     <iron-ajax
             id="ajaxDictionary"
@@ -225,7 +247,6 @@ This element provides filter box in glyconnect
                   ></iron-ajax>
               </div>
           </paper-material>
-
         </div>
         <div class="layout horizontal">
            <paper-material elevation="2" style="height: 100%" class="flex">
@@ -274,16 +295,93 @@ This element provides filter box in glyconnect
      </iron-collapse>
      <br><br>
      <paper-header-panel id="glycanTypeFilter" class="blue" mode="seamed">
-             <div id="glycanFilterHeader" class="paper-header">
-                 <paper-button id="filterToggleButton" class="indigo" on-click="_toggleNOGlycan" toggles raised>
-                     <iron-icon id="expandIcon" icon="icons:chevron-right" alt="unfold" ></iron-icon>
-                     <iron-icon id="foldIcon" icon="icons:expand-more" alt="fold" disabled></iron-icon>
-                     Non-attached to proteins
-                 </paper-button>
-             </div>
+         <div id="glycanFilterHeader" class="paper-header">
+             <paper-button id="filterToggleButton" class="indigo" on-click="_toggleNOGlycan" toggles raised>
+                 <iron-icon id="expandIcon" icon="icons:chevron-right" alt="unfold" ></iron-icon>
+                 <iron-icon id="foldIcon" icon="icons:expand-more" alt="fold" disabled></iron-icon>
+                 Non-attached to proteins
+             </paper-button>
+         </div>
     </paper-header-panel>
        <iron-collapse id="glycanFilterNO" class="horizontal center-justified">
-       <div class="layout horizontal flex" >
+        <div class="layout horizontal flex" >
+          <paper-material elevation="2" class="flex">
+               <paper-toolbar>
+                   <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
+                   <span class="title"> Non-attached to proteins</span>
+               </paper-toolbar>
+                   <sortable-list id="selectedNP" group="test"  animation="150" class="enzymeSelected"></sortable-list>
+                  <div class="horizontal end-justified layout"><paper-button id="updateButton" class="indigo" on-tap="selectedPropNP">Search</paper-button>
+                    <iron-ajax
+                      id="requestStructNP"
+                      url="http://mendel.isb-sib.ch:8083/api/glycosylations?glycanType=free"
+                      params=''
+                      handle-as="json"
+                      last-response="{{octData}}"
+                      ></iron-ajax>
+                  </div>
+           </paper-material>
+         </div>
+         <div class="layout vertical flex">
+             <paper-tabs class="indigo" selected="{{selected}}"  no-bar>
+                 <paper-tab>Cores</paper-tab>
+                 <paper-tab style="background-color: #337ab7;">Structural properties</paper-tab>
+                 <paper-tab>Determinants</paper-tab>
+             </paper-tabs>
+             <iron-pages selected="{{selected}}">
+               <paper-material id="optnpCorIcon" elevation="2" class="flex" style="background: #eeeeee;">
+                       <sortable-list id="list" group="test" animation="150" class="enzymeList" >
+                           <template is="dom-repeat" items="{{coreTypeO}}">
+                             <div data-id$="{{item.class}}={{item.name}}">
+                               <!-- <!-Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
+                                <paper-card detNP="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
+                             </div>
+                           </template>
+                       </sortable-list>
+                 </paper-material>
+                 <div style="margin: 0 auto;width: 800px;">
+                     <bs-timeline>
+                         <bs-timeline-entry title="N-Core" badge="plus" >
+                             <paper-card style="width: 200px;" elevation="0" image="{{imgsrc}}/enzymes/step0.png">
+                             </paper-card>
+                         </bs-timeline-entry>
+                         <bs-timeline-entry title="Enzyme: GnTI" badge="plus" inverse="true" time ="">
+                             <paper-card style="width: 200px;" elevation="0" image="{{imgsrc}}/enzymes/step1.png">
+                             </paper-card>
+                         </bs-timeline-entry>
+                         <bs-timeline-entry title="Enzyme: GnTIV" badge="plus">
+                             <paper-card style="width: 200px;" elevation="0" image="{{imgsrc}}/enzymes/step2.png">
+                             </paper-card>
+                         </bs-timeline-entry>
+                         <bs-timeline-entry title="Enzyme: β4GalT1" badge="plus" inverse="true" time ="">
+                             <paper-card style="width: 200px;" elevation="0" image="{{imgsrc}}/enzymes/step3.png">
+                             </paper-card>
+                         </bs-timeline-entry>
+                         <bs-timeline-entry title="Enzyme: α 1-6 fucosidase" badge="plus">
+                             <paper-card style="width: 200px;" elevation="0" image="{{imgsrc}}/enzymes/step4.png">
+                             </paper-card>
+                         </bs-timeline-entry>
+                     </bs-timeline>
+                 </div>
+                 <div>
+                     <paper-material elevation="2" class="flex" style="background: #eeeeee;">
+                         <template is="dom-repeat" items="{{pictures}}">
+                             <paper-card image="{{imgsrc}}/family/{{item}}.png" class="red">
+                             </paper-card>
+                         </template>
+                     </paper-material>
+                 </div>
+                 <div>
+                     <paper-material elevation="2" class="flex" >
+                         <div class="layout wrap">
+                             <paper-card image="{{imgsrc}}/sankey/structure_3381.png"  style="margin: 10px;" elevation="0">
+                             </paper-card>
+                         </div>
+                     </paper-material>
+                 </div>
+             </iron-pages>
+         </div>
+       <!-- <div class="layout horizontal flex" >
         <paper-material elevation="2" class="flex">
              <paper-toolbar>
                  <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
@@ -301,7 +399,7 @@ This element provides filter box in glyconnect
                 </div>
          </paper-material>
        </div>
-       <div style="padding-left: 100px" class="layout horizontal">
+       <div class="layout horizontal">
           <paper-material elevation="2" style="height: 100%" class="flex">
             <paper-toolbar>
                 <div class="layout horizontal">
@@ -313,8 +411,8 @@ This element provides filter box in glyconnect
                 <sortable-list id="list" group="test" animation="150" class="enzymeList" >
                     <template is="dom-repeat" items="{{coreTypeO}}">
                       <div data-id$="{{item.class}}={{item.name}}">
-                        <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
-                        <paper-card detNP="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
+                        <!-Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
+                        <!-- <paper-card detNP="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
                       </div>
                     </template>
                 </sortable-list>
@@ -331,7 +429,7 @@ This element provides filter box in glyconnect
               <sortable-list id="list" group="test" animation="150" class="enzymeList" >
                   <template is="dom-repeat" items="{{propNP}}">
                     <div data-id$="{{item.class}}={{item.name}}">
-                      <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
+                      <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray().
                       <paper-card detNP="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
                     </div>
                   </template>
@@ -349,14 +447,14 @@ This element provides filter box in glyconnect
               <sortable-list id="list" group="test" animation="150" class="enzymeList" >
                   <template is="dom-repeat" items="{{detNP}}">
                     <div data-id$="{{item.class}}={{item.name}}">
-                      <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
+                      <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray().
                       <paper-card detNP="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
                     </div>
                   </template>
               </sortable-list>
             </iron-collapse>
           </paper-material>
-      </div>
+      </div> -->
     </iron-collapse>
   </template>
 
@@ -417,6 +515,10 @@ This element provides filter box in glyconnect
       attached: function(){
         this.$.ajaxDictionary.url = this.resolveUrl('dictionary/jsonGlobalProperties.json');
         this.$.ajaxDictionary.generateRequest();
+      },
+      selected: {
+          type: Number,
+          value: 0
       },
       handleResponse: function(){
         this.coreTypeO = this.jsonGlobalProperties['O-linked']['core'];
