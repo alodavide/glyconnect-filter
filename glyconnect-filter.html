@@ -47,8 +47,8 @@ This element provides filter box in glyconnect
           padding: 5px;
           @apply(--layout-horizontal);
           @apply(--layout-wrap);
-          min-height: 300px;
-          width: 740px;
+          min-height: 200px;
+          width: 100%;
           align-items: right;
       }
 
@@ -70,9 +70,9 @@ This element provides filter box in glyconnect
         height: 50%;
         margin: 15px 30px;
       }
-      #filterToggleButton {
+      /*#filterToggleButton {
         min-width: 760px;
-      }
+      }*/
 
       #glycanFilterHeader {
         font-size: 16px;
@@ -359,6 +359,10 @@ This element provides filter box in glyconnect
             type: Object,
             notify: true,
             reflectToAttribute: true
+          },
+          selected: {
+              type: String,
+              value: 0
           }
       },
       selectedPropN: function(){
@@ -391,10 +395,7 @@ This element provides filter box in glyconnect
         this.$.ajaxDictionary.url = this.resolveUrl('dictionary/jsonGlobalProperties.json');
         this.$.ajaxDictionary.generateRequest();
       },
-      selected: {
-          type: Number,
-          value: 0
-      },
+
       handleResponse: function(){
         this.coreTypeO = this.jsonGlobalProperties['O-linked']['core'];
         this.coreTypeN = this.jsonGlobalProperties['N-linked']['core'];
