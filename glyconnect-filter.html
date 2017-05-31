@@ -115,9 +115,13 @@ This element provides filter box in glyconnect
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
       }
       .title {
-        padding-top: 9px;
+        padding-top: 13px;
         color : white;
-
+        font-size: 20px;
+      }
+      paper-icon-button.huge {
+        width: 50px;
+        height: 50px;
       }
     </style>
     <iron-ajax
@@ -140,7 +144,7 @@ This element provides filter box in glyconnect
          <div class="layout horizontal flex" >
           <paper-material elevation="2" class="flex">
                <app-layout class="layout horizontal flex">
-                   <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
+                   <paper-icon-button class="huge" disabled style="color: white" icon="icons:view-list"></paper-icon-button>
                    <span class="title">N-Glycan</span>
                </app-layout>
                <sortable-list id="selectedN" group="test"  animation="150" class="enzymeSelected"></sortable-list>
@@ -210,7 +214,7 @@ This element provides filter box in glyconnect
         <div class="layout horizontal flex" >
          <paper-material elevation="2" class="flex">
            <app-layout class="layout horizontal flex">
-               <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
+               <paper-icon-button class="huge" disabled style="color: white" icon="icons:view-list"></paper-icon-button>
                <span class="title">O-Glycan</span>
            </app-layout>
               <sortable-list id="selectedO" group="test"  animation="150" class="enzymeSelected"></sortable-list>
@@ -279,7 +283,7 @@ This element provides filter box in glyconnect
         <div class="layout horizontal flex" >
           <paper-material elevation="2" class="flex">
             <app-layout class="layout horizontal flex">
-                <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
+                <paper-icon-button class="huge" disabled style="color: white" icon="icons:view-list"></paper-icon-button>
                 <span class="title">Non-attached to proteins</span>
             </app-layout>
                    <sortable-list id="selectedNP" group="test"  animation="150" class="enzymeSelected"></sortable-list>
