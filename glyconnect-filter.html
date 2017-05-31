@@ -1,18 +1,18 @@
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../paper-dropdown-menu/paper-dropdown-menu.html">
-<link rel="import" href="../paper-listbox/paper-listbox.html">
 <link rel="import" href="../paper-item/paper-item.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../iron-ajax/iron-ajax.html">
 <link rel="import" href="../paper-header-panel/paper-header-panel.html">
+<link rel="import" href="../paper-material/paper-material.html">
 <link rel="import" href="../paper-button/paper-button.html">
-<link rel="import" href="../paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../app-layout/app-layout.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../iron-collapse/iron-collapse.html">
 <link rel="import" href="../sortable-list/sortable-list.html">
 <link rel="import" href="../paper-card/paper-card.html">
 <link rel="import" href="../paper-tabs/paper-tabs.html">
 <link rel="import" href="../iron-pages/iron-pages.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
 
 <!--
 `glyconnect-filter`
@@ -41,7 +41,6 @@ This element provides filter box in glyconnect
           @apply(--layout-wrap);
           min-width: 200px;
           min-height: 200px;
-
           align-content: center;
       }
       .enzymeSelected{
@@ -52,9 +51,10 @@ This element provides filter box in glyconnect
           width: 100%;
           align-items: right;
       }
-
-      paper-toolbar {
-          --paper-toolbar-background: #e2011b; /* changes the background to blue*/
+      app-layout {
+          background-color: #A4A4A4; /* changes the background to blue*/
+          border-radius:5px;
+          margin: 2px;
       }
       paper-button#filterToggleButton {
         width: 100%;
@@ -64,17 +64,13 @@ This element provides filter box in glyconnect
         height: 45px;
         font-size: 20px;
         padding: 0 10px;
-        color: red;
+        /*color: red;*/
         transition: height 0.2s;
       }
       paper-button#updateButton {
         height: 50%;
         margin: 15px 30px;
       }
-      /*#filterToggleButton {
-        min-width: 760px;
-      }*/
-
       #glycanFilterHeader {
         font-size: 16px;
         font-weight: 500;
@@ -88,9 +84,6 @@ This element provides filter box in glyconnect
         margin: 10px;
         flex: 0 0 auto;
         color: white;
-      }
-      [upside-down] {
-          transform: rotate(180deg);
       }
       .indigo {
           background-color: var(--paper-indigo-500);
@@ -110,13 +103,6 @@ This element provides filter box in glyconnect
           color: white;
 
       }
-
-      /*paper-tab.iron-selected {
-          color: #ffff8d;
-      }
-      paper-tab {
-          font-size: 22px;
-      }*/
       paper-tabs{
         --paper-tabs-selection-bar-color: #eee;
         background-color: #eeeeee;
@@ -126,9 +112,11 @@ This element provides filter box in glyconnect
         border-radius: 5px;
         margin: 20px;
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
-          /*--paper-tabs-selection-bar-color: red;
-          --paper-tabs-selection-bar-height: 50px;
-          border-radius: 100px;*/
+      }
+      .title {
+        padding-top: 13px;
+        color : white;
+
       }
     </style>
     <iron-ajax
@@ -138,25 +126,22 @@ This element provides filter box in glyconnect
             last-response="{{jsonGlobalProperties}}"
             on-response="handleResponse"
     ></iron-ajax>
-    <!-- <template is="dom-repeat" items="[[repos]]">
-        <span>blabla</span>
-    </template> -->
-       <paper-header-panel id="glycanTypeFilter" class="blue" mode="seamed">
-               <div id="glycanFilterHeader" class="paper-header">
-                   <paper-button id="filterToggleButton" class="indigo" on-click="_toggleNGlycan" toggles raised>
-                       <iron-icon id="expandIcon" icon="icons:chevron-right" alt="unfold" ></iron-icon>
-                       <iron-icon id="foldIcon" icon="icons:expand-more" alt="fold" disabled></iron-icon>
-                       N-linked glycans
-                   </paper-button>
-               </div>
+      <paper-header-panel id="glycanTypeFilter" class="blue" mode="seamed">
+         <div id="glycanFilterHeader" class="paper-header">
+             <paper-button id="filterToggleButton" class="indigo" on-click="_toggleNGlycan" toggles raised>
+                 <iron-icon id="expandIcon" icon="icons:chevron-right" alt="unfold" ></iron-icon>
+                 <iron-icon id="foldIcon" icon="icons:expand-more" alt="fold" disabled></iron-icon>
+                 N-linked glycans
+             </paper-button>
+         </div>
       </paper-header-panel>
-         <iron-collapse id="glycanFilterN" class="horizontal center-justified">
+      <iron-collapse id="glycanFilterN" class="horizontal center-justified">
          <div class="layout horizontal flex" >
           <paper-material elevation="2" class="flex">
-               <paper-toolbar>
+               <app-layout class="layout horizontal flex">
                    <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
                    <span class="title">N-Glycan</span>
-               </paper-toolbar>
+               </app-layout>
                <sortable-list id="selectedN" group="test"  animation="150" class="enzymeSelected"></sortable-list>
                <div class="horizontal end-justified layout">
                    <paper-button id="updateButton" class="indigo" on-tap="selectedPropN">Search</paper-button>
@@ -212,21 +197,21 @@ This element provides filter box in glyconnect
       </iron-collapse>
       <br><br>
       <paper-header-panel id="glycanTypeFilter" class="blue" mode="seamed">
-              <div id="glycanFilterHeader" class="paper-header">
-                  <paper-button id="filterToggleButton" class="indigo" on-click="_toggleOGlycan" toggles raised>
-                      <iron-icon id="expandIcon" icon="icons:chevron-right" alt="unfold" ></iron-icon>
-                      <iron-icon id="foldIcon" icon="icons:expand-more" alt="fold" disabled></iron-icon>
-                      O-linked glycans
-                  </paper-button>
-              </div>
+          <div id="glycanFilterHeader" class="paper-header">
+              <paper-button id="filterToggleButton" class="indigo" on-click="_toggleOGlycan" toggles raised>
+                  <iron-icon id="expandIcon" icon="icons:chevron-right" alt="unfold" ></iron-icon>
+                  <iron-icon id="foldIcon" icon="icons:expand-more" alt="fold" disabled></iron-icon>
+                  O-linked glycans
+              </paper-button>
+          </div>
      </paper-header-panel>
       <iron-collapse id="glycanFilterO" class="horizontal center-justified">
         <div class="layout horizontal flex" >
          <paper-material elevation="2" class="flex">
-              <paper-toolbar>
-                  <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
-                  <span class="title">O-Glycan</span>
-              </paper-toolbar>
+           <app-layout class="layout horizontal flex">
+               <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
+               <span class="title">O-Glycan</span>
+           </app-layout>
               <sortable-list id="selectedO" group="test"  animation="150" class="enzymeSelected"></sortable-list>
               <div class="horizontal end-justified layout"><paper-button id="updateButton" class="indigo" on-tap="selectedPropO">Search</paper-button>
                 <iron-ajax
@@ -288,14 +273,14 @@ This element provides filter box in glyconnect
                  Non-attached to proteins
              </paper-button>
          </div>
-    </paper-header-panel>
+     </paper-header-panel>
        <iron-collapse id="glycanFilterNO" class="horizontal center-justified">
         <div class="layout horizontal flex" >
           <paper-material elevation="2" class="flex">
-               <paper-toolbar>
-                   <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
-                   <span class="title"> Non-attached to proteins</span>
-               </paper-toolbar>
+            <app-layout class="layout horizontal flex">
+                <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
+                <span class="title">Non-attached to proteins</span>
+            </app-layout>
                    <sortable-list id="selectedNP" group="test"  animation="150" class="enzymeSelected"></sortable-list>
                   <div class="horizontal end-justified layout"><paper-button id="updateButton" class="indigo" on-tap="selectedPropNP">Search</paper-button>
                     <iron-ajax
