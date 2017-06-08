@@ -421,6 +421,10 @@ This element provides filter box in glyconnect
         var y = "expandIcon".concat(linktype);
         var fold = Polymer.dom(this.root).querySelector(i);
         var unfold= Polymer.dom(this.root).querySelector(y);
+        console.log(i);
+        console.log(y);
+        console.log(fold);
+        console.log(unfold);
         if(fold.hasAttribute('disabled')){
             unfold.setAttribute('disabled', 'true');
             fold.removeAttribute('disabled');
