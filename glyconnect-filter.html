@@ -134,8 +134,8 @@ This element provides filter box in glyconnect
       <paper-header-panel id="glycanTypeFilter" class="blue" mode="seamed">
          <div id="glycanFilterHeader" class="paper-header">
              <paper-button id="filterToggleButton" class="indigo" on-click="_toggleNGlycan" toggles raised>
-                 <iron-icon id="expandIcon" icon="icons:chevron-right" alt="unfold" ></iron-icon>
-                 <iron-icon id="foldIcon" icon="icons:expand-more" alt="fold" disabled></iron-icon>
+                 <iron-icon id="expandIconn" icon="icons:chevron-right" alt="unfold" ></iron-icon>
+                 <iron-icon id="foldIconn" icon="icons:expand-more" alt="fold" disabled></iron-icon>
                  N-linked glycans
              </paper-button>
          </div>
@@ -204,8 +204,8 @@ This element provides filter box in glyconnect
       <paper-header-panel id="glycanTypeFilter" class="blue" mode="seamed">
           <div id="glycanFilterHeader" class="paper-header">
               <paper-button id="filterToggleButton" class="indigo" on-click="_toggleOGlycan" toggles raised>
-                  <iron-icon id="expandIcon" icon="icons:chevron-right" alt="unfold" ></iron-icon>
-                  <iron-icon id="foldIcon" icon="icons:expand-more" alt="fold" disabled></iron-icon>
+                  <iron-icon id="expandIcono" icon="icons:chevron-right" alt="unfold" ></iron-icon>
+                  <iron-icon id="foldIcono" icon="icons:expand-more" alt="fold" disabled></iron-icon>
                   O-linked glycans
               </paper-button>
           </div>
@@ -273,8 +273,8 @@ This element provides filter box in glyconnect
      <paper-header-panel id="glycanTypeFilter" class="blue" mode="seamed">
          <div id="glycanFilterHeader" class="paper-header">
              <paper-button id="filterToggleButton" class="indigo" on-click="_toggleNOGlycan" toggles raised>
-                 <iron-icon id="expandIcon" icon="icons:chevron-right" alt="unfold" ></iron-icon>
-                 <iron-icon id="foldIcon" icon="icons:expand-more" alt="fold" disabled></iron-icon>
+                 <iron-icon id="expandIconno" icon="icons:chevron-right" alt="unfold" ></iron-icon>
+                 <iron-icon id="foldIconno" icon="icons:expand-more" alt="fold" disabled></iron-icon>
                  Non-attached to proteins
              </paper-button>
          </div>
@@ -401,25 +401,32 @@ This element provides filter box in glyconnect
         this.coreTypeNP = this.jsonGlobalProperties['Non attached to proteins']['core'];
       },
       _toggleNGlycan: function () {
-        togn=this.$.glycanFilterN
-        this.tog(togn)
+        togn=this.$.glycanFilterN;
+        var type = "n";
+        this.tog(togn, type)
       },
       _toggleOGlycan: function () {
         togo=this.$.glycanFilterO;
-        this.tog(togo)
+        var type = "o";
+        this.tog(togo, type)
       },
       _toggleNOGlycan: function () {
         togno=this.$.glycanFilterNO;
-        this.tog(togno)
+        var type = "no";
+        this.tog(togno, type)
       },
-      tog: function (toggleType) {
+      tog: function (toggleType, linktype) {
         toggleType.toggle();
-        if(this.$.foldIcon.hasAttribute('disabled')){
-            this.$.expandIcon.setAttribute('disabled', 'true');
-            this.$.foldIcon.removeAttribute('disabled');
+        var i = "foldIcon".concat(linktype);
+        var y = "expandIcon".concat(linktype);
+        var fold = Polymer.dom(this.root).querySelector(i);
+        var unfold= Polymer.dom(this.root).querySelector(y);
+        if(fold.hasAttribute('disabled')){
+            unfold.setAttribute('disabled', 'true');
+            fold.removeAttribute('disabled');
         }else{
-            this.$.foldIcon.setAttribute('disabled', 'true');
-            this.$.expandIcon.removeAttribute('disabled');
+            fold.setAttribute('disabled', 'true');
+            unfold.removeAttribute('disabled');
         }
       },
     });
