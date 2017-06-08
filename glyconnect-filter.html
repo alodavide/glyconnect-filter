@@ -419,8 +419,9 @@ This element provides filter box in glyconnect
         toggleType.toggle();
         var i = "foldIcon".concat(linktype);
         var y = "expandIcon".concat(linktype);
-        var fold = Polymer.dom(this.root).querySelectorAll(i);
-        var unfold= Polymer.dom(this.root).querySelectorAll(y);
+        var fold = Polymer.dom(this.root).querySelector('iron-icon[id="'+i+'"]');
+        var unfold= Polymer.dom(this.root).querySelector('iron-icon[id="'+y+'"]');
+        (y);
         console.log(i);
         console.log(y);
         console.log(fold);
