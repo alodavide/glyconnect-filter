@@ -150,6 +150,7 @@ This element provides filter box in glyconnect
                <sortable-list id="selectedN" group="test"  animation="150" class="enzymeSelected"></sortable-list>
                <div class="horizontal end-justified layout">
                    <paper-button id="updateButton" class="indigo" on-tap="selectedPropN">Search</paper-button>
+                   <div class="horizontal end-justified layout"><paper-button id="updateButton" class="indigo" on-tap="clearFunction">Clear</paper-button>
                    <iron-ajax
                      id="requestStruct"
                      url="http://mendel.isb-sib.ch:8083/api/glycosylations?glycanType=n-linked"
@@ -219,6 +220,7 @@ This element provides filter box in glyconnect
            </app-layout>
               <sortable-list id="selectedO" group="test"  animation="150" class="enzymeSelected"></sortable-list>
               <div class="horizontal end-justified layout"><paper-button id="updateButton" class="indigo" on-tap="selectedPropO">Search</paper-button>
+              <div class="horizontal end-justified layout"><paper-button id="updateButton" class="indigo" on-tap="clearFunction">Clear</paper-button>
                 <iron-ajax
                   id="requestStructO"
                   url="http://mendel.isb-sib.ch:8083/api/glycosylations?glycanType=o-linked"
@@ -288,6 +290,7 @@ This element provides filter box in glyconnect
             </app-layout>
                    <sortable-list id="selectedNP" group="test"  animation="150" class="enzymeSelected"></sortable-list>
                   <div class="horizontal end-justified layout"><paper-button id="updateButton" class="indigo" on-tap="selectedPropNP">Search</paper-button>
+                  <div class="horizontal end-justified layout"><paper-button id="updateButton" class="indigo" on-tap="clearFunction">Clear</paper-button>
                     <iron-ajax
                       id="requestStructNP"
                       url="http://mendel.isb-sib.ch:8083/api/glycosylations?glycanType=free"
@@ -357,6 +360,13 @@ This element provides filter box in glyconnect
               type: String,
               value: 0
           }
+      },
+      clearFunction: function() {
+        Polymer.dom(this.root).querySelector('sortable-list[id="selectedNP"]').innerHtml="";
+        Polymer.dom(this.root).querySelector('sortable-list[id="selectedN"]').innerHtml="";
+        Polymer.dom(this.root).querySelector('sortable-list[id="selectedO"]').innerHtml="";
+        this.$.ajaxDictionary.url = this.resolveUrl('dictionary/jsonGlobalProperties.json');
+        this.$.ajaxDictionary.generateRequest();
       },
       selectedPropN: function(){
         var selN = this.$.selectedN._sortable.toArray();
