@@ -131,7 +131,7 @@ This element provides filter box in glyconnect
             last-response="{{jsonGlobalProperties}}"
             on-response="handleResponse"
     ></iron-ajax>
-      <paper-header-panel id="glycanTypeFilter" class="blue" mode="seamed">
+      <paper-header-panel id="glycanTypeFiltern" class="blue" mode="seamed">
          <div id="glycanFilterHeader" class="paper-header">
              <paper-button id="filterToggleButton" class="indigo" on-click="_toggleNGlycan" toggles raised>
                  <iron-icon id="expandIconn" icon="icons:chevron-right" alt="unfold" ></iron-icon>
@@ -201,7 +201,7 @@ This element provides filter box in glyconnect
          </div>
       </iron-collapse>
       <br><br>
-      <paper-header-panel id="glycanTypeFilter" class="blue" mode="seamed">
+      <paper-header-panel id="glycanTypeFiltero" class="blue" mode="seamed">
           <div id="glycanFilterHeader" class="paper-header">
               <paper-button id="filterToggleButton" class="indigo" on-click="_toggleOGlycan" toggles raised>
                   <iron-icon id="expandIcono" icon="icons:chevron-right" alt="unfold" ></iron-icon>
@@ -270,7 +270,7 @@ This element provides filter box in glyconnect
         </div>
      </iron-collapse>
      <br><br>
-     <paper-header-panel id="glycanTypeFilter" class="blue" mode="seamed">
+     <paper-header-panel id="glycanTypeFilterno" class="blue" mode="seamed">
          <div id="glycanFilterHeader" class="paper-header">
              <paper-button id="filterToggleButton" class="indigo" on-click="_toggleNOGlycan" toggles raised>
                  <iron-icon id="expandIconno" icon="icons:chevron-right" alt="unfold" ></iron-icon>
@@ -401,17 +401,17 @@ This element provides filter box in glyconnect
         this.coreTypeNP = this.jsonGlobalProperties['Non attached to proteins']['core'];
       },
       _toggleNGlycan: function () {
-        togn=this.$.glycanFilterN;
+        togn=this.$.glycanTypeFiltern;
         var type = "n";
         this.tog(togn, type)
       },
       _toggleOGlycan: function () {
-        togo=this.$.glycanFilterO;
+        togo=this.$.glycanTypeFiltero;
         var type = "o";
         this.tog(togo, type)
       },
       _toggleNOGlycan: function () {
-        togno=this.$.glycanFilterNO;
+        togno=this.$.glycanTypeFilterno;
         var type = "no";
         this.tog(togno, type)
       },
