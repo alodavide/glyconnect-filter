@@ -386,7 +386,7 @@ This element provides filter box in glyconnect
       },
       param: function(propArray, requestType){
         var myJson = {};
-        for (i = 0; i < propArray.length; i++) {
+        for (i = 0; i < propArray.; i++) {
           var x = propArray[i];
           var s = x.split("=");
           if (s[0] in myJson) {
@@ -415,15 +415,16 @@ This element provides filter box in glyconnect
         this.coreTypeNP = this.jsonGlobalProperties['Non attached to proteins']['core'];
       },
       update: function(){
-        this.push('coreTypeO',this.jsonGlobalProperties['O-linked']['core']);
-        this.push('coreTypeN',this.jsonGlobalProperties['N-linked']['core']);
-        this.push('coreTypeNP',this.jsonGlobalProperties['Non attached to proteins']['core']);
-        this.push('propO',this.jsonGlobalProperties['O-linked']['prop']);
-        this.push('propN',this.jsonGlobalProperties['N-linked']['prop']);
-        this.push('propNP',this.jsonGlobalProperties['Non attached to proteins']['prop']);
-        this.push('detO',this.jsonGlobalProperties['O-linked']['det']);
-        this.push('detN',this.jsonGlobalProperties['N-linked']['det']);
-        this.push('detNP',this.jsonGlobalProperties['Non attached to proteins']['det']);
+        // this.splice("data", 0, this.data.length);
+        this.set('coreTypeO',this.jsonGlobalProperties['O-linked']['core']);
+        this.set('coreTypeN',this.jsonGlobalProperties['N-linked']['core']);
+        this.set('coreTypeNP',this.jsonGlobalProperties['Non attached to proteins']['core']);
+        this.set('propO',this.jsonGlobalProperties['O-linked']['prop']);
+        this.set('propN',this.jsonGlobalProperties['N-linked']['prop']);
+        this.set('propNP',this.jsonGlobalProperties['Non attached to proteins']['prop']);
+        this.set('detO',this.jsonGlobalProperties['O-linked']['det']);
+        this.set('detN',this.jsonGlobalProperties['N-linked']['det']);
+        this.set('detNP',this.jsonGlobalProperties['Non attached to proteins']['det']);
       },
       _toggleNGlycan: function () {
         togn=this.$.glycanFilterN;
