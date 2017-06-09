@@ -360,11 +360,6 @@ This element provides filter box in glyconnect
               type: String,
               value: 0
           },
-          coreTypeNP: {
-            type: Array,
-            notify: true,
-            reflectToAttribute: true,
-          }
       },
       clearFunction: function() {
         Polymer.dom(this.root).querySelector('sortable-list[id="selectedNP"]').innerHTML="";
@@ -416,9 +411,7 @@ This element provides filter box in glyconnect
       },
       _newdata: function(){
           for(var i = 0; i < this.jsonGlobalProperties['O-linked']['core'].length; i++ ){
-            if( this.coreTypeO.indexOf(this.jsonGlobalProperties['O-linked']['core'][i]) == -1){
               this.push('coreTypeO',this.jsonGlobalProperties['O-linked']['core'][i]);
-            }
           }
           for(var i = 0; i < this.jsonGlobalProperties['N-linked']['core'].length; i++ ){
             if( this.coreTypeN.indexOf(this.jsonGlobalProperties['N-linked']['core'][i]) == -1){
