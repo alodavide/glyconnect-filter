@@ -363,6 +363,7 @@ This element provides filter box in glyconnect
       },
       clearFunction: function() {
         Polymer.dom(this.root).querySelector('sortable-list[id="selectedNP"]').innerHtml="";
+        console.log(Polymer.dom(this.root).querySelector('sortable-list[id="selectedNP"]'));
         // Polymer.dom(this.root).querySelector('sortable-list[id="selectedN"]').innerHtml="";
         // Polymer.dom(this.root).querySelector('sortable-list[id="selectedO"]').innerHtml="";
         this.$.ajaxDictionary.url = this.resolveUrl('dictionary/jsonGlobalProperties.json');
