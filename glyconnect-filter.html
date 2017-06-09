@@ -404,7 +404,7 @@ This element provides filter box in glyconnect
         this.$.ajaxDictionary.generateRequest();
       },
 
-      handleResponse: function(){
+      /*handleResponse: function(){
         this.coreTypeNP = undefined;
         this.coreTypeO = this.jsonGlobalProperties['O-linked']['core'];
         this.coreTypeN = this.jsonGlobalProperties['N-linked']['core'];
@@ -415,11 +415,21 @@ This element provides filter box in glyconnect
         this.propNP = this.jsonGlobalProperties['Non attached to proteins']['prop'];
         this.detNP = this.jsonGlobalProperties['Non attached to proteins']['det'];
         this.coreTypeNP = this.jsonGlobalProperties['Non attached to proteins']['core'];
-        var repArray= Polymer.dom(this.root).querySelectorAll('template[is="dom-repeat"]');
-        for (var i =0; i<repArray.length; i++) {
-          repArray[i].innerHTML='';
-          repArray[i].render();
-        }
+        //var repArray= Polymer.dom(this.root).querySelectorAll('template[is="dom-repeat"]');
+        // for (var i =0; i<repArray.length; i++) {
+        //   repArray[i].render();
+        // }
+      },*/
+      handleResponse: function(){
+        this.push('coreTypeO',this.jsonGlobalProperties['O-linked']['core']);
+        this.push('coreTypeN',this.jsonGlobalProperties['N-linked']['core']);
+        this.push('coreTypeNP',this.jsonGlobalProperties['Non attached to proteins']['core']);
+        this.push('propO',this.jsonGlobalProperties['O-linked']['prop']);
+        this.push('propN',this.jsonGlobalProperties['N-linked']['prop']);
+        this.push('propNP',this.jsonGlobalProperties['Non attached to proteins']['prop']);
+        this.push('detO',this.jsonGlobalProperties['O-linked']['det']);
+        this.push('detN',this.jsonGlobalProperties['N-linked']['det']);
+        this.push('detNP',this.jsonGlobalProperties['Non attached to proteins']['det']);
       },
       _toggleNGlycan: function () {
         togn=this.$.glycanFilterN;
