@@ -417,6 +417,7 @@ This element provides filter box in glyconnect
         this.coreTypeNP = this.jsonGlobalProperties['Non attached to proteins']['core'];
         var repArray= Polymer.dom(this.root).querySelectorAll('template[is="dom-repeat"]');
         for (var i =0; i<repArray.length; i++) {
+          repArray[i].innerHTML='';
           repArray[i].render();
         }
       },
