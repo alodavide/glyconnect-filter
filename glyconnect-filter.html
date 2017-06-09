@@ -415,16 +415,21 @@ This element provides filter box in glyconnect
         this.coreTypeNP = this.jsonGlobalProperties['Non attached to proteins']['core'];
       },
       _newdata: function(){
-        // this.splice("data", 0, this.data.length);
-        this.set('coreTypeO',this.jsonGlobalProperties['O-linked']['core']);
-        this.set('coreTypeN',this.jsonGlobalProperties['N-linked']['core']);
-        this.set('coreTypeNP',this.jsonGlobalProperties['Non attached to proteins']['core']);
-        this.set('propO',this.jsonGlobalProperties['O-linked']['prop']);
-        this.set('propN',this.jsonGlobalProperties['N-linked']['prop']);
-        this.set('propNP',this.jsonGlobalProperties['Non attached to proteins']['prop']);
-        this.set('detO',this.jsonGlobalProperties['O-linked']['det']);
-        this.set('detN',this.jsonGlobalProperties['N-linked']['det']);
-        this.set('detNP',this.jsonGlobalProperties['Non attached to proteins']['det']);
+          for(var i = 0, i < this.jsonGlobalProperties['O-linked']['core'].length, i++ ){
+            if( indexOf(this.jsonGlobalProperties['O-linked']['core'][i]) == -1){
+              this.push('coreTypeO',this.jsonGlobalProperties['O-linked']['core'][i]);
+            }
+          }
+          for(var i = 0, i < this.jsonGlobalProperties['N-linked']['core'].length, i++ ){
+            if( indexOf(this.jsonGlobalProperties['N-linked']['core'][i]) == -1){
+              this.push('coreTypeN',this.jsonGlobalProperties['N-linked']['core'][i]);
+            }
+          }
+          for(var i = 0, i < this.jsonGlobalProperties['Non attached to proteins']['core'].length, i++ ){
+            if( indexOf(this.jsonGlobalProperties['Non attached to proteins']['core'][i]) == -1){
+              this.push('coreTypeNP',this.jsonGlobalProperties['Non attached to proteins']['core'][i]);
+            }
+          }
       },
       _toggleNGlycan: function () {
         togn=this.$.glycanFilterN;
