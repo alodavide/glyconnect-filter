@@ -420,7 +420,16 @@ This element provides filter box in glyconnect
         //   repArray[i].render();
         // }
       },*/
-      handleResponse: function(){
+      handleResponse: function(){this.coreTypeNP = undefined;
+      this.coreTypeO = undefined;
+      this.coreTypeN = undefined;
+      this.propO = undefined;
+      this.propN = undefined;
+      this.detO = undefined;
+      this.detN = undefined;
+      this.propNP = undefined;
+      this.detNP = undefined;
+      this.coreTypeNP = undefined;
         this.push('coreTypeO',this.jsonGlobalProperties['O-linked']['core']);
         this.push('coreTypeN',this.jsonGlobalProperties['N-linked']['core']);
         this.push('coreTypeNP',this.jsonGlobalProperties['Non attached to proteins']['core']);
