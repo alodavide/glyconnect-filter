@@ -363,7 +363,8 @@ This element provides filter box in glyconnect
           coreTypeNP: {
             type: Array,
             notify: true,
-            reflectToAttribute: true
+            reflectToAttribute: true,
+            observer: 'clearFunction'
           }
       },
       clearFunction: function() {
