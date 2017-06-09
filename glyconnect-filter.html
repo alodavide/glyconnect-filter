@@ -150,7 +150,7 @@ This element provides filter box in glyconnect
                <sortable-list id="selectedN" group="test"  animation="150" class="enzymeSelected"></sortable-list>
                <div class="horizontal end-justified layout">
                    <paper-button id="updateButton" class="indigo" on-tap="selectedPropN">Search</paper-button>
-                   <paper-button id="updateButton" class="indigo" on-tap="clearFunction">Clear</paper-button>
+                   <!-- <paper-button id="updateButton" class="indigo" on-tap="clearFunction">Clear</paper-button> -->
                    <iron-ajax
                      id="requestStruct"
                      url="http://mendel.isb-sib.ch:8083/api/glycosylations?glycanType=n-linked"
@@ -220,7 +220,7 @@ This element provides filter box in glyconnect
            </app-layout>
               <sortable-list id="selectedO" group="test"  animation="150" class="enzymeSelected"></sortable-list>
               <div class="horizontal end-justified layout"><paper-button id="updateButton" class="indigo" on-tap="selectedPropO">Search</paper-button>
-                <paper-button id="updateButton" class="indigo" on-tap="clearFunction">Clear</paper-button>
+                <!-- <paper-button id="updateButton" class="indigo" on-tap="clearFunction">Clear</paper-button> -->
                 <iron-ajax
                   id="requestStructO"
                   url="http://mendel.isb-sib.ch:8083/api/glycosylations?glycanType=o-linked"
@@ -290,7 +290,7 @@ This element provides filter box in glyconnect
             </app-layout>
                    <sortable-list id="selectedNP" group="test"  animation="150" class="enzymeSelected"></sortable-list>
                   <div class="horizontal end-justified layout"><paper-button id="updateButton" class="indigo" on-tap="selectedPropNP">Search</paper-button>
-                   <paper-button id="updateButton" class="indigo" on-tap="clearFunction">Clear</paper-button>
+                   <!-- <paper-button id="updateButton" class="indigo" on-tap="clearFunction">Clear</paper-button> -->
                     <iron-ajax
                       id="requestStructNP"
                       url="http://mendel.isb-sib.ch:8083/api/glycosylations?glycanType=free"
@@ -361,12 +361,12 @@ This element provides filter box in glyconnect
               value: 0
           },
       },
-      clearFunction: function() {
-        Polymer.dom(this.root).querySelector('sortable-list[id="selectedNP"]').innerHTML="";
-        Polymer.dom(this.root).querySelector('sortable-list[id="selectedN"]').innerHTML="";
-        Polymer.dom(this.root).querySelector('sortable-list[id="selectedO"]').innerHTML="";
-        this._newdata();
-      },
+      // clearFunction: function() {
+      //   Polymer.dom(this.root).querySelector('sortable-list[id="selectedNP"]').innerHTML="";
+      //   Polymer.dom(this.root).querySelector('sortable-list[id="selectedN"]').innerHTML="";
+      //   Polymer.dom(this.root).querySelector('sortable-list[id="selectedO"]').innerHTML="";
+      //   this._newdata();
+      // },
       selectedPropN: function(){
         var selN = this.$.selectedN._sortable.toArray();
         this.param(selN, this.$.requestStruct);
@@ -409,21 +409,21 @@ This element provides filter box in glyconnect
         this.detNP = this.jsonGlobalProperties['Non attached to proteins']['det'];
         this.coreTypeNP = this.jsonGlobalProperties['Non attached to proteins']['core'];
       },
-      _newdata: function(){
-          for(var i = 0; i < this.jsonGlobalProperties['O-linked']['core'].length; i++ ){
-              this.push('coreTypeO',this.jsonGlobalProperties['O-linked']['core'][i]);
-          }
-          for(var i = 0; i < this.jsonGlobalProperties['N-linked']['core'].length; i++ ){
-            if( this.coreTypeN.indexOf(this.jsonGlobalProperties['N-linked']['core'][i]) == -1){
-              this.push('coreTypeN',this.jsonGlobalProperties['N-linked']['core'][i]);
-            }
-          }
-          for(var i = 0; i < this.jsonGlobalProperties['Non attached to proteins']['core'].length; i++ ){
-            if( this.coreTypeNP.indexOf(this.jsonGlobalProperties['Non attached to proteins']['core'][i]) == -1){
-              this.push('coreTypeNP',this.jsonGlobalProperties['Non attached to proteins']['core'][i]);
-            }
-          }
-      },
+      // _newdata: function(){
+      //     for(var i = 0; i < this.jsonGlobalProperties['O-linked']['core'].length; i++ ){
+      //         this.push('coreTypeO',this.jsonGlobalProperties['O-linked']['core'][i]);
+      //     }
+      //     for(var i = 0; i < this.jsonGlobalProperties['N-linked']['core'].length; i++ ){
+      //       if( this.coreTypeN.indexOf(this.jsonGlobalProperties['N-linked']['core'][i]) == -1){
+      //         this.push('coreTypeN',this.jsonGlobalProperties['N-linked']['core'][i]);
+      //       }
+      //     }
+      //     for(var i = 0; i < this.jsonGlobalProperties['Non attached to proteins']['core'].length; i++ ){
+      //       if( this.coreTypeNP.indexOf(this.jsonGlobalProperties['Non attached to proteins']['core'][i]) == -1){
+      //         this.push('coreTypeNP',this.jsonGlobalProperties['Non attached to proteins']['core'][i]);
+      //       }
+      //     }
+      // },
       _toggleNGlycan: function () {
         togn=this.$.glycanFilterN;
         var type = "n";
