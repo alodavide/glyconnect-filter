@@ -183,7 +183,7 @@ This element provides filter box in glyconnect
                          <template is="dom-repeat" items="{{propN}}">
                            <div data-id$="{{item.class}}={{item.name}}">
                              <!-- Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
-                             <paper-card propN="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}<i class="js-remove">✖</i></paper-card>
+                             <paper-card propN="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
                            </div>
                          </template>
                      </sortable-list>
