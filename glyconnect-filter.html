@@ -364,17 +364,12 @@ This element provides filter box in glyconnect
             type: Array,
             notify: true,
             reflectToAttribute: true,
-            observer: 'newData'
           }
       },
       clearFunction: function() {
         Polymer.dom(this.root).querySelector('sortable-list[id="selectedNP"]').innerHTML="";
         Polymer.dom(this.root).querySelector('sortable-list[id="selectedN"]').innerHTML="";
         Polymer.dom(this.root).querySelector('sortable-list[id="selectedO"]').innerHTML="";
-        // this.$.ajaxDictionary.url = this.resolveUrl('dictionary/jsonGlobalProperties.json');
-        // this.$.ajaxDictionary.generateRequest();
-      },
-      newData: function() {
         this.$.ajaxDictionary.url = this.resolveUrl('dictionary/jsonGlobalProperties.json');
         this.$.ajaxDictionary.generateRequest();
       },
