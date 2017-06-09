@@ -370,7 +370,7 @@ This element provides filter box in glyconnect
         Polymer.dom(this.root).querySelector('sortable-list[id="selectedNP"]').innerHTML="";
         Polymer.dom(this.root).querySelector('sortable-list[id="selectedN"]').innerHTML="";
         Polymer.dom(this.root).querySelector('sortable-list[id="selectedO"]').innerHTML="";
-        this.update();
+        this._newdata();
       },
       selectedPropN: function(){
         var selN = this.$.selectedN._sortable.toArray();
@@ -414,7 +414,7 @@ This element provides filter box in glyconnect
         this.detNP = this.jsonGlobalProperties['Non attached to proteins']['det'];
         this.coreTypeNP = this.jsonGlobalProperties['Non attached to proteins']['core'];
       },
-      update: function(){
+      _newdata: function(){
         // this.splice("data", 0, this.data.length);
         this.set('coreTypeO',this.jsonGlobalProperties['O-linked']['core']);
         this.set('coreTypeN',this.jsonGlobalProperties['N-linked']['core']);
