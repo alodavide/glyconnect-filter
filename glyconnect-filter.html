@@ -363,9 +363,8 @@ This element provides filter box in glyconnect
       },
       clearFunction: function() {
         Polymer.dom(this.root).querySelector('sortable-list[id="selectedNP"]').innerHTML="";
-        console.log(Polymer.dom(this.root).querySelector('sortable-list[id="selectedNP"]'));
-        // Polymer.dom(this.root).querySelector('sortable-list[id="selectedN"]').innerHtml="";
-        // Polymer.dom(this.root).querySelector('sortable-list[id="selectedO"]').innerHtml="";
+        Polymer.dom(this.root).querySelector('sortable-list[id="selectedN"]').innerHTML="";
+        Polymer.dom(this.root).querySelector('sortable-list[id="selectedO"]').innerHTML="";
         this.$.ajaxDictionary.url = this.resolveUrl('dictionary/jsonGlobalProperties.json');
         this.$.ajaxDictionary.generateRequest();
       },
@@ -401,6 +400,7 @@ This element provides filter box in glyconnect
       },
 
       handleResponse: function(){
+        this.coreTypeNP = undefined;
         this.coreTypeO = this.jsonGlobalProperties['O-linked']['core'];
         this.coreTypeN = this.jsonGlobalProperties['N-linked']['core'];
         this.propO = this.jsonGlobalProperties['O-linked']['prop'];
