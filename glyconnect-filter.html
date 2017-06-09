@@ -183,7 +183,7 @@ This element provides filter box in glyconnect
                          <template is="dom-repeat" items="{{propN}}">
                            <div data-id$="{{item.class}}={{item.name}}">
                              <!-- Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
-                             <paper-card propN="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
+                             <paper-card propN="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}<i class="js-remove">✖</i></paper-card>
                            </div>
                          </template>
                      </sortable-list>
@@ -363,8 +363,8 @@ This element provides filter box in glyconnect
       },
       clearFunction: function() {
         Polymer.dom(this.root).querySelector('sortable-list[id="selectedNP"]').innerHtml="";
-        Polymer.dom(this.root).querySelector('sortable-list[id="selectedN"]').innerHtml="";
-        Polymer.dom(this.root).querySelector('sortable-list[id="selectedO"]').innerHtml="";
+        // Polymer.dom(this.root).querySelector('sortable-list[id="selectedN"]').innerHtml="";
+        // Polymer.dom(this.root).querySelector('sortable-list[id="selectedO"]').innerHtml="";
         this.$.ajaxDictionary.url = this.resolveUrl('dictionary/jsonGlobalProperties.json');
         this.$.ajaxDictionary.generateRequest();
       },
