@@ -416,17 +416,17 @@ This element provides filter box in glyconnect
       },
       _newdata: function(){
           for(var i = 0; i < this.jsonGlobalProperties['O-linked']['core'].length; i++ ){
-            if( indexOf(this.jsonGlobalProperties['O-linked']['core'][i]) == -1){
+            if( this.coreTypeO.indexOf(this.jsonGlobalProperties['O-linked']['core'][i]) == -1){
               this.push('coreTypeO',this.jsonGlobalProperties['O-linked']['core'][i]);
             }
           }
           for(var i = 0; i < this.jsonGlobalProperties['N-linked']['core'].length; i++ ){
-            if( indexOf(this.jsonGlobalProperties['N-linked']['core'][i]) == -1){
+            if( this.coreTypeN.indexOf(this.jsonGlobalProperties['N-linked']['core'][i]) == -1){
               this.push('coreTypeN',this.jsonGlobalProperties['N-linked']['core'][i]);
             }
           }
           for(var i = 0; i < this.jsonGlobalProperties['Non attached to proteins']['core'].length; i++ ){
-            if( indexOf(this.jsonGlobalProperties['Non attached to proteins']['core'][i]) == -1){
+            if( this.coreTypeNP.indexOf(this.jsonGlobalProperties['Non attached to proteins']['core'][i]) == -1){
               this.push('coreTypeNP',this.jsonGlobalProperties['Non attached to proteins']['core'][i]);
             }
           }
