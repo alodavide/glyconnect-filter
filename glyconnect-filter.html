@@ -1,11 +1,9 @@
-<link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../paper-dropdown-menu/paper-dropdown-menu.html">
-<link rel="import" href="../paper-listbox/paper-listbox.html">
-<link rel="import" href="../paper-item/paper-item.html">
+<link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../iron-ajax/iron-ajax.html">
-<link rel="import" href="../paper-header-panel/paper-header-panel.html">
 <link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../app-layout/app-header-layout/app-header-layout.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../iron-collapse/iron-collapse.html">
 <link rel="import" href="../sortable-list/sortable-list.html">
@@ -18,417 +16,429 @@ This element provides filter box in glyconnect
 -->
 
 <dom-module id="glyconnect-filter">
-  <template>
-    <style is="custom-style" include="iron-flex iron-flex-alignment"></style>
-    <style>
-      :host {
-        display: block;
-      }
-      iron-icon[disabled]{
-        display: none;
-      }
-      paper-material {
-          margin: 20px;
-          background-color: #eee;
-      }
-      .enzymeList{
-          padding: 5px;
-          @apply(--layout-horizontal);
-          @apply(--layout-wrap);
-          min-width: 200px;
-          min-height: 200px;
+    <template>
+        <style is="custom-style" include="iron-flex iron-flex-alignment"></style>
+        <style>
+            :host {
+                display: block;
+            }
+            iron-icon[disabled]{
+                display: none;
+            }
+            paper-material {
+                margin: 20px;
+                background-color: #eee;
+            }
+            .enzymeList{
+                padding: 5px;
+                @apply(--layout-horizontal);
+                @apply(--layout-wrap);
+                min-width: 200px;
+                min-height: 200px;
 
-          align-content: center;
-      }
-      .enzymeSelected{
-          padding: 5px;
-          @apply(--layout-horizontal);
-          @apply(--layout-wrap);
-          min-height: 300px;
-          width: 700px;
-          align-items: right;
-      }
+                align-content: center;
+            }
+            .enzymeSelected{
+                padding: 5px;
+                @apply(--layout-horizontal);
+                @apply(--layout-wrap);
+                min-height: 300px;
+                width: 700px;
+                align-items: right;
+            }
 
-      paper-toolbar {
-          --paper-toolbar-background: #e2011b; /* changes the background to blue*/
-      }
-      paper-button.indigo {
-        background-color: var(--paper-indigo-500);
-        color: white;
-        --paper-button-raised-keyboard-focus: {
-            color: white !important;
-        };
-      }
-      paper-button#filterToggleButton {
-        width: 100%;
-      }
-      ul {
-        list-style-type: none;
-      }
-      .paper-header {
-        font-family: "Roboto";
-        height: 45px;
-        font-size: 20px;The Polymer logo.
-        padding: 0 10px;The Polymer logo.
-        color: red;
-        transition: height 0.2s;
-      }
-      paper-button#updateButton {
-        height: 50%;
-        margin: 15px 30px;
-      }
-      #filterToggleButton {
-        min-width: 760px;
-      }
+            paper-toolbar {
+                --paper-toolbar-background: #e2011b; /* changes the background to blue*/
+            }
 
-      #glycanFilterHeader {
-        font-size: 16px;
-        font-weight: 500;
-        line-height: 25px;
-      }
-      #glycanFilterBox{
-        border: 1px solid black;
-        margin-left: 16px;
-        margin-right: 36px;
-        min-width: 758px;
-        border-radius: 0 0 5px 5px;
-        border: 1px solid rgba(0, 0, 0, 0.2);
-      }
-      #rangeBox {
-        padding: 30px 20px 20px 20px;
-      }
-      .card {
-        /*background-color: #cc3300;*/
-        font-size: 16px;
-        padding: 15px 15px 15px 15px;
-        /*box-sizing: border-box;*/
-        margin: 10px;
-        flex: 0 0 auto;
-        color: white;
-      }
+            paper-button.indigo {
+                background-color: var(--paper-indigo-500);
+                color: white;
+                --paper-button-raised-keyboard-focus: {
+                    color: white !important;
+                };
+            }
+            paper-button#filterToggleButton {
+                width: 100%;
+            }
+            ul {
+                list-style-type: none;
+            }
+            .paper-header {
+                font-family: "Roboto";
+                height: 45px;
+                font-size: 20px;The Polymer logo.
+                padding: 0 10px;The Polymer logo.
+                color: red;
+                transition: height 0.2s;
+            }
+            paper-button#updateButton {
+                height: 50%;
+                margin: 15px 30px;
+            }
+            #filterToggleButton {
+                min-width: 760px;
+            }
 
-    </style>
-    <iron-ajax
-            id="ajaxDictionary"
-            handle-as="json"
-            method="GET"
-            last-response="{{jsonGlobalProperties}}"
-            on-response="handleResponse"
-    ></iron-ajax>
-    <!-- <template is="dom-repeat" items="[[repos]]">
-        <span>blabla</span>
-    </template> -->
+            #glycanFilterHeader {
+                font-size: 16px;
+                font-weight: 500;
+                line-height: 25px;
+            }
+            #glycanFilterBox{
+                border: 1px solid black;
+                margin-left: 16px;
+                margin-right: 36px;
+                min-width: 758px;
+                border-radius: 0 0 5px 5px;
+                border: 1px solid rgba(0, 0, 0, 0.2);
+            }
+            #rangeBox {
+                padding: 30px 20px 20px 20px;
+            }
+            .card {
+                /*background-color: #cc3300;*/
+                font-size: 16px;
+                padding: 15px 15px 15px 15px;
+                /*box-sizing: border-box;*/
+                margin: 10px;
+                flex: 0 0 auto;
+                color: white;
+            }
+
+        </style>
+        <iron-ajax
+                id="ajaxDictionary"
+                handle-as="json"
+                method="GET"
+                last-response="{{jsonGlobalProperties}}"
+                on-response="handleResponse"
+        ></iron-ajax>
+        <!-- <template is="dom-repeat" items="[[repos]]">
+            <span>blabla</span>
+        </template> -->
 
 
-       <paper-header-panel id="glycanTypeFilter" class="blue" mode="seamed">
-               <div id="glycanFilterHeader" class="paper-header">
-                   <paper-button id="filterToggleButton" class="indigo" on-click="_toggleNGlycan" toggles raised>
-                       <iron-icon id="expandIcon" icon="icons:chevron-right" alt="unfold" ></iron-icon>
-                       <iron-icon id="foldIcon" icon="icons:expand-more" alt="fold" disabled></iron-icon>
-                       N-linked glycans
-                   </paper-button>
-               </div>
-      </paper-header-panel>
-         <iron-collapse id="glycanFilterN" class="horizontal center-justified">
-         <div class="layout horizontal flex" >
-          <paper-material elevation="2" class="flex">
-               <paper-toolbar>
-                   <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
-                   <span class="title">N-Glycan</span>
-               </paper-toolbar>
-               <sortable-list id="selectedN" group="test"  animation="150" class="enzymeSelected"></sortable-list>
-               <div class="horizontal end-justified layout">
-                   <paper-button id="updateButton" class="indigo" on-tap="selectedPropN">Search</paper-button>
-                   <iron-ajax
-                     id="requestStruct"
-                     url="http://mendel.isb-sib.ch:8083/api/glycosylations?glycanType=n-linked"
-                     params=''
-                     handle-as="json"
-                     last-response="{{data}}"
-                     on-response="handleStruct"></iron-ajax>
-               </div>
-           </paper-material>
-         </div>
-         <div class="layout horizontal">
-            <paper-material elevation="2" style="height: 100%" class="flex">
-                <paper-toolbar>
-                    <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
-                    <span class="title">Core</span>
-                </paper-toolbar>
-                <sortable-list id="list" group="test" animation="150" class="enzymeList">
-                    <template is="dom-repeat" items="{{coreTypeN}}">
-                      <div data-id$="{{item.class}}={{item.name}}" >
-                        <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
-                        <paper-card coreTypeN="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
-                      </div>
-                    </template>
-                </sortable-list>
-            </paper-material>
-            <paper-material elevation="2" style="height: 100%" class="flex">
-                <paper-toolbar>
-                    <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
-                    <span class="title">Structural properties</span>
-                </paper-toolbar>
-                <sortable-list id="list" group="test" animation="150" class="enzymeList" >
-                    <template is="dom-repeat" items="{{propN}}">
-                      <div data-id$="{{item.class}}={{item.name}}" >
-                        <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
-                         <paper-card propN="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
-                      </div>
-                    </template>
-                </sortable-list>
-            </paper-material>
-            <paper-material elevation="2" style="height: 100%" class="flex">
-                <paper-toolbar>
-                    <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
-                    <span class="title">Determinants</span>
-                </paper-toolbar>
-                <sortable-list id="list" group="test" animation="150" class="enzymeList" >
-                    <template is="dom-repeat" items="{{detN}}">
-                      <div data-id$="{{item.class}}={{item.name}}" >
-                        <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
-                         <paper-card detN="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
-                      </div>
-                    </template>
-                </sortable-list>
-            </paper-material>
-        </div>
-      </iron-collapse>
-      <br><br>
-      <paper-header-panel id="glycanTypeFilter" class="blue" mode="seamed">
-              <div id="glycanFilterHeader" class="paper-header">
-                  <paper-button id="filterToggleButton" class="indigo" on-click="_toggleOGlycan" toggles raised>
-                      <iron-icon id="expandIcon" icon="icons:chevron-right" alt="unfold" ></iron-icon>
-                      <iron-icon id="foldIcon" icon="icons:expand-more" alt="fold" disabled></iron-icon>
-                      O-linked glycans
-                  </paper-button>
-              </div>
-     </paper-header-panel>
-      <iron-collapse id="glycanFilterO" class="horizontal center-justified">
-        <div class="layout horizontal flex" >
-         <paper-material elevation="2" class="flex">
-              <paper-toolbar>
-                  <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
-                  <span class="title">O-Glycan</span>
-              </paper-toolbar>
-              <sortable-list id="selectedO" group="test"  animation="150" class="enzymeSelected"></sortable-list>
-              <div class="horizontal end-justified layout"><paper-button id="updateButton" class="indigo" on-tap="selectedPropO">Search</paper-button>
-                <iron-ajax
-                  id="requestStructO"
-                  url="http://mendel.isb-sib.ch:8083/api/glycosylations?glycanType=o-linked"
-                  params=''
-                  handle-as="json"
-                  last-response="{{data}}"
-                  on-response="handleStruct"></iron-ajax>
-              </div>
-          </paper-material>
-
-        </div>
-        <div class="layout horizontal">
-           <paper-material elevation="2" style="height: 100%" class="flex">
-               <paper-toolbar>
-                   <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
-                   <span class="title">Core</span>
-               </paper-toolbar>
-               <sortable-list id="list" group="test" animation="150" class="enzymeList" >
-                   <template is="dom-repeat" items="{{coreTypeO}}">
-                     <div data-id$="{{item.class}}={{item.name}}" >
-                       <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
-                       <paper-card coreTypeO="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}} </paper-card>
-                     </div>
-                   </template>
-               </sortable-list>
-           </paper-material>
-           <paper-material elevation="2" style="height: 100%" class="flex">
-               <paper-toolbar>
-                   <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
-                   <span class="title">Structural properties</span>
-               </paper-toolbar>
-               <sortable-list id="list" group="test" animation="150" class="enzymeList">
-                   <template is="dom-repeat" items="{{propO}}">
-                     <div data-id$="{{item.class}}={{item.name}}" >
-                       <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
-                       <paper-card propO="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
-                     </div>
-                   </template>
-               </sortable-list>
-           </paper-material>
-           <paper-material elevation="2" style="height: 100%" class="flex">
-               <paper-toolbar>
-                   <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
-                   <span class="title">Determinants</span>
-               </paper-toolbar>
-               <sortable-list id="list" group="test" animation="150" class="enzymeList">
-                   <template is="dom-repeat" items="{{detO}}">
-                     <div data-id$="{{item.class}}={{item.name}}" >
-                       <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
-                        <paper-card detO="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
-                     </div>
-                   </template>
-               </sortable-list>
-           </paper-material>
-       </div>
-     </iron-collapse>
-     <br><br>
-     <paper-header-panel id="glycanTypeFilter" class="blue" mode="seamed">
-             <div id="glycanFilterHeader" class="paper-header">
-                 <paper-button id="filterToggleButton" class="indigo" on-click="_toggleNOGlycan" toggles raised>
-                     <iron-icon id="expandIcon" icon="icons:chevron-right" alt="unfold" ></iron-icon>
-                     <iron-icon id="foldIcon" icon="icons:expand-more" alt="fold" disabled></iron-icon>
-                     Non-attached to proteins
-                 </paper-button>
-             </div>
-    </paper-header-panel>
-       <iron-collapse id="glycanFilterNO" class="horizontal center-justified">
-       <div class="layout horizontal flex" >
-        <paper-material elevation="2" class="flex">
-             <paper-toolbar>
-                 <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
-                 <span class="title"> Non-attached to proteins</span>
-             </paper-toolbar>
-                 <sortable-list id="selectedNP" group="test"  animation="150" class="enzymeSelected"></sortable-list>
-                <div class="horizontal end-justified layout"><paper-button id="updateButton" class="indigo" on-tap="selectedPropNP">Search</paper-button>
-                  <iron-ajax
-                    id="requestStructNP"
-                    url="http://mendel.isb-sib.ch:8083/api/glycosylations?glycanType=free"
-                    params=''
-                    handle-as="json"
-                    last-response="{{data}}"
-                    on-response="handleStruct"></iron-ajax>
-                </div>
-         </paper-material>
-       </div>
-       <div class="layout horizontal">
-          <paper-material elevation="2" style="height: 100%" class="flex">
-              <paper-toolbar>
-                  <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
-                  <span class="title">Core</span>
-              </paper-toolbar>
-              <sortable-list id="list" group="test" animation="150" class="enzymeList" >
-                  <template is="dom-repeat" items="{{coreTypeNP}}">
-                    <div data-id$="{{item.class}}={{item.name}}" >
-                      <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
-                      <paper-card coreTypeNP="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
+        <app-header-layout id="glycanTypeFilter" class="blue" mode="seamed">
+            <div id="glycanFilterHeader" class="paper-header">
+                <paper-button id="filterToggleButton" class="indigo" on-click="_toggleNGlycan" toggles raised>
+                    <iron-icon id="expandIcon" icon="icons:chevron-right" alt="unfold" ></iron-icon>
+                    <iron-icon id="foldIcon" icon="icons:expand-more" alt="fold" disabled></iron-icon>
+                    N-linked glycans
+                </paper-button>
+            </div>
+        </app-header-layout>
+        <iron-collapse id="glycanFilterN" class="horizontal center-justified">
+            <div class="layout horizontal flex" >
+                <paper-material elevation="2" class="flex">
+                    <app-toolbar>
+                        <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
+                        <span class="title">N-Glycan</span>
+                    </app-toolbar>
+                    <sortable-list id="selectedN" group="test"  animation="150" class="enzymeSelected"></sortable-list>
+                    <div class="horizontal end-justified layout">
+                        <paper-button id="updateButton" class="indigo" on-tap="selectedPropN">Search</paper-button>
+                        <iron-ajax
+                                id="requestStruct"
+                                url="http://mendel.isb-sib.ch:8083/api/glycosylations?glycanType=n-linked"
+                                params=''
+                                handle-as="json"
+                                last-response="{{data}}"
+                                on-response="handleStruct"></iron-ajax>
                     </div>
-                  </template>
-              </sortable-list>
-          </paper-material>
-          <paper-material elevation="2" style="height: 100%" class="flex">
-              <paper-toolbar>
-                  <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
-                  <span class="title">Structural properties</span>
-              </paper-toolbar>
-              <sortable-list id="list" group="test" animation="150" class="enzymeList">
-                  <template is="dom-repeat" items="{{propNP}}">
-                    <div data-id$="{{item.class}}={{item.name}}" >
-                      <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
-                      <paper-card propNP="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
+                </paper-material>
+            </div>
+            <div class="layout horizontal">
+                <paper-material elevation="2" style="height: 100%" class="flex">
+                    <app-toolbar>
+                        <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
+                        <span class="title">Core</span>
+                    </app-toolbar>
+                    <sortable-list id="list" group="test" animation="150" class="enzymeList">
+                        <template is="dom-repeat" items="{{coreTypeN}}">
+                            <div data-id$="{{item.class}}={{item.name}}" >
+                                <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
+                                <paper-card coreTypeN="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
+                            </div>
+                        </template>
+                    </sortable-list>
+                </paper-material>
+                <paper-material elevation="2" style="height: 100%" class="flex">
+                    <app-toolbar>
+                        <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
+                        <span class="title">Structural properties</span>
+                    </app-toolbar>
+                    <sortable-list id="list" group="test" animation="150" class="enzymeList" >
+                        <template is="dom-repeat" items="{{propN}}">
+                            <div data-id$="{{item.class}}={{item.name}}" >
+                                <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
+                                <paper-card propN="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
+                            </div>
+                        </template>
+                    </sortable-list>
+                </paper-material>
+                <paper-material elevation="2" style="height: 100%" class="flex">
+                    <app-toolbar>
+                        <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
+                        <span class="title">Determinants</span>
+                    </app-toolbar>
+                    <sortable-list id="list" group="test" animation="150" class="enzymeList" >
+                        <template is="dom-repeat" items="{{detN}}">
+                            <div data-id$="{{item.class}}={{item.name}}" >
+                                <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
+                                <paper-card detN="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
+                            </div>
+                        </template>
+                    </sortable-list>
+                </paper-material>
+            </div>
+        </iron-collapse>
+        <br><br>
+        <app-header-layout id="glycanTypeFilter" class="blue" mode="seamed">
+            <div id="glycanFilterHeader" class="paper-header">
+                <paper-button id="filterToggleButton" class="indigo" on-click="_toggleOGlycan" toggles raised>
+                    <iron-icon id="expandIcon" icon="icons:chevron-right" alt="unfold" ></iron-icon>
+                    <iron-icon id="foldIcon" icon="icons:expand-more" alt="fold" disabled></iron-icon>
+                    O-linked glycans
+                </paper-button>
+            </div>
+        </app-header-layout>
+        <iron-collapse id="glycanFilterO" class="horizontal center-justified">
+            <div class="layout horizontal flex" >
+                <paper-material elevation="2" class="flex">
+                    <app-toolbar>
+                        <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
+                        <span class="title">O-Glycan</span>
+                    </app-toolbar>
+                    <sortable-list id="selectedO" group="test"  animation="150" class="enzymeSelected"></sortable-list>
+                    <div class="horizontal end-justified layout"><paper-button id="updateButton" class="indigo" on-tap="selectedPropO">Search</paper-button>
+                        <iron-ajax
+                                id="requestStructO"
+                                url="http://mendel.isb-sib.ch:8083/api/glycosylations?glycanType=o-linked"
+                                params=''
+                                handle-as="json"
+                                last-response="{{data}}"
+                                on-response="handleStruct"></iron-ajax>
                     </div>
-                  </template>
-              </sortable-list>
-          </paper-material>
-          <paper-material elevation="2" style="height: 100%" class="flex">
-              <paper-toolbar>
-                  <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
-                  <span class="title">Determinants</span>
-              </paper-toolbar>
-              <sortable-list id="list" group="test" animation="150" class="enzymeList" >
-                  <template is="dom-repeat" items="{{detNP}}">
-                    <div data-id$="{{item.class}}={{item.name}}">
-                      <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
-                      <paper-card detNP="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
+                </paper-material>
+
+            </div>
+            <div class="layout horizontal">
+                <paper-material elevation="2" style="height: 100%" class="flex">
+                    <app-toolbar>
+                        <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
+                        <span class="title">Core</span>
+                    </app-toolbar>
+                    <sortable-list id="list" group="test" animation="150" class="enzymeList" >
+                        <template is="dom-repeat" items="{{coreTypeO}}">
+                            <div data-id$="{{item.class}}={{item.name}}" >
+                                <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
+                                <paper-card coreTypeO="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}} </paper-card>
+                            </div>
+                        </template>
+                    </sortable-list>
+                </paper-material>
+                <paper-material elevation="2" style="height: 100%" class="flex">
+                    <app-toolbar>
+                        <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
+                        <span class="title">Structural properties</span>
+                    </app-toolbar>
+                    <sortable-list id="list" group="test" animation="150" class="enzymeList">
+                        <template is="dom-repeat" items="{{propO}}">
+                            <div data-id$="{{item.class}}={{item.name}}" >
+                                <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
+                                <paper-card propO="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
+                            </div>
+                        </template>
+                    </sortable-list>
+                </paper-material>
+                <paper-material elevation="2" style="height: 100%" class="flex">
+                    <app-toolbar>
+                        <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
+                        <span class="title">Determinants</span>
+                    </app-toolbar>
+                    <sortable-list id="list" group="test" animation="150" class="enzymeList">
+                        <template is="dom-repeat" items="{{detO}}">
+                            <div data-id$="{{item.class}}={{item.name}}" >
+                                <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
+                                <paper-card detO="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
+                            </div>
+                        </template>
+                    </sortable-list>
+                </paper-material>
+            </div>
+        </iron-collapse>
+        <br><br>
+        <app-header-layout id="glycanTypeFilter" class="blue" mode="seamed">
+            <div id="glycanFilterHeader" class="paper-header">
+                <paper-button id="filterToggleButton" class="indigo" on-click="_toggleNOGlycan" toggles raised>
+                    <iron-icon id="expandIcon" icon="icons:chevron-right" alt="unfold" ></iron-icon>
+                    <iron-icon id="foldIcon" icon="icons:expand-more" alt="fold" disabled></iron-icon>
+                    Non-attached to proteins
+                </paper-button>
+            </div>
+        </app-header-layout>
+        <iron-collapse id="glycanFilterNO" class="horizontal center-justified">
+            <div class="layout horizontal flex" >
+                <paper-material elevation="2" class="flex">
+                    <app-toolbar>
+                        <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
+                        <span class="title"> Non-attached to proteins</span>
+                    </app-toolbar>
+                    <sortable-list id="selectedNP" group="test"  animation="150" class="enzymeSelected"></sortable-list>
+                    <div class="horizontal end-justified layout"><paper-button id="updateButton" class="indigo" on-tap="selectedPropNP">Search</paper-button>
+                        <iron-ajax
+                                id="requestStructNP"
+                                url="http://mendel.isb-sib.ch:8083/api/glycosylations?glycanType=free"
+                                params=''
+                                handle-as="json"
+                                last-response="{{data}}"
+                                on-response="handleStruct"></iron-ajax>
                     </div>
-                  </template>
-              </sortable-list>
-          </paper-material>
-      </div>
-    </iron-collapse>
-  </template>
+                </paper-material>
+            </div>
+            <div class="layout horizontal">
+                <paper-material elevation="2" style="height: 100%" class="flex">
+                    <app-toolbar>
+                        <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
+                        <span class="title">Core</span>
+                    </app-toolbar>
+                    <sortable-list id="list" group="test" animation="150" class="enzymeList" >
+                        <template is="dom-repeat" items="{{coreTypeNP}}">
+                            <div data-id$="{{item.class}}={{item.name}}" >
+                                <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
+                                <paper-card coreTypeNP="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
+                            </div>
+                        </template>
+                    </sortable-list>
+                </paper-material>
+                <paper-material elevation="2" style="height: 100%" class="flex">
+                    <app-toolbar>
+                        <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
+                        <span class="title">Structural properties</span>
+                    </app-toolbar>
+                    <sortable-list id="list" group="test" animation="150" class="enzymeList">
+                        <template is="dom-repeat" items="{{propNP}}">
+                            <div data-id$="{{item.class}}={{item.name}}" >
+                                <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
+                                <paper-card propNP="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
+                            </div>
+                        </template>
+                    </sortable-list>
+                </paper-material>
+                <paper-material elevation="2" style="height: 100%" class="flex">
+                    <app-toolbar>
+                        <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
+                        <span class="title">Determinants</span>
+                    </app-toolbar>
+                    <sortable-list id="list" group="test" animation="150" class="enzymeList" >
+                        <template is="dom-repeat" items="{{detNP}}">
+                            <div data-id$="{{item.class}}={{item.name}}">
+                                <!--Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
+                                <paper-card detNP="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
+                            </div>
+                        </template>
+                    </sortable-list>
+                </paper-material>
+            </div>
+        </iron-collapse>
+    </template>
 
-  <script>
-    Polymer({
-
-      is: 'glyconnect-filter',
-      properties: {
-          repos: {
+    <script>
+      /** @polymerElement */
+      class GlyconnectFilter extends Polymer.Element {
+        static get is() { return 'glyconnect-filter'; }
+        static get properties() {
+          return {
+            repos: {
               type: Array
-          }
-      },
-      selectedPropN: function(){
-        var selN = this.$.selectedN._sortable.toArray();
-        this.param(selN, this.$.requestStruct);
-      },
-      selectedPropO: function(){
-        var selO = this.$.selectedO._sortable.toArray();
-        this.param(selO, this.$.requestStructO);
-      },
-      selectedPropNP: function(){
-        var selNP = this.$.selectedNP._sortable.toArray();
-        this.param(selNP, this.$.requestStructNP);
-      },
-      param: function(propArray, requestType){
-        var myJson = {};
-        for (i = 0; i < propArray.length; i++) {
-          var x = propArray[i];
-          var s = x.split("=");
-          if (s[0] in myJson) {
-            myJson[s[0]].push(s[1])
-          } else {
-            myJson[s[0]]=[s[1]];
+            }
           };
-        };
-        console.log(myJson);
-        requestType.set( 'params', myJson);
-        requestType.generateRequest();
-      },
-      attached: function(){
-        this.$.ajaxDictionary.url = this.resolveUrl('dictionary/jsonGlobalProperties.json');
-        this.$.ajaxDictionary.generateRequest();
-      },
-      handleResponse: function(){
-        this.coreTypeO = this.jsonGlobalProperties['O-linked']['core'];
-        this.coreTypeN = this.jsonGlobalProperties['N-linked']['core'];
-        this.propO = this.jsonGlobalProperties['O-linked']['prop'];
-        this.propN = this.jsonGlobalProperties['N-linked']['prop'];
-        this.detO = this.jsonGlobalProperties['O-linked']['det'];
-        this.detN = this.jsonGlobalProperties['N-linked']['det'];
-        this.propNP = this.jsonGlobalProperties['Non attached to proteins']['prop'];
-        this.detNP = this.jsonGlobalProperties['Non attached to proteins']['det'];
-        this.coreTypeNP = this.jsonGlobalProperties['Non attached to proteins']['core'];
-      },
-      handleStruct: function(){
-        console.log(this.data);
-      },
-      _toggleNGlycan: function () {
-        this.$.glycanFilterN.toggle();
-        if(this.$.foldIcon.hasAttribute('disabled')){
+        }
+
+        constructor() {
+          super();
+        }
+
+        selectedPropN (){
+          var selN = this.$.selectedN._sortable.toArray();
+          this.param(selN, this.$.requestStruct);
+        }
+        selectedPropO(){
+          var selO = this.$.selectedO._sortable.toArray();
+          this.param(selO, this.$.requestStructO);
+        }
+        selectedPropNP(){
+          var selNP = this.$.selectedNP._sortable.toArray();
+          this.param(selNP, this.$.requestStructNP);
+        }
+        param(propArray, requestType){
+          var myJson = {};
+          for (i = 0; i < propArray.length; i++) {
+            var x = propArray[i];
+            var s = x.split("=");
+            if (s[0] in myJson) {
+              myJson[s[0]].push(s[1])
+            } else {
+              myJson[s[0]]=[s[1]];
+            };
+          };
+          console.log(myJson);
+          requestType.set( 'params', myJson);
+          requestType.generateRequest();
+        }
+        connectedCallback (){
+          super.connectedCallback();
+          this.$.ajaxDictionary.url = this.resolveUrl('dictionary/jsonGlobalProperties.json');
+          this.$.ajaxDictionary.generateRequest();
+        }
+        handleResponse(){
+          this.coreTypeO = this.jsonGlobalProperties['O-linked']['core'];
+          this.coreTypeN = this.jsonGlobalProperties['N-linked']['core'];
+          this.propO = this.jsonGlobalProperties['O-linked']['prop'];
+          this.propN = this.jsonGlobalProperties['N-linked']['prop'];
+          this.detO = this.jsonGlobalProperties['O-linked']['det'];
+          this.detN = this.jsonGlobalProperties['N-linked']['det'];
+          this.propNP = this.jsonGlobalProperties['Non attached to proteins']['prop'];
+          this.detNP = this.jsonGlobalProperties['Non attached to proteins']['det'];
+          this.coreTypeNP = this.jsonGlobalProperties['Non attached to proteins']['core'];
+        }
+        handleStruct(){
+          console.log(this.data);
+        }
+        _toggleNGlycan () {
+          this.$.glycanFilterN.toggle();
+          if(this.$.foldIcon.hasAttribute('disabled')){
             this.$.expandIcon.setAttribute('disabled', 'true');
             this.$.foldIcon.removeAttribute('disabled');
-        }else{
+          }else{
             this.$.foldIcon.setAttribute('disabled', 'true');
             this.$.expandIcon.removeAttribute('disabled');
+          }
         }
-      },
-      _toggleOGlycan: function () {
-        this.$.glycanFilterO.toggle();
-        if(this.$.foldIcon.hasAttribute('disabled')){
+        _toggleOGlycan () {
+          this.$.glycanFilterO.toggle();
+          if(this.$.foldIcon.hasAttribute('disabled')){
             this.$.expandIcon.setAttribute('disabled', 'true');
             this.$.foldIcon.removeAttribute('disabled');
-        }else{
+          }else{
             this.$.foldIcon.setAttribute('disabled', 'true');
             this.$.expandIcon.removeAttribute('disabled');
+          }
         }
-      },
-      _toggleNOGlycan: function () {
-        this.$.glycanFilterNO.toggle();
-        if(this.$.foldIcon.hasAttribute('disabled')){
+        _toggleNOGlycan () {
+          this.$.glycanFilterNO.toggle();
+          if(this.$.foldIcon.hasAttribute('disabled')){
             this.$.expandIcon.setAttribute('disabled', 'true');
             this.$.foldIcon.removeAttribute('disabled');
-        }else{
+          }else{
             this.$.foldIcon.setAttribute('disabled', 'true');
             this.$.expandIcon.removeAttribute('disabled');
+          }
         }
-      },
-    });
-  </script>
+      }
+
+      window.customElements.define(GlyconnectFilter.is, GlyconnectFilter);
+
+    </script>
 </dom-module>
