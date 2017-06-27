@@ -37,8 +37,6 @@ This element provides filter box in glyconnect
                 @apply(--layout-horizontal);
                 @apply(--layout-wrap);
                 min-width: 200px;
-                min-height: 200px;
-
                 align-content: center;
             }
             .enzymeSelected{
@@ -66,14 +64,6 @@ This element provides filter box in glyconnect
             }
             ul {
                 list-style-type: none;
-            }
-            .paper-header {
-                font-family: "Roboto";
-                height: 45px;
-                font-size: 20px;The Polymer logo.
-                padding: 0 10px;The Polymer logo.
-                color: red;
-                transition: height 0.2s;
             }
             paper-button#updateButton {
                 height: 50%;
@@ -153,7 +143,6 @@ This element provides filter box in glyconnect
                     </app-toolbar>
                     <div id="selectedN" class="enzymeSelected">
                      </div>
-                    <!-- <sortable-list id="selectedN" group="test"  animation="150" class="enzymeSelected"></sortable-list> -->
                     <div class="horizontal end-justified layout">
                         <paper-button id="updateButton" class="indigo" on-tap="selectedPropN">Search</paper-button>
                         <iron-ajax
@@ -166,7 +155,7 @@ This element provides filter box in glyconnect
                     </div>
                 </paper-material>
             </div>
-              <div class="layout vertical flex">
+              <div id="" class="layout vertical flex">
                <paper-tabs selected="{{selected}}"  no-bar>
                    <paper-tab>Cores</paper-tab>
                    <paper-tab>Structural properties</paper-tab>
@@ -174,34 +163,19 @@ This element provides filter box in glyconnect
                </paper-tabs>
                <iron-pages selected="{{selected}}">
                   <paper-material elevation="2" class="flex enzymeList" style="background: #eeeeee;">
-                         <!-- <sortable-list id="list" group="test" animation="150" class="enzymeList" > -->
                              <template is="dom-repeat" items="{{coreTypeN}}">
-                               <div data-id$="{{item.class}}={{item.name}}">
-                                 <!-- <!-Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
-                                  <paper-button coreTypeN="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="copy">{{item.name}}</paper-button>
-                               </div>
+                                  <paper-button id={{item.name}} data-id$="{{item.class}}={{item.name}}" coreTypeN="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
                              </template>
-                         <!-- </sortable-list> -->
                    </paper-material>
                    <paper-material elevation="2" style="background: #eeeeee;" class="flex enzymeList">
-                       <!-- <sortable-list id="list" group="test" animation="150" class="enzymeList" > -->
                            <template is="dom-repeat" items="{{propN}}">
-                             <div data-id$="{{item.class}}={{item.name}}">
-                               <!-- Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
-                               <paper-card propN="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
-                             </div>
+                               <paper-button id="{{item.name}}" data-id$="{{item.class}}={{item.name}}" propN="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
                            </template>
-                       <!-- </sortable-list> -->
                    </paper-material>
                    <paper-material elevation="2" style="background: #eeeeee;" class="flex enzymeList" >
-                       <!-- <sortable-list id="list" group="test" animation="150" class="enzymeList" > -->
                            <template is="dom-repeat" items="{{detN}}">
-                             <div data-id$="{{item.class}}={{item.name}}">
-                               <!-- Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
-                               <paper-card detN="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
-                             </div>
+                               <paper-button id="{{idCreator(item.name)}}" data-id$="{{item.class}}={{item.name}}" detN="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
                            </template>
-                       <!-- </sortable-list> -->
                    </paper-material>
                </iron-pages>
              </div>
@@ -378,7 +352,7 @@ This element provides filter box in glyconnect
         }
 
         selectedPropN (){
-          var selN = this.$.selectedN._sortable.toArray();
+          var selN =  Polymer.dom(this.$.selectedN).querySelectorAll("paper-button");
           this.param(selN, this.$.requestStruct);
         }
         selectedPropO(){
@@ -391,8 +365,8 @@ This element provides filter box in glyconnect
         }
         param(propArray, requestType){
           var myJson = {};
-          for (i = 0; i < propArray.length; i++) {
-            var x = propArray[i];
+          for (var i = 0; i < propArray.length; i++) {
+            var x = propArray[i].getAttribute("data-id");
             var s = x.split("=");
             if (s[0] in myJson) {
               myJson[s[0]].push(s[1])
@@ -453,6 +427,22 @@ This element provides filter box in glyconnect
             this.$.expandIcon.removeAttribute('disabled');
           }
         }
+        createTag(event) {
+         var list = Polymer.dom(this.root).querySelector("#selectedN");
+         var sourceEl = event.target;
+         var cloneEl = sourceEl.cloneNode(true);
+         cloneEl.id=cloneEl.id+"-clone";
+         cloneEl.addEventListener('tap', e => {this.destroyTag(e)});
+         list.insertBefore(cloneEl, null);
+         event.target.hidden=true;
+       }
+       destroyTag(pr) {
+         Polymer.dom(this.root).querySelector('paper-button[id='+pr.target.id.replace("-clone",'')+']').hidden=false;
+        pr.target.remove();
+       }
+       idCreator(id) {
+         return "d_"+id.replace(/ /g,'').replace(/\(/g, '').replace(/\)/g, '');
+       }
       }
 
       window.customElements.define(GlyconnectFilter.is, GlyconnectFilter);
