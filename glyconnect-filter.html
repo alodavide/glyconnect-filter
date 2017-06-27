@@ -11,7 +11,6 @@
 <link rel="import" href="../paper-tabs/paper-tabs.html">
 <link rel="import" href="../iron-pages/iron-pages.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../paper-tabs/paper-tab.html">
 <!--
 `glyconnect-filter`
 This element provides filter box in glyconnect
@@ -109,7 +108,7 @@ This element provides filter box in glyconnect
                 flex: 0 0 auto;
                 color: white;
             }
-            /*paper-tab:not(:last-child) {
+            paper-tab:not(:last-child) {
                 border-right: solid;
                 border-color: #757575 ;
                 border-width: 1px;
@@ -127,7 +126,7 @@ This element provides filter box in glyconnect
               border-radius: 5px;
               margin: 20px;
               box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
-            }*/
+            }
         </style>
         <iron-ajax
                 id="ajaxDictionary"
@@ -152,7 +151,9 @@ This element provides filter box in glyconnect
                         <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
                         <span class="title">N-Glycan</span>
                     </app-toolbar>
-                    <sortable-list id="selectedN" group="test"  animation="150" class="enzymeSelected"></sortable-list>
+                    <div id="selectedN" class="enzymeSelected">
+                     </div>
+                    <!-- <sortable-list id="selectedN" group="test"  animation="150" class="enzymeSelected"></sortable-list> -->
                     <div class="horizontal end-justified layout">
                         <paper-button id="updateButton" class="indigo" on-tap="selectedPropN">Search</paper-button>
                         <iron-ajax
@@ -172,17 +173,17 @@ This element provides filter box in glyconnect
                    <paper-tab>Determinants</paper-tab>
                </paper-tabs>
                <iron-pages selected="{{selected}}">
-                  <paper-material elevation="2" class="flex" style="background: #eeeeee;">
+                  <paper-material elevation="2" class="flex enzymeList" style="background: #eeeeee;">
                          <!-- <sortable-list id="list" group="test" animation="150" class="enzymeList" > -->
                              <template is="dom-repeat" items="{{coreTypeN}}">
                                <div data-id$="{{item.class}}={{item.name}}">
                                  <!-- <!-Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
-                                  <paper-card coreTypeN="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
+                                  <paper-button coreTypeN="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="copy">{{item.name}}</paper-button>
                                </div>
                              </template>
                          <!-- </sortable-list> -->
                    </paper-material>
-                   <paper-material elevation="2" style="height: 100%" class="flex">
+                   <paper-material elevation="2" style="background: #eeeeee;" class="flex enzymeList">
                        <!-- <sortable-list id="list" group="test" animation="150" class="enzymeList" > -->
                            <template is="dom-repeat" items="{{propN}}">
                              <div data-id$="{{item.class}}={{item.name}}">
@@ -192,7 +193,7 @@ This element provides filter box in glyconnect
                            </template>
                        <!-- </sortable-list> -->
                    </paper-material>
-                   <paper-material elevation="2" style="height: 100%" class="flex" >
+                   <paper-material elevation="2" style="background: #eeeeee;" class="flex enzymeList" >
                        <!-- <sortable-list id="list" group="test" animation="150" class="enzymeList" > -->
                            <template is="dom-repeat" items="{{detN}}">
                              <div data-id$="{{item.class}}={{item.name}}">
@@ -204,50 +205,6 @@ This element provides filter box in glyconnect
                    </paper-material>
                </iron-pages>
              </div>
-            <!-- <div class="layout horizontal">
-                <paper-material elevation="2" style="height: 100%" class="flex">
-                    <app-toolbar>
-                        <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
-                        <span class="title">Core</span>
-                    </app-toolbar>
-                    <sortable-list id="list" group="test" animation="150" class="enzymeList">
-                        <template is="dom-repeat" items="{{coreTypeN}}">
-                            <div data-id$="{{item.class}}={{item.name}}" >
-                                <!Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
-                                <!-- <paper-card coreTypeN="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
-                            </div>
-                        </template>
-                    </sortable-list>
-                </paper-material>
-                <paper-material elevation="2" style="height: 100%" class="flex">
-                    <app-toolbar>
-                        <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
-                        <span class="title">Structural properties</span>
-                    </app-toolbar>
-                    <sortable-list id="list" group="test" animation="150" class="enzymeList" >
-                        <template is="dom-repeat" items="{{propN}}">
-                            <div data-id$="{{item.class}}={{item.name}}" >
-                                <!-Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
-                                <!-- <paper-card propN="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
-                            </div>
-                        </template>
-                    </sortable-list>
-                </paper-material>
-                <paper-material elevation="2" style="height: 100%" class="flex">
-                    <app-toolbar>
-                        <paper-icon-button disabled icon="icons:folder-open" style="color: white"></paper-icon-button>
-                        <span class="title">Determinants</span>
-                    </app-toolbar>
-                    <sortable-list id="list" group="test" animation="150" class="enzymeList" >
-                        <template is="dom-repeat" items="{{detN}}">
-                            <div data-id$="{{item.class}}={{item.name}}" >
-                                <!Important: do not change data-id because it is used for generating the array in Sortable.toArray(). -->
-                                <!-- <paper-card detN="{{item}}" class="card" style$="background-color:{{item.color}}">{{item.name}}</paper-card>
-                            </div>
-                        </template>
-                    </sortable-list>
-                </paper-material>
-            </div>  -->
         </iron-collapse>
         <br><br>
         <app-header-layout id="glycanTypeFilter" class="blue" mode="seamed">
