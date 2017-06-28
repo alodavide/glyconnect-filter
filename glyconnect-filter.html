@@ -140,17 +140,17 @@ This element provides filter box in glyconnect
                <iron-pages selected="{{selected}}">
                   <paper-material elevation="2" class="flex enzymeList" style="background: #eeeeee;">
                        <template is="dom-repeat" items="{{coreTypeN}}">
-                            <paper-button typeLink="N" id={{item.name}}N data-id$="{{item.class}}={{item.name}}" coreTypeN="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
+                            <paper-button typeLink="N" id={{item.name}}N raised data-id$="{{item.class}}={{item.name}}" coreTypeN="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
                        </template>
                    </paper-material>
                    <paper-material elevation="2" style="background: #eeeeee;" class="flex enzymeList">
                        <template is="dom-repeat" items="{{propN}}">
-                           <paper-button typeLink="N" id="{{item.name}}N" data-id$="{{item.class}}={{item.name}}" propN="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
+                           <paper-button typeLink="N" id="{{item.name}}N" raised data-id$="{{item.class}}={{item.name}}" propN="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
                        </template>
                    </paper-material>
                    <paper-material elevation="2" style="background: #eeeeee;" class="flex enzymeList" >
                        <template is="dom-repeat" items="{{detN}}">
-                           <paper-button typeLink="N" id="{{idCreator(item.name)}}N" data-id$="{{item.class}}={{item.name}}" detN="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
+                           <paper-button typeLink="N" id="{{idCreator(item.name)}}N" raised data-id$="{{item.class}}={{item.name}}" detN="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
                        </template>
                    </paper-material>
                </iron-pages>
@@ -188,17 +188,17 @@ This element provides filter box in glyconnect
              <iron-pages selected="{{selected}}">
                 <paper-material elevation="2" style="background: #eeeeee;" class="flex enzymeList">
                     <template is="dom-repeat" items="{{coreTypeO}}">
-                        <paper-button typeLink="O" id={{idCreator(item.name)}}O data-id$="{{item.class}}={{item.name}}" coreTypeO="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}} </paper-button>
+                        <paper-button typeLink="O" raised id={{idCreator(item.name)}}O data-id$="{{item.class}}={{item.name}}" coreTypeO="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}} </paper-button>
                     </template>
                 </paper-material>
                 <paper-material elevation="2" style="background: #eeeeee;" class="flex enzymeList">
                     <template is="dom-repeat" items="{{propO}}">
-                        <paper-button typeLink="O" id={{item.name}}O data-id$="{{item.class}}={{item.name}}" propO="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
+                        <paper-button typeLink="O" raised id={{item.name}}O data-id$="{{item.class}}={{item.name}}" propO="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
                     </template>
                 </paper-material>
                 <paper-material elevation="2" style="background: #eeeeee;" class="flex enzymeList">
                     <template is="dom-repeat" items="{{detO}}">
-                        <paper-button typeLink="O" id={{idCreator(item.name)}}O data-id$="{{item.class}}={{item.name}}" detO="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
+                        <paper-button typeLink="O" raised id={{idCreator(item.name)}}O data-id$="{{item.class}}={{item.name}}" detO="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
                     </template>
                 </paper-material>
               </iron-pages>
@@ -236,17 +236,17 @@ This element provides filter box in glyconnect
              <iron-pages selected="{{selected}}">
                 <paper-material elevation="2" style="background: #eeeeee;" class="flex enzymeList">
                     <template is="dom-repeat" items="{{coreTypeNP}}">
-                        <paper-button typeLink="NP" id={{item.name}}NP data-id$="{{item.class}}={{item.name}}" coreTypeNP="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}} </paper-button>
+                        <paper-button typeLink="NP" raised id={{item.name}}NP data-id$="{{item.class}}={{item.name}}" coreTypeNP="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}} </paper-button>
                     </template>
                 </paper-material>
                 <paper-material elevation="2" style="background: #eeeeee;" class="flex enzymeList">
                     <template is="dom-repeat" items="{{propNP}}">
-                        <paper-button typeLink="NP" id={{item.name}}NP data-id$="{{item.class}}={{item.name}}" propNP="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
+                        <paper-button typeLink="NP" raised id={{item.name}}NP data-id$="{{item.class}}={{item.name}}" propNP="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
                     </template>
                 </paper-material>
                 <paper-material elevation="2" style="background: #eeeeee;" class="flex enzymeList">
                     <template is="dom-repeat" items="{{detNP}}">
-                        <paper-button typeLink="NP" id={{idCreator(item.name)}}NP data-id$="{{item.class}}={{item.name}}" detO="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
+                        <paper-button typeLink="NP" raised id={{idCreator(item.name)}}NP data-id$="{{item.class}}={{item.name}}" detO="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
                     </template>
                 </paper-material>
               </iron-pages>
