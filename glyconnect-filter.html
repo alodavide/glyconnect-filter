@@ -11,6 +11,7 @@
 <link rel="import" href="../paper-tabs/paper-tabs.html">
 <link rel="import" href="../iron-pages/iron-pages.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-styles/element-styles/paper-material-styles.html">
 <!--
 `glyconnect-filter`
 This element provides filter box in glyconnect
@@ -20,7 +21,7 @@ This element provides filter box in glyconnect
 
 <dom-module id="glyconnect-filter">
     <template>
-        <style is="custom-style" include="iron-flex iron-flex-alignment"></style>
+        <style is="custom-style" include="iron-flex iron-flex-alignment paper-material-styles"></style>
         <style>
             :host {
                 display: block;
@@ -101,6 +102,12 @@ This element provides filter box in glyconnect
               margin: 20px;
               box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
             }
+            .materialCard {
+                margin: 20px;
+                background: #eeeeee;
+                @apply --paper-material-elevation-2;
+
+            }
         </style>
         <iron-ajax
                 id="ajaxDictionary"
@@ -119,7 +126,7 @@ This element provides filter box in glyconnect
         </app-header-layout>
         <iron-collapse id="glycanFilterN" class="horizontal center-justified">
             <div class="layout horizontal flex" >
-                <paper-material elevation="2" class="flex">
+              <div class="layout materialCard flex">
                     <app-toolbar>
                         <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
                         <span class="title">N-Glycan</span>
@@ -129,7 +136,7 @@ This element provides filter box in glyconnect
                     <div class="horizontal end-justified layout">
                         <paper-button id="updateButton" class="indigo" on-tap="selectedPropN">Search</paper-button>
                     </div>
-                </paper-material>
+              </div>
             </div>
               <div id="" class="layout vertical flex">
                <paper-tabs selected="{{selected}}"  no-bar>
@@ -168,7 +175,7 @@ This element provides filter box in glyconnect
         </app-header-layout>
         <iron-collapse id="glycanFilterO" class="horizontal center-justified">
             <div class="layout horizontal flex" >
-                <paper-material elevation="2" class="flex">
+                <div class="layout materialCard flex">
                     <app-toolbar>
                         <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
                         <span class="title">O-Glycan</span>
@@ -177,7 +184,7 @@ This element provides filter box in glyconnect
                      </div>
                     <div class="horizontal end-justified layout"><paper-button id="updateButton" class="indigo" on-tap="selectedPropO">Search</paper-button>
                     </div>
-                </paper-material>
+                </div>
             </div>
             <div id="" class="layout vertical flex">
              <paper-tabs selected="{{selected}}"  no-bar>
@@ -216,7 +223,7 @@ This element provides filter box in glyconnect
         </app-header-layout>
         <iron-collapse id="glycanFilterNO" class="horizontal center-justified">
             <div class="layout horizontal flex" >
-                <paper-material elevation="2" class="flex">
+                <div class="layout materialCard flex">
                     <app-toolbar>
                         <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
                         <span class="title"> Non-attached to proteins</span>
@@ -225,7 +232,7 @@ This element provides filter box in glyconnect
                      </div>
                     <div class="horizontal end-justified layout"><paper-button id="updateButton" class="indigo" on-tap="selectedPropNP">Search</paper-button>
                     </div>
-                </paper-material>
+                </div>
             </div>
             <div id="" class="layout vertical flex">
              <paper-tabs selected="{{selected}}"  no-bar>
@@ -234,21 +241,21 @@ This element provides filter box in glyconnect
                  <paper-tab>Determinants</paper-tab>
              </paper-tabs>
              <iron-pages selected="{{selected}}">
-                <paper-material elevation="2" style="background: #eeeeee;" class="flex enzymeList">
+                <div class="layout materialCard flex">
                     <template is="dom-repeat" items="{{coreTypeNP}}">
                         <paper-button typeLink="NP" raised id={{item.name}}NP data-id$="{{item.class}}={{item.name}}" coreTypeNP="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}} </paper-button>
                     </template>
-                </paper-material>
-                <paper-material elevation="2" style="background: #eeeeee;" class="flex enzymeList">
+                </div>
+                <div class="layout materialCard flex">
                     <template is="dom-repeat" items="{{propNP}}">
                         <paper-button typeLink="NP" raised id={{item.name}}NP data-id$="{{item.class}}={{item.name}}" propNP="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
                     </template>
-                </paper-material>
-                <paper-material elevation="2" style="background: #eeeeee;" class="flex enzymeList">
+                </div>
+                <div class="layout materialCard flex">
                     <template is="dom-repeat" items="{{detNP}}">
                         <paper-button typeLink="NP" raised id={{idCreator(item.name)}}NP data-id$="{{item.class}}={{item.name}}" detO="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
                     </template>
-                </paper-material>
+                </div>
               </iron-pages>
             </div>
         </iron-collapse>
