@@ -11,7 +11,7 @@
 <link rel="import" href="../paper-tabs/paper-tabs.html">
 <link rel="import" href="../iron-pages/iron-pages.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../bower_components/paper-styles/element-styles/paper-material-styles.html">
+<link rel="import" href="../paper-styles/element-styles/paper-material-styles.html">
 <!--
 `glyconnect-filter`
 This element provides filter box in glyconnect
@@ -28,10 +28,6 @@ This element provides filter box in glyconnect
             }
             iron-icon[disabled]{
                 display: none;
-            }
-            paper-material {
-                margin: 20px;
-                background-color: #eee;
             }
             .enzymeList{
                 padding: 5px;
@@ -57,9 +53,6 @@ This element provides filter box in glyconnect
             }
             paper-button#filterToggleButton {
                 width: 100%;
-            }
-            ul {
-                list-style-type: none;
             }
             paper-button#updateButton {
                 height: 50%;
@@ -135,6 +128,7 @@ This element provides filter box in glyconnect
                      </div>
                     <div class="horizontal end-justified layout">
                         <paper-button id="updateButton" class="indigo" on-tap="selectedPropN">Search</paper-button>
+                        <paper-button id="updateButton" typeLink="N" class="indigo" on-tap="clearFilter">Clear</paper-button>
                     </div>
               </div>
             </div>
@@ -145,21 +139,21 @@ This element provides filter box in glyconnect
                    <paper-tab>Determinants</paper-tab>
                </paper-tabs>
                <iron-pages selected="{{selected}}">
-                  <paper-material elevation="2" class="flex enzymeList" style="background: #eeeeee;">
+                  <div class="layout materialCard flex">
                        <template is="dom-repeat" items="{{coreTypeN}}">
                             <paper-button typeLink="N" id={{item.name}}N raised data-id$="{{item.class}}={{item.name}}" coreTypeN="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
                        </template>
-                   </paper-material>
-                   <paper-material elevation="2" style="background: #eeeeee;" class="flex enzymeList">
+                   </div>
+                   <div class="layout materialCard flex">
                        <template is="dom-repeat" items="{{propN}}">
                            <paper-button typeLink="N" id="{{item.name}}N" raised data-id$="{{item.class}}={{item.name}}" propN="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
                        </template>
-                   </paper-material>
-                   <paper-material elevation="2" style="background: #eeeeee;" class="flex enzymeList" >
+                   </div>
+                   <div class="layout materialCard flex">
                        <template is="dom-repeat" items="{{detN}}">
                            <paper-button typeLink="N" id="{{idCreator(item.name)}}N" raised data-id$="{{item.class}}={{item.name}}" detN="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
                        </template>
-                   </paper-material>
+                   </div>
                </iron-pages>
              </div>
         </iron-collapse>
@@ -182,7 +176,9 @@ This element provides filter box in glyconnect
                     </app-toolbar>
                     <div id="selectedO" class="enzymeSelected">
                      </div>
-                    <div class="horizontal end-justified layout"><paper-button id="updateButton" class="indigo" on-tap="selectedPropO">Search</paper-button>
+                    <div class="horizontal end-justified layout">
+                      <paper-button id="updateButton" class="indigo" on-tap="selectedPropO">Search</paper-button>
+                      <paper-button id="updateButton" typeLink="O" class="indigo" on-tap="clearFilter">Clear</paper-button>
                     </div>
                 </div>
             </div>
@@ -193,21 +189,21 @@ This element provides filter box in glyconnect
                  <paper-tab>Determinants</paper-tab>
              </paper-tabs>
              <iron-pages selected="{{selected}}">
-                <paper-material elevation="2" style="background: #eeeeee;" class="flex enzymeList">
+                <div class="layout materialCard flex">
                     <template is="dom-repeat" items="{{coreTypeO}}">
                         <paper-button typeLink="O" raised id={{idCreator(item.name)}}O data-id$="{{item.class}}={{item.name}}" coreTypeO="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}} </paper-button>
                     </template>
-                </paper-material>
-                <paper-material elevation="2" style="background: #eeeeee;" class="flex enzymeList">
+                </div>
+                <div class="layout materialCard flex">
                     <template is="dom-repeat" items="{{propO}}">
                         <paper-button typeLink="O" raised id={{item.name}}O data-id$="{{item.class}}={{item.name}}" propO="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
                     </template>
-                </paper-material>
-                <paper-material elevation="2" style="background: #eeeeee;" class="flex enzymeList">
+                </div>
+                <div class="layout materialCard flex">
                     <template is="dom-repeat" items="{{detO}}">
                         <paper-button typeLink="O" raised id={{idCreator(item.name)}}O data-id$="{{item.class}}={{item.name}}" detO="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
                     </template>
-                </paper-material>
+                </div>
               </iron-pages>
             </div>
         </iron-collapse>
@@ -230,7 +226,9 @@ This element provides filter box in glyconnect
                     </app-toolbar>
                     <div id="selectedNP" class="enzymeSelected">
                      </div>
-                    <div class="horizontal end-justified layout"><paper-button id="updateButton" class="indigo" on-tap="selectedPropNP">Search</paper-button>
+                    <div class="horizontal end-justified layout">
+                      <paper-button id="updateButton" class="indigo" on-tap="selectedPropNP">Search</paper-button>
+                      <paper-button id="updateButton" typeLink="NP" class="indigo" on-tap="clearFilter">Clear</paper-button>
                     </div>
                 </div>
             </div>
@@ -362,6 +360,15 @@ This element provides filter box in glyconnect
           }else{
             this.$.foldIcon.setAttribute('disabled', 'true');
             this.$.expandIcon.removeAttribute('disabled');
+          }
+        }
+        clearFilter(event) {
+          var typeGlyco = event.target.getAttribute("typeLink");
+          var vr = this.shadowRoot.querySelector("#selected"+typeGlyco);
+          var toClear =  Polymer.dom(vr).querySelectorAll("paper-button");
+          for (var i = 0; i < toClear.length; i++) {
+            Polymer.dom(this.root).querySelector('paper-button[id='+toClear[i].id.replace("-clone",'')+']').hidden=false;
+            toClear[i].remove();
           }
         }
         createTag(event) {
