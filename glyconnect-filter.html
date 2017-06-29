@@ -148,9 +148,9 @@ This element provides filter box in glyconnect
                    <span class="title">N-Glycan</span>
                </app-layout>
                <sortable-list id="selectedN" group="test"  animation="150" class="enzymeSelected"></sortable-list>
-               <div class="horizontal end-justified layout">
+               <div style="margin: 20px" class="horizontal end-justified layout">
                    <paper-button id="updateButton" class="indigo" on-tap="selectedPropN">Search</paper-button>
-                   <!-- <paper-button id="updateButton" class="indigo" on-tap="clearFunction">Clear</paper-button> -->
+                   <paper-button id="updateButton" class="indigo" on-tap="clearFunction">Clear</paper-button>
                    <iron-ajax
                      id="requestStruct"
                      url="http://mendel.isb-sib.ch:8083/api/glycosylations?glycanType=n-linked"
