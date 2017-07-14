@@ -17,7 +17,10 @@
     "iron-pages": "PolymerElements/iron-pages#^2.0.0",
     "paper-icon-button": "PolymerElements/paper-icon-button#^2.0.0",
     "paper-styles": "^2.0.0",
-    "element-styles": "^0.1.4"
+    "element-styles": "^0.1.4",
+    "paper-autocomplete": "^2.6.1",
+    "paper-tags-input": "^1.2.6",
+    "paper-tags": "*"
   },
   "devDependencies": {
     "iron-demo-helpers": "PolymerElements/iron-demo-helpers#2.0-preview",

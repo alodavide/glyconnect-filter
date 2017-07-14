@@ -12,10 +12,11 @@
 <link rel="import" href="../iron-pages/iron-pages.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../paper-styles/element-styles/paper-material-styles.html">
+<link rel="import" href="../paper-tags-input/paper-tags-input.html">
+
 <!--
 `glyconnect-filter`
 This element provides filter box in glyconnect
-
 @demo demo/index.html
 -->
 
@@ -56,7 +57,6 @@ This element provides filter box in glyconnect
             paper-button.updateButton {
                 margin: 13px;
                 font-size: 16px;
-
             }
             #glycanFilterHeader {
                 font-size: 16px;
@@ -95,7 +95,6 @@ This element provides filter box in glyconnect
                 margin: 20px;
                 background: #eeeeee;
                 @apply --paper-material-elevation-2;
-
             }
         </style>
         <iron-ajax
@@ -104,6 +103,31 @@ This element provides filter box in glyconnect
                 method="GET"
                 on-response="handleResponse"
         ></iron-ajax>
+        <app-header-layout id="glycanTypeFilter" mode="seamed">
+            <div id="glycanFilterHeader">
+                <paper-button id="filterToggleButton" class="indigo" on-click="_toggleProtein" toggles raised>
+                    <iron-icon id="expandIcon" icon="icons:chevron-right" alt="unfold" ></iron-icon>
+                    <iron-icon id="foldIcon" icon="icons:expand-more" alt="fold" disabled></iron-icon>
+                    Protein
+                </paper-button>
+            </div>
+        </app-header-layout>
+        <iron-collapse id="glycanFilterProt" class="horizontal center-justified">
+            <div class="layout horizontal flex" >
+              <div class="layout materialCard flex">
+                    <app-toolbar>
+                        <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
+                        <span class="title">N-Glycan</span>
+                    </app-toolbar>
+                    <div class="horizontal end-justified layout">
+                        <paper-button class="indigo updateButton" on-tap="selectedPropN">Search</paper-button>
+                        <paper-button typeLink="N" class="indigo updateButton" on-tap="clearFilter">Clear</paper-button>
+                    </div>
+              </div>
+            </div>
+        </iron-collapse>
+        <br><br>
+        <paper-tags-input>blaaaaaaaaaaaaaaa</paper-tags-input>
         <app-header-layout id="glycanTypeFilter" mode="seamed">
             <div id="glycanFilterHeader">
                 <paper-button id="filterToggleButton" class="indigo" on-click="_toggleNGlycan" toggles raised>
@@ -275,11 +299,9 @@ This element provides filter box in glyconnect
             }
           };
         }
-
         constructor() {
           super();
         }
-
         selectedPropN (){
           var selN =  Polymer.dom(this.$.selectedN).querySelectorAll("paper-button");
           var jsonParam = this.param(selN);
@@ -327,6 +349,16 @@ This element provides filter box in glyconnect
           this.propNP = jsonGlobalProperties['Non attached to proteins']['prop'];
           this.detNP = jsonGlobalProperties['Non attached to proteins']['det'];
           this.coreTypeNP = jsonGlobalProperties['Non attached to proteins']['core'];
+        }
+        _toggleProtein () {
+          this.$.glycanFilterProt.toggle();
+          if(this.$.foldIcon.hasAttribute('disabled')){
+            this.$.expandIcon.setAttribute('disabled', 'true');
+            this.$.foldIcon.removeAttribute('disabled');
+          }else{
+            this.$.foldIcon.setAttribute('disabled', 'true');
+            this.$.expandIcon.removeAttribute('disabled');
+          }
         }
         _toggleNGlycan () {
           this.$.glycanFilterN.toggle();
@@ -385,8 +417,6 @@ This element provides filter box in glyconnect
          return "d_"+id.replace(/ /g,'').replace(/\(/g, '').replace(/\)/g, '').replace(/\,/g, "").replace("/","").replace(/\'/g,"");
        }
       }
-
       window.customElements.define(GlyconnectFilter.is, GlyconnectFilter);
-
     </script>
 </dom-module>
