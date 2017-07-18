@@ -12,7 +12,7 @@
 <link rel="import" href="../iron-pages/iron-pages.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../paper-styles/element-styles/paper-material-styles.html">
-<link rel="import" href="../paper-tags-input/paper-tags-input.html">
+<link rel="import" href="../paper-autocomplete/paper-autocomplete.html">
 
 <!--
 `glyconnect-filter`
@@ -125,9 +125,16 @@ This element provides filter box in glyconnect
                     </div>
               </div>
             </div>
+            <paper-autocomplete class="autocomplete-states" label="Select State" id="input-local" no-label-float="true"></paper-autocomplete>
+
+            <div class="autocomplete-wrapper">
+              <paper-input id="myInput" label="Select State"></paper-input>
+              <paper-autocomplete-suggestions
+                for="myInput"
+                source="[[accounts]]"></paper-autocomplete-suggestions>
+            </div>
         </iron-collapse>
         <br><br>
-        <paper-tags-input>blaaaaaaaaaaaaaaa</paper-tags-input>
         <app-header-layout id="glycanTypeFilter" mode="seamed">
             <div id="glycanFilterHeader">
                 <paper-button id="filterToggleButton" class="indigo" on-click="_toggleNGlycan" toggles raised>
@@ -299,6 +306,7 @@ This element provides filter box in glyconnect
             }
           };
         }
+        
         constructor() {
           super();
         }
