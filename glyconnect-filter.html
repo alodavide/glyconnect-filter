@@ -12,7 +12,9 @@
 <link rel="import" href="../iron-pages/iron-pages.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../paper-styles/element-styles/paper-material-styles.html">
-<link rel="import" href="../paper-autocomplete/paper-autocomplete.html">
+<!-- <link rel="import" href="../paper-autocomplete/paper-autocomplete.html"> -->
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-autocomplete/paper-autocomplete-suggestions.html">
 
 <!--
 `glyconnect-filter`
@@ -125,8 +127,7 @@ This element provides filter box in glyconnect
                     </div>
               </div>
             </div>
-            <paper-autocomplete class="autocomplete-states" label="Select State" id="input-local" no-label-float="true"></paper-autocomplete>
-
+            <!-- <paper-autocomplete class="autocomplete-states" label="Select State" id="input-local" no-label-float="true"></paper-autocomplete> -->
             <div class="autocomplete-wrapper">
               <paper-input id="myInput" label="Select State"></paper-input>
               <paper-autocomplete-suggestions
@@ -287,144 +288,250 @@ This element provides filter box in glyconnect
     </template>
 
     <script>
-      /** @polymerElement */
-      class GlyconnectFilter extends Polymer.Element {
-        static get is() { return 'glyconnect-filter'; }
-        static get properties() {
-          return {
-            repos: {
-              type: Array
-            },
-            selected: {
-              type: String,
-              value: 0
-            },
-            filterOutput: {
-              type: Array,
-              reflectToAttribute: true,
-              notify: true
-            }
-          };
-        }
-
-        constructor() {
-          super();
-        }
-        selectedPropN (){
-          var selN =  Polymer.dom(this.$.selectedN).querySelectorAll("paper-button");
-          var jsonParam = this.param(selN);
-          jsonParam.glycanType = 'n-linked';
-          this.filterOutput = jsonParam;
-        }
-        selectedPropO(){
-          var selO = Polymer.dom(this.$.selectedO).querySelectorAll("paper-button");
-          var jsonParam = this.param(selO);
-          jsonParam.glycanType = 'o-linked';
-          this.filterOutput = jsonParam;
-        }
-        selectedPropNP(){
-          var selNP = Polymer.dom(this.$.selectedNP).querySelectorAll("paper-button");
-          var jsonParam = this.param(selNP);
-          jsonParam.glycanType = 'free';
-          this.filterOutput = jsonParam;
-        }
-        param(propArray){
-          var myJson = {};
-          for (var i = 0; i < propArray.length; i++) {
-            var x = propArray[i].getAttribute("data-id");
-            var s = x.split("=");
-            if (s[0] in myJson) {
-              myJson[s[0]].push(s[1])
-            } else {
-              myJson[s[0]]=[s[1]];
-            }
+    /** @polymerElement */
+    class GlyconnectFilter extends Polymer.Element {
+      static get is() { return 'glyconnect-filter'; }
+      static get properties() {
+        return {
+          repos: {
+            type: Array
+          },
+          selected: {
+            type: String,
+            value: 0
+          },
+          filterOutput: {
+            type: Array,
+            reflectToAttribute: true,
+            notify: true
           }
-          return myJson;
-        }
-        connectedCallback (){
-          super.connectedCallback();
-          this.$.ajaxDictionary.url = this.resolveUrl('dictionary/jsonGlobalProperties.json');
-          this.$.ajaxDictionary.generateRequest();
-        }
-        handleResponse(data){
-          var jsonGlobalProperties = data.detail.response;
-          this.coreTypeO = jsonGlobalProperties['O-linked']['core'];
-          this.coreTypeN = jsonGlobalProperties['N-linked']['core'];
-          this.propO = jsonGlobalProperties['O-linked']['prop'];
-          this.propN = jsonGlobalProperties['N-linked']['prop'];
-          this.detO = jsonGlobalProperties['O-linked']['det'];
-          this.detN = jsonGlobalProperties['N-linked']['det'];
-          this.propNP = jsonGlobalProperties['Non attached to proteins']['prop'];
-          this.detNP = jsonGlobalProperties['Non attached to proteins']['det'];
-          this.coreTypeNP = jsonGlobalProperties['Non attached to proteins']['core'];
-        }
-        _toggleProtein () {
-          this.$.glycanFilterProt.toggle();
-          if(this.$.foldIcon.hasAttribute('disabled')){
-            this.$.expandIcon.setAttribute('disabled', 'true');
-            this.$.foldIcon.removeAttribute('disabled');
-          }else{
-            this.$.foldIcon.setAttribute('disabled', 'true');
-            this.$.expandIcon.removeAttribute('disabled');
-          }
-        }
-        _toggleNGlycan () {
-          this.$.glycanFilterN.toggle();
-          if(this.$.foldIcon.hasAttribute('disabled')){
-            this.$.expandIcon.setAttribute('disabled', 'true');
-            this.$.foldIcon.removeAttribute('disabled');
-          }else{
-            this.$.foldIcon.setAttribute('disabled', 'true');
-            this.$.expandIcon.removeAttribute('disabled');
-          }
-        }
-        _toggleOGlycan () {
-          this.$.glycanFilterO.toggle();
-          if(this.$.foldIcon.hasAttribute('disabled')){
-            this.$.expandIcon.setAttribute('disabled', 'true');
-            this.$.foldIcon.removeAttribute('disabled');
-          }else{
-            this.$.foldIcon.setAttribute('disabled', 'true');
-            this.$.expandIcon.removeAttribute('disabled');
-          }
-        }
-        _toggleNOGlycan () {
-          this.$.glycanFilterNO.toggle();
-          if(this.$.foldIcon.hasAttribute('disabled')){
-            this.$.expandIcon.setAttribute('disabled', 'true');
-            this.$.foldIcon.removeAttribute('disabled');
-          }else{
-            this.$.foldIcon.setAttribute('disabled', 'true');
-            this.$.expandIcon.removeAttribute('disabled');
-          }
-        }
-        clearFilter(event) {
-          var typeGlyco = event.target.getAttribute("typeLink");
-          var vr = this.shadowRoot.querySelector("#selected"+typeGlyco);
-          var toClear =  Polymer.dom(vr).querySelectorAll("paper-button");
-          for (var i = 0; i < toClear.length; i++) {
-            Polymer.dom(this.root).querySelector('paper-button[id='+toClear[i].id.replace("-clone",'')+']').hidden=false;
-            toClear[i].remove();
-          }
-        }
-        createTag(event) {
-         var typeTag = event.target.getAttribute("typeLink");
-         var list = Polymer.dom(this.root).querySelector("#selected"+typeTag);
-         var sourceEl = event.target;
-         var cloneEl = sourceEl.cloneNode(true);
-         event.target.hidden=true;
-         cloneEl.id=cloneEl.id+"-clone";
-         list.insertBefore(cloneEl, null);
-         cloneEl.addEventListener('tap', e => {this.destroyTag(e)});
-       }
-       destroyTag(pr) {
-         Polymer.dom(this.root).querySelector('paper-button[id='+pr.target.id.replace("-clone",'')+']').hidden=false;
-        pr.target.remove();
-       }
-       idCreator(id) {
-         return "d_"+id.replace(/ /g,'').replace(/\(/g, '').replace(/\)/g, '').replace(/\,/g, "").replace("/","").replace(/\'/g,"");
-       }
+        };
       }
-      window.customElements.define(GlyconnectFilter.is, GlyconnectFilter);
+      constructor() {
+        super();
+      }
+      selectedPropN (){
+        var selN =  Polymer.dom(this.$.selectedN).querySelectorAll("paper-button");
+        var jsonParam = this.param(selN);
+        jsonParam.glycanType = 'n-linked';
+        this.filterOutput = jsonParam;
+      }
+      selectedPropO(){
+        var selO = Polymer.dom(this.$.selectedO).querySelectorAll("paper-button");
+        var jsonParam = this.param(selO);
+        jsonParam.glycanType = 'o-linked';
+        this.filterOutput = jsonParam;
+      }
+      selectedPropNP(){
+        var selNP = Polymer.dom(this.$.selectedNP).querySelectorAll("paper-button");
+        var jsonParam = this.param(selNP);
+        jsonParam.glycanType = 'free';
+        this.filterOutput = jsonParam;
+      }
+      param(propArray){
+        var myJson = {};
+        for (var i = 0; i < propArray.length; i++) {
+          var x = propArray[i].getAttribute("data-id");
+          var s = x.split("=");
+          if (s[0] in myJson) {
+            myJson[s[0]].push(s[1])
+          } else {
+            myJson[s[0]]=[s[1]];
+          }
+        }
+        return myJson;
+      }
+      connectedCallback (){
+        super.connectedCallback();
+        this.$.ajaxDictionary.url = this.resolveUrl('dictionary/jsonGlobalProperties.json');
+        this.$.ajaxDictionary.generateRequest();
+      }
+      handleResponse(data){
+        var jsonGlobalProperties = data.detail.response;
+        this.coreTypeO = jsonGlobalProperties['O-linked']['core'];
+        this.coreTypeN = jsonGlobalProperties['N-linked']['core'];
+        this.propO = jsonGlobalProperties['O-linked']['prop'];
+        this.propN = jsonGlobalProperties['N-linked']['prop'];
+        this.detO = jsonGlobalProperties['O-linked']['det'];
+        this.detN = jsonGlobalProperties['N-linked']['det'];
+        this.propNP = jsonGlobalProperties['Non attached to proteins']['prop'];
+        this.detNP = jsonGlobalProperties['Non attached to proteins']['det'];
+        this.coreTypeNP = jsonGlobalProperties['Non attached to proteins']['core'];
+      }
+      _toggleProtein () {
+        this.$.glycanFilterProt.toggle();
+        if(this.$.foldIcon.hasAttribute('disabled')){
+          this.$.expandIcon.setAttribute('disabled', 'true');
+          this.$.foldIcon.removeAttribute('disabled');
+        }else{
+          this.$.foldIcon.setAttribute('disabled', 'true');
+          this.$.expandIcon.removeAttribute('disabled');
+        }
+      }
+      _toggleNGlycan () {
+        this.$.glycanFilterN.toggle();
+        if(this.$.foldIcon.hasAttribute('disabled')){
+          this.$.expandIcon.setAttribute('disabled', 'true');
+          this.$.foldIcon.removeAttribute('disabled');
+        }else{
+          this.$.foldIcon.setAttribute('disabled', 'true');
+          this.$.expandIcon.removeAttribute('disabled');
+        }
+      }
+      _toggleOGlycan () {
+        this.$.glycanFilterO.toggle();
+        if(this.$.foldIcon.hasAttribute('disabled')){
+          this.$.expandIcon.setAttribute('disabled', 'true');
+          this.$.foldIcon.removeAttribute('disabled');
+        }else{
+          this.$.foldIcon.setAttribute('disabled', 'true');
+          this.$.expandIcon.removeAttribute('disabled');
+        }
+      }
+      _toggleNOGlycan () {
+        this.$.glycanFilterNO.toggle();
+        if(this.$.foldIcon.hasAttribute('disabled')){
+          this.$.expandIcon.setAttribute('disabled', 'true');
+          this.$.foldIcon.removeAttribute('disabled');
+        }else{
+          this.$.foldIcon.setAttribute('disabled', 'true');
+          this.$.expandIcon.removeAttribute('disabled');
+        }
+      }
+      clearFilter(event) {
+        var typeGlyco = event.target.getAttribute("typeLink");
+        var vr = this.shadowRoot.querySelector("#selected"+typeGlyco);
+        var toClear =  Polymer.dom(vr).querySelectorAll("paper-button");
+        for (var i = 0; i < toClear.length; i++) {
+          Polymer.dom(this.root).querySelector('paper-button[id='+toClear[i].id.replace("-clone",'')+']').hidden=false;
+          toClear[i].remove();
+        }
+      }
+      createTag(event) {
+       var typeTag = event.target.getAttribute("typeLink");
+       var list = Polymer.dom(this.root).querySelector("#selected"+typeTag);
+       var sourceEl = event.target;
+       var cloneEl = sourceEl.cloneNode(true);
+       event.target.hidden=true;
+       cloneEl.id=cloneEl.id+"-clone";
+       list.insertBefore(cloneEl, null);
+       cloneEl.addEventListener('tap', e => {this.destroyTag(e)});
+     }
+     destroyTag(pr) {
+       Polymer.dom(this.root).querySelector('paper-button[id='+pr.target.id.replace("-clone",'')+']').hidden=false;
+      pr.target.remove();
+     }
+     idCreator(id) {
+       return "d_"+id.replace(/ /g,'').replace(/\(/g, '').replace(/\)/g, '').replace(/\,/g, "").replace("/","").replace(/\'/g,"");
+     }
+    }
+    window.customElements.define(GlyconnectFilter.is, GlyconnectFilter);
+    window.addEventListener('WebComponentsReady', function () {
+    // Async call needed here for IE11/Edge compatibility.
+    Polymer.Base.async(function () {
+
+      var states = [
+        {"text": "Alabama", "value": "AL"},
+        {"text": "Alaska", "value": "AK"},
+        {"text": "American Samoa", "value": "AS"},
+        {"text": "Arizona", "value": "AZ"},
+        {"text": "Arkansas", "value": "AR"},
+        {"text": "California", "value": "CA"},
+        {"text": "Colorado", "value": "CO"},
+        {"text": "Connecticut", "value": "CT"},
+        {"text": "Delaware", "value": "DE"},
+        {"text": "District Of Columbia", "value": "DC"},
+        {"text": "Federated States Of Micronesia", "value": "FM"},
+        {"text": "Florida", "value": "FL"},
+        {"text": "Georgia", "value": "GA"},
+        {"text": "Guam", "value": "GU"},
+        {"text": "Hawaii", "value": "HI"},
+        {"text": "Idaho", "value": "ID"},
+        {"text": "Illinois", "value": "IL"},
+        {"text": "Indiana", "value": "IN"},
+        {"text": "Iowa", "value": "IA"},
+        {"text": "Kansas", "value": "KS"},
+        {"text": "Kentucky", "value": "KY"},
+        {"text": "Louisiana", "value": "LA"},
+        {"text": "Maine", "value": "ME"},
+        {"text": "Marshall Islands", "value": "MH"},
+        {"text": "Maryland", "value": "MD"},
+        {"text": "Massachusetts", "value": "MA"},
+        {"text": "Michigan", "value": "MI"},
+        {"text": "Minnesota", "value": "MN"},
+        {"text": "Mississippi", "value": "MS"},
+        {"text": "Missouri", "value": "MO"},
+        {"text": "Montana", "value": "MT"},
+        {"text": "Nebraska", "value": "NE"},
+        {"text": "Nevada", "value": "NV"},
+        {"text": "New Hampshire", "value": "NH"},
+        {"text": "New Jersey", "value": "NJ"},
+        {"text": "New Mexico", "value": "NM"},
+        {"text": "New York", "value": "NY"},
+        {"text": "North Carolina", "value": "NC"},
+        {"text": "North Dakota", "value": "ND"},
+        {"text": "Northern Mariana Islands", "value": "MP"},
+        {"text": "Ohio", "value": "OH"},
+        {"text": "Oklahoma", "value": "OK"},
+        {"text": "Oregon", "value": "OR"},
+        {"text": "Palau", "value": "PW"},
+        {"text": "Pennsylvania", "value": "PA"},
+        {"text": "Puerto Rico", "value": "PR"},
+        {"text": "Rhode Island", "value": "RI"},
+        {"text": "South Carolina", "value": "SC"},
+        {"text": "South Dakota", "value": "SD"},
+        {"text": "Tennessee", "value": "TN"},
+        {"text": "Texas", "value": "TX"},
+        {"text": "Utah", "value": "UT"},
+        {"text": "Vermont", "value": "VT"},
+        {"text": "Virgin Islands", "value": "VI"},
+        {"text": "Virginia", "value": "VA"},
+        {"text": "Washington", "value": "WA"},
+        {"text": "West Virginia", "value": "WV"},
+        {"text": "Wisconsin", "value": "WI"},
+        {"text": "Wyoming", "value": "WY"}
+      ];
+
+      var autocompleteSuggestions = Polymer.dom(this.root).querySelectorAll("paper-autocomplete-suggestions");
+      console.log(autocompleteSuggestions);
+      autocompleteSuggestions.source = states;
+      autocompleteSuggestions.addEventListener('autocomplete-selected', function () {
+        var paperToast = document.querySelector('paper-toast');
+        var selected = event.detail.text;
+        paperToast.text = 'Selected: ' + selected;
+        paperToast.show();
+      });
+    });
+  });
+            // accounts: {
+            //   type: Array,
+            //   value: function() {var states = [
+            //   {'text': 'Alabama', 'value': 'AL'},
+            //   {'text': 'Alaska', 'value': 'AK'},
+            //   {'text': 'American Samoa', 'value': 'AS'},
+            //   {'text': 'Arizona', 'value': 'AZ'},
+            //   {'text': 'Arkansas', 'value': 'AR'},
+            //   {'text': 'California', 'value': 'CA'},
+            //   {'text': 'Colorado', 'value': 'CO'},
+            //   {'text': 'Connecticut', 'value': 'CT'},
+            //   {'text': 'Delaware', 'value': 'DE'},
+            //   {'text': 'District Of Columbia', 'value': 'DC'},
+            //   {'text': 'Federated States Of Micronesia', 'value': 'FM'},
+            //   {'text': 'Florida', 'value': 'FL'},
+            //   {'text': 'Georgia', 'value': 'GA'},
+            //   {'text': 'Guam', 'value': 'GU'},
+            //   {'text': 'Hawaii', 'value': 'HI'},
+            //   {'text': 'Idaho', 'value': 'ID'},
+            //   {'text': 'Illinois', 'value': 'IL'},
+            //   {'text': 'Indiana', 'value': 'IN'},
+            //   {'text': 'Iowa', 'value': 'IA'},
+            //   {'text': 'Kansas', 'value': 'KS'},
+            //   {'text': 'Kentucky', 'value': 'KY'},
+            //   {'text': 'Louisiana', 'value': 'LA'},
+            //   {'text': 'Maine', 'value': 'ME'},
+            //   {'text': 'Marshall Islands', 'value': 'MH'},
+            //   ];
+            //   return states; }
+            // }
     </script>
 </dom-module>
