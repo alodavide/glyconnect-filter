@@ -18,6 +18,7 @@
 <link rel="import" href="../vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="../iron-list/iron-list.html">
 <link rel="import" href="../template/template.html">
+<link rel="import" href="../iron-form/iron-form.html">
 <!--
 `glyconnect-filter`
 This element provides filter box in glyconnect
@@ -139,15 +140,12 @@ This element provides filter box in glyconnect
                 for="myInput"
                 source="[[accounts]]" id="ps"></paper-autocomplete-suggestions>
             </div> -->
-            <vaadin-combo-box id="protein" items="[[protNames]]">
-              <template>
-                [[index]]: [[item.label]] <b>[[item.value]</b>
-              </template>
-            </vaadin-combo-box>
-            <p>Selected value: <span id="selected-value"></span>.</p>
-            <!-- <vaadin-combo-box id="numbers-box" label="Number"></vaadin-combo-box>
-            <p>Selected item: <span id="selected-item"></span>.</p>
-            <p>Value: <span id="value"></span>.</p> -->
+            <iron-form>
+              <form method="post" demo>
+                <vaadin-combo-box name="name" required label="Element"></vaadin-combo-box>
+                <button>Submit</button>
+              </form>
+            </iron-form>
         </iron-collapse>
         <br><br>
         <app-header-layout id="glycanTypeFilter" mode="seamed">
@@ -380,6 +378,7 @@ This element provides filter box in glyconnect
                     {"label": "West Virginia", "value": "WV"},
                     {"label": "Wisconsin", "value": "WI"},
                     {"label": "Wyoming", "value": "WY"}],
+              notify: true
           }
         };
       }
@@ -389,7 +388,7 @@ This element provides filter box in glyconnect
 
       ready() {
        super.ready();
-       this.$.protein.addEventListener('value-changed', e => {this._showPossibilities(e)});
+       this.$.protein.addEventListener('value-changed', event => {this._showPossibilities(event)});
       }
       selectedPropN (){
         var selN =  Polymer.dom(this.$.selectedN).querySelectorAll("paper-button");
@@ -505,7 +504,7 @@ This element provides filter box in glyconnect
      idCreator(id) {
        return "d_"+id.replace(/ /g,'').replace(/\(/g, '').replace(/\)/g, '').replace(/\,/g, "").replace("/","").replace(/\'/g,"");
      }
-    _showPossibilities () {
+    _showPossibilities (event) {
       var combobox = Polymer.dom(this.root).querySelectorAll('#protein')
       console.log(combobox.value);
       console.log(Polymer.dom(this.root).querySelectorAll('#selected-value'));
