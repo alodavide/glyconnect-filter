@@ -14,6 +14,7 @@
 <link rel="import" href="../paper-styles/element-styles/paper-material-styles.html">
 <link rel="import" href="../paper-autocomplete/paper-autocomplete-suggestions.html">
 <link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-autocomplete/paper-autocomplete.html">
 <!--
 `glyconnect-filter`
 This element provides filter box in glyconnect
@@ -128,11 +129,14 @@ This element provides filter box in glyconnect
                     </div>
               </div>
             </div>
+            <paper-autocomplete class="autocomplete-states" label="Select State" id="input-local" source="[[accounts]]" no-label-float>
+              <paper-input id="myInput" label="Select State"></paper-input>
+            </paper-autocomplete>
             <div class="autocomplete-wrapper">
               <paper-input id="myInput" label="Select State"></paper-input>
               <paper-autocomplete-suggestions
                 id="sug" for="myInput"
-                source="[[accounts]]" selectedOption="[{"text": "Alabama", "value": "AL"}]" isOpen=true textProperty='text' valueProperty='value'></paper-autocomplete-suggestions>
+                source="[[accounts]]"></paper-autocomplete-suggestions>
             </div>
         </iron-collapse>
         <br><br>
@@ -308,7 +312,7 @@ This element provides filter box in glyconnect
             },
             accounts: {
               type: Array,
-              value: [{"text": "Alabama", "value": "AL"},
+              value: function(){ return [{"text": "Alabama", "value": "AL"},
                       {"text": "Alaska", "value": "AK"},
                       {"text": "American Samoa", "value": "AS"},
                       {"text": "Arizona", "value": "AZ"},
@@ -366,7 +370,7 @@ This element provides filter box in glyconnect
                       {"text": "Washington", "value": "WA"},
                       {"text": "West Virginia", "value": "WV"},
                       {"text": "Wisconsin", "value": "WI"},
-                      {"text": "Wyoming", "value": "WY"}],
+                      {"text": "Wyoming", "value": "WY"}];}
             },
             selectedOption: {
               type: Object,
@@ -379,10 +383,6 @@ This element provides filter box in glyconnect
         }
         ready() {
          super.ready();
-         console.log(Polymer.dom(this.root).querySelector("#sug"));
-         console.log(Polymer.dom(this.root).querySelector("#sug").source);
-         console.log(this.shadowRoot.querySelector("selectedOption"));
-         Polymer.dom(this.root).querySelector("#sug").suggestions("accounts");
          Polymer.dom(this.root).querySelector("#sug").queryFn(Polymer.dom(this.root).querySelector("#sug").source, "");
          this.$.sug.addEventListener('selected-option-changed', event => {this._showPossibilities(event)});
         }
