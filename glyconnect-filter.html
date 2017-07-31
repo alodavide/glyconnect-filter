@@ -12,9 +12,9 @@
 <link rel="import" href="../iron-pages/iron-pages.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../paper-styles/element-styles/paper-material-styles.html">
-<link rel="import" href="../paper-autocomplete/paper-autocomplete-suggestions.html">
 <link rel="import" href="../paper-input/paper-input.html">
-<link rel="import" href="../paper-autocomplete/paper-autocomplete.html">
+<link rel="import" href="../vaadin-combo-box/vaadin-combo-box.html">
+<link rel="import" href="../iron-list/iron-list.html">
 <!--
 `glyconnect-filter`
 This element provides filter box in glyconnect
@@ -97,15 +97,18 @@ This element provides filter box in glyconnect
                 background: #eeeeee;
                 @apply --paper-material-elevation-2;
             }
-            .autocomplete-wrapper {
-              position: relative;
-            }
         </style>
         <iron-ajax
                 id="ajaxDictionary"
                 handle-as="json"
                 method="GET"
                 on-response="handleResponse"
+        ></iron-ajax>
+        <iron-ajax
+                id="proteinDictionary"
+                handle-as="json"
+                method="GET"
+                on-response="handleProtein"
         ></iron-ajax>
         <app-header-layout id="glycanTypeFilter" mode="seamed">
             <div id="glycanFilterHeader">
@@ -117,27 +120,8 @@ This element provides filter box in glyconnect
             </div>
         </app-header-layout>
         <iron-collapse id="glycanFilterProt" class="horizontal center-justified">
-            <div class="layout horizontal flex" >
-              <div class="layout materialCard flex">
-                    <app-toolbar>
-                        <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
-                        <span class="title">N-Glycan</span>
-                    </app-toolbar>
-                    <div class="horizontal end-justified layout">
-                        <paper-button class="indigo updateButton" on-tap="selectedPropN">Search</paper-button>
-                        <paper-button typeLink="N" class="indigo updateButton" on-tap="clearFilter">Clear</paper-button>
-                    </div>
-              </div>
-            </div>
-            <paper-autocomplete class="autocomplete-states" label="Select State" id="input-local" source="[[accounts]]" no-label-float>
-              <paper-input id="myInput" label="Select State"></paper-input>
-            </paper-autocomplete>
-            <div class="autocomplete-wrapper">
-              <paper-input id="myInput" label="Select State"></paper-input>
-              <paper-autocomplete-suggestions
-                id="sug" for="myInput"
-                source="[[accounts]]"></paper-autocomplete-suggestions>
-            </div>
+              <vaadin-combo-box id="changeEventDemo" required label="Protein"></vaadin-combo-box>
+              <paper-button class="indigo updateButton" id="setRandomValue" raised>Search</paper-button>
         </iron-collapse>
         <br><br>
         <app-header-layout id="glycanTypeFilter" mode="seamed">
@@ -162,7 +146,6 @@ This element provides filter box in glyconnect
                         <paper-button class="indigo updateButton" on-tap="selectedPropN">Search</paper-button>
                         <paper-button typeLink="N" class="indigo updateButton" on-tap="clearFilter">Clear</paper-button>
                     </div>
-
               </div>
             </div>
               <div class="layout vertical flex">
@@ -182,7 +165,7 @@ This element provides filter box in glyconnect
                            <paper-button typeLink="N" id="{{item.name}}N" raised data-id$="{{item.class}}={{item.name}}" propN="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
                        </template>
                    </div>
-                   <div class="layout materialCard flex">
+                   <div class="layout materialCard flex"><link rel="import" href="../iron-list/iron-list.html">
                        <template is="dom-repeat" items="{{detN}}">
                            <paper-button typeLink="N" id="{{idCreator(item.name)}}N" raised data-id$="{{item.class}}={{item.name}}" detN="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
                        </template>
@@ -293,219 +276,300 @@ This element provides filter box in glyconnect
     </template>
 
     <script>
-      /** @polymerElement */
-      class GlyconnectFilter extends Polymer.Element {
-        static get is() { return 'glyconnect-filter'; }
-        static get properties() {
-          return {
-            repos: {
-              type: Array
-            },
-            selected: {
-              type: String,
-              value: 0
-            },
-            filterOutput: {
-              type: Array,
-              reflectToAttribute: true,
-              notify: true
-            },
-            accounts: {
-              type: Array,
-              value: function(){ return [{"text": "Alabama", "value": "AL"},
-                      {"text": "Alaska", "value": "AK"},
-                      {"text": "American Samoa", "value": "AS"},
-                      {"text": "Arizona", "value": "AZ"},
-                      {"text": "Arkansas", "value": "AR"},
-                      {"text": "California", "value": "CA"},
-                      {"text": "Colorado", "value": "CO"},
-                      {"text": "Connecticut", "value": "CT"},
-                      {"text": "Delaware", "value": "DE"},
-                      {"text": "District Of Columbia", "value": "DC"},
-                      {"text": "Federated States Of Micronesia", "value": "FM"},
-                      {"text": "Florida", "value": "FL"},
-                      {"text": "Georgia", "value": "GA"},
-                      {"text": "Guam", "value": "GU"},
-                      {"text": "Hawaii", "value": "HI"},
-                      {"text": "Idaho", "value": "ID"},
-                      {"text": "Illinois", "value": "IL"},
-                      {"text": "Indiana", "value": "IN"},
-                      {"text": "Iowa", "value": "IA"},
-                      {"text": "Kansas", "value": "KS"},
-                      {"text": "Kentucky", "value": "KY"},
-                      {"text": "Louisiana", "value": "LA"},
-                      {"text": "Maine", "value": "ME"},
-                      {"text": "Marshall Islands", "value": "MH"},
-                      {"text": "Maryland", "value": "MD"},
-                      {"text": "Massachusetts", "value": "MA"},
-                      {"text": "Michigan", "value": "MI"},
-                      {"text": "Minnesota", "value": "MN"},
-                      {"text": "Mississippi", "value": "MS"},
-                      {"text": "Missouri", "value": "MO"},
-                      {"text": "Montana", "value": "MT"},
-                      {"text": "Nebraska", "value": "NE"},
-                      {"text": "Nevada", "value": "NV"},
-                      {"text": "New Hampshire", "value": "NH"},
-                      {"text": "New Jersey", "value": "NJ"},
-                      {"text": "New Mexico", "value": "NM"},
-                      {"text": "New York", "value": "NY"},
-                      {"text": "North Carolina", "value": "NC"},
-                      {"text": "North Dakota", "value": "ND"},
-                      {"text": "Northern Mariana Islands", "value": "MP"},
-                      {"text": "Ohio", "value": "OH"},
-                      {"text": "Oklahoma", "value": "OK"},
-                      {"text": "Oregon", "value": "OR"},
-                      {"text": "Palau", "value": "PW"},
-                      {"text": "Pennsylvania", "value": "PA"},
-                      {"text": "Puerto Rico", "value": "PR"},
-                      {"text": "Rhode Island", "value": "RI"},
-                      {"text": "South Carolina", "value": "SC"},
-                      {"text": "South Dakota", "value": "SD"},
-                      {"text": "Tennessee", "value": "TN"},
-                      {"text": "Texas", "value": "TX"},
-                      {"text": "Utah", "value": "UT"},
-                      {"text": "Vermont", "value": "VT"},
-                      {"text": "Virgin Islands", "value": "VI"},
-                      {"text": "Virginia", "value": "VA"},
-                      {"text": "Washington", "value": "WA"},
-                      {"text": "West Virginia", "value": "WV"},
-                      {"text": "Wisconsin", "value": "WI"},
-                      {"text": "Wyoming", "value": "WY"}];}
-            },
-            selectedOption: {
-              type: Object,
-              notify: true
-            }
-          };
-        }
-        constructor() {
-          super();
-        }
-        ready() {
-         super.ready();
-         Polymer.dom(this.root).querySelector("#sug").queryFn(Polymer.dom(this.root).querySelector("#sug").source, "");
-         this.$.sug.addEventListener('selected-option-changed', event => {this._showPossibilities(event)});
-        }
-        _showPossibilities(event){
-          console.log("blabla");
-          var whatis = event.target;
-          console.log(whatis);
-        }
-        selectedPropN (){
-          var selN =  Polymer.dom(this.$.selectedN).querySelectorAll("paper-button");
-          var jsonParam = this.param(selN);
-          jsonParam.glycanType = 'n-linked';
-          this.filterOutput = jsonParam;
-        }
-        selectedPropO(){
-          var selO = Polymer.dom(this.$.selectedO).querySelectorAll("paper-button");
-          var jsonParam = this.param(selO);
-          jsonParam.glycanType = 'o-linked';
-          this.filterOutput = jsonParam;
-        }
-        selectedPropNP(){
-          var selNP = Polymer.dom(this.$.selectedNP).querySelectorAll("paper-button");
-          var jsonParam = this.param(selNP);
-          jsonParam.glycanType = 'free';
-          this.filterOutput = jsonParam;
-        }
-        param(propArray){
-          var myJson = {};
-          for (var i = 0; i < propArray.length; i++) {
-            var x = propArray[i].getAttribute("data-id");
-            var s = x.split("=");
-            if (s[0] in myJson) {
-              myJson[s[0]].push(s[1])
-            } else {
-              myJson[s[0]]=[s[1]];
-            }
-          }
-          return myJson;
-        }
-        connectedCallback (){
-          super.connectedCallback();
-          this.$.ajaxDictionary.url = this.resolveUrl('dictionary/jsonGlobalProperties.json');
-          this.$.ajaxDictionary.generateRequest();
-        }
-        handleResponse(data){
-          var jsonGlobalProperties = data.detail.response;
-          this.coreTypeO = jsonGlobalProperties['O-linked']['core'];
-          this.coreTypeN = jsonGlobalProperties['N-linked']['core'];
-          this.propO = jsonGlobalProperties['O-linked']['prop'];
-          this.propN = jsonGlobalProperties['N-linked']['prop'];
-          this.detO = jsonGlobalProperties['O-linked']['det'];
-          this.detN = jsonGlobalProperties['N-linked']['det'];
-          this.propNP = jsonGlobalProperties['Non attached to proteins']['prop'];
-          this.detNP = jsonGlobalProperties['Non attached to proteins']['det'];
-          this.coreTypeNP = jsonGlobalProperties['Non attached to proteins']['core'];
-        }
-        _toggleProtein () {
-          this.$.glycanFilterProt.toggle();
-          if(this.$.foldIcon.hasAttribute('disabled')){
-            this.$.expandIcon.setAttribute('disabled', 'true');
-            this.$.foldIcon.removeAttribute('disabled');
-          }else{
-            this.$.foldIcon.setAttribute('disabled', 'true');
-            this.$.expandIcon.removeAttribute('disabled');
-          }
-        }
-        _toggleNGlycan () {
-          this.$.glycanFilterN.toggle();
-          if(this.$.foldIcon.hasAttribute('disabled')){
-            this.$.expandIcon.setAttribute('disabled', 'true');
-            this.$.foldIcon.removeAttribute('disabled');
-          }else{
-            this.$.foldIcon.setAttribute('disabled', 'true');
-            this.$.expandIcon.removeAttribute('disabled');
-          }
-        }
-        _toggleOGlycan () {
-          this.$.glycanFilterO.toggle();
-          if(this.$.foldIcon.hasAttribute('disabled')){
-            this.$.expandIcon.setAttribute('disabled', 'true');
-            this.$.foldIcon.removeAttribute('disabled');
-          }else{
-            this.$.foldIcon.setAttribute('disabled', 'true');
-            this.$.expandIcon.removeAttribute('disabled');
-          }
-        }
-        _toggleNOGlycan () {
-          this.$.glycanFilterNO.toggle();
-          if(this.$.foldIcon.hasAttribute('disabled')){
-            this.$.expandIcon.setAttribute('disabled', 'true');
-            this.$.foldIcon.removeAttribute('disabled');
-          }else{
-            this.$.foldIcon.setAttribute('disabled', 'true');
-            this.$.expandIcon.removeAttribute('disabled');
-          }
-        }
-        clearFilter(event) {
-          var typeGlyco = event.target.getAttribute("typeLink");
-          var vr = this.shadowRoot.querySelector("#selected"+typeGlyco);
-          var toClear =  Polymer.dom(vr).querySelectorAll("paper-button");
-          for (var i = 0; i < toClear.length; i++) {
-            Polymer.dom(this.root).querySelector('paper-button[id='+toClear[i].id.replace("-clone",'')+']').hidden=false;
-            toClear[i].remove();
-          }
-        }
-        createTag(event) {
-         var typeTag = event.target.getAttribute("typeLink");
-         var list = Polymer.dom(this.root).querySelector("#selected"+typeTag);
-         var sourceEl = event.target;
-         var cloneEl = sourceEl.cloneNode(true);
-         event.target.hidden=true;
-         cloneEl.id=cloneEl.id+"-clone";
-         list.insertBefore(cloneEl, null);
-         cloneEl.addEventListener('tap', e => {this.destroyTag(e)});
-       }
-       destroyTag(pr) {
-         Polymer.dom(this.root).querySelector('paper-button[id='+pr.target.id.replace("-clone",'')+']').hidden=false;
-        pr.target.remove();
-       }
-       idCreator(id) {
-         return "d_"+id.replace(/ /g,'').replace(/\(/g, '').replace(/\)/g, '').replace(/\,/g, "").replace("/","").replace(/\'/g,"");
-       }
+    /** @polymerElement */
+    class GlyconnectFilter extends Polymer.Element {
+      static get is() { return 'glyconnect-filter'; }
+      static get properties() {
+        return {
+          repos: {
+            type: Array
+          },
+          selected: {
+            type: String,
+            value: 0
+          },
+          filterOutput: {
+            type: Array,
+            reflectToAttribute: true,
+            notify: true
+          },
+        };
       }
-      window.customElements.define(GlyconnectFilter.is, GlyconnectFilter);
+      constructor() {
+        super();
+      }
+
+      ready() {
+       super.ready();
+        var combobox = Polymer.dom(this.root).querySelector('#changeEventDemo');
+        var elements = ["Hydrogen", "Helium", "Silicon"];
+        combobox.items = elements;
+        Polymer.dom(this.root).querySelector('#setRandomValue').addEventListener('click', function() {
+          console.log(combobox.value);
+        });
+        // [
+        //   {name: 'Hydrogen', symbol: 'H', number: 1},
+        //   {name: 'Helium', symbol: 'He', number: 2},
+        //   {name: 'Lithium', symbol: 'Li', number: 3},
+        //   {name: 'Beryllium', symbol: 'Be', number: 4},
+        //   {name: 'Boron', symbol: 'B', number: 5},
+        //   {name: 'Carbon', symbol: 'C', number: 6},
+        //   {name: 'Nitrogen', symbol: 'N', number: 7},
+        //   {name: 'Oxygen', symbol: 'O', number: 8},
+        //   {name: 'Fluorine', symbol: 'F', number: 9},
+        //   {name: 'Neon', symbol: 'Ne', number: 10},
+        //   {name: 'Sodium', symbol: 'Na', number: 11},
+        //   {name: 'Magnesium', symbol: 'Mg', number: 12},
+        //   {name: 'Aluminum', symbol: 'Al', number: 13},
+        //   {name: 'Silicon', symbol: 'Si', number: 14},
+        //   {name: 'Phosphorus', symbol: 'P', number: 15},
+        //   {name: 'Sulfur', symbol: 'S', number: 16},
+        //   {name: 'Chlorine', symbol: 'Cl', number: 17},
+        //   {name: 'Argon', symbol: 'Ar', number: 18},
+        //   {name: 'Potassium', symbol: 'K', number: 19},
+        //   {name: 'Calcium', symbol: 'Ca', number: 20},
+        //   {name: 'Scandium', symbol: 'Sc', number: 21},
+        //   {name: 'Titanium', symbol: 'Ti', number: 22},
+        //   {name: 'Vanadium', symbol: 'V', number: 23},
+        //   {name: 'Chromium', symbol: 'Cr', number: 24},
+        //   {name: 'Manganese', symbol: 'Mn', number: 25},
+        //   {name: 'Iron', symbol: 'Fe', number: 26},
+        //   {name: 'Cobalt', symbol: 'Co', number: 27},
+        //   {name: 'Nickel', symbol: 'Ni', number: 28},
+        //   {name: 'Copper', symbol: 'Cu', number: 29},
+        //   {name: 'Zinc', symbol: 'Zn', number: 30},
+        //   {name: 'Gallium', symbol: 'Ga', number: 31},
+        //   {name: 'Germanium', symbol: 'Ge', number: 32},
+        //   {name: 'Arsenic', symbol: 'As', number: 33},
+        //   {name: 'Selenium', symbol: 'Se', number: 34},
+        //   {name: 'Bromine', symbol: 'Br', number: 35},
+        //   {name: 'Krypton', symbol: 'Kr', number: 36},
+        //   {name: 'Rubidium', symbol: 'Rb', number: 37},
+        //   {name: 'Strontium', symbol: 'Sr', number: 38},
+        //   {name: 'Yttrium', symbol: 'Y', number: 39},
+        //   {name: 'Zirconium', symbol: 'Zr', number: 40},
+        //   {name: 'Niobium', symbol: 'Nb', number: 41},
+        //   {name: 'Molybdenum', symbol: 'Mo', number: 42},
+        //   {name: 'Technetium', symbol: 'Tc', number: 43},
+        //   {name: 'Ruthenium', symbol: 'Ru', number: 44},
+        //   {name: 'Rhodium', symbol: 'Rh', number: 45},
+        //   {name: 'Palladium', symbol: 'Pd', number: 46},
+        //   {name: 'Silver', symbol: 'Ag', number: 47},
+        //   {name: 'Cadmium', symbol: 'Cd', number: 48},
+        //   {name: 'Indium', symbol: 'In', number: 49},
+        //   {name: 'Tin', symbol: 'Sn', number: 50},
+        //   {name: 'Antimony', symbol: 'Sb', number: 51},
+        //   {name: 'Tellurium', symbol: 'Te', number: 52},
+        //   {name: 'Iodine', symbol: 'I', number: 53},
+        //   {name: 'Xenon', symbol: 'Xe', number: 54},
+        //   {name: 'Cesium', symbol: 'Cs', number: 55},
+        //   {name: 'Barium', symbol: 'Ba', number: 56},
+        //   {name: 'Lanthanum', symbol: 'La', number: 57},
+        //   {name: 'Cerium', symbol: 'Ce', number: 58},
+        //   {name: 'Praseodymium', symbol: 'Pr', number: 59},
+        //   {name: 'Neodymium', symbol: 'Nd', number: 60},
+        //   {name: 'Promethium', symbol: 'Pm', number: 61},
+        //   {name: 'Samarium', symbol: 'Sm', number: 62},
+        //   {name: 'Europium', symbol: 'Eu', number: 63},
+        //   {name: 'Gadolinium', symbol: 'Gd', number: 64},
+        //   {name: 'Terbium', symbol: 'Tb', number: 65},
+        //   {name: 'Dysprosium', symbol: 'Dy', number: 66},
+        //   {name: 'Holmium', symbol: 'Ho', number: 67},
+        //   {name: 'Erbium', symbol: 'Er', number: 68},
+        //   {name: 'Thulium', symbol: 'Tm', number: 69},
+        //   {name: 'Ytterbium', symbol: 'Yb', number: 70},
+        //   {name: 'Lutetium', symbol: 'Lu', number: 71},
+        //   {name: 'Hafnium', symbol: 'Hf', number: 72},
+        //   {name: 'Tantalum', symbol: 'Ta', number: 73},
+        //   {name: 'Tungsten', symbol: 'W', number: 74},
+        //   {name: 'Rhenium', symbol: 'Re', number: 75},
+        //   {name: 'Osmium', symbol: 'Os', number: 76},
+        //   {name: 'Iridium', symbol: 'Ir', number: 77},
+        //   {name: 'Platinum', symbol: 'Pt', number: 78},
+        //   {name: 'Gold', symbol: 'Au', number: 79},
+        //   {name: 'Mercury', symbol: 'Hg', number: 80},
+        //   {name: 'Thallium', symbol: 'Tl', number: 81},
+        //   {name: 'Lead', symbol: 'Pb', number: 82},
+        //   {name: 'Bismuth', symbol: 'Bi', number: 83},
+        //   {name: 'Polonium', symbol: 'Po', number: 84},
+        //   {name: 'Astatine', symbol: 'At', number: 85},
+        //   {name: 'Radon', symbol: 'Rn', number: 86},
+        //   {name: 'Francium', symbol: 'Fr', number: 87},
+        //   {name: 'Radium', symbol: 'Ra', number: 88},
+        //   {name: 'Actinium', symbol: 'Ac', number: 89},
+        //   {name: 'Thorium', symbol: 'Th', number: 90},
+        //   {name: 'Protactinium', symbol: 'Pa', number: 91},
+        //   {name: 'Uranium', symbol: 'U', number: 92},
+        //   {name: 'Neptunium', symbol: 'Np', number: 93},
+        //   {name: 'Plutonium', symbol: 'Pu', number: 94},
+        //   {name: 'Americium', symbol: 'Am', number: 95},
+        //   {name: 'Curium', symbol: 'Cm', number: 96},
+        //   {name: 'Berkelium', symbol: 'Bk', number: 97},
+        //   {name: 'Californium', symbol: 'Cf', number: 98},
+        //   {name: 'Einsteinium', symbol: 'Es', number: 99},
+        //   {name: 'Fermium', symbol: 'Fm', number: 100},
+        //   {name: 'Mendelevium', symbol: 'Md', number: 101},
+        //   {name: 'Nobelium', symbol: 'No', number: 102},
+        //   {name: 'Lawrencium', symbol: 'Lr', number: 103},
+        //   {name: 'Rutherfordium', symbol: 'Rf', number: 104},
+        //   {name: 'Dubnium', symbol: 'Db', number: 105},
+        //   {name: 'Seaborgium', symbol: 'Sg', number: 106},
+        //   {name: 'Bohrium', symbol: 'Bh', number: 107},
+        //   {name: 'Hassium', symbol: 'Hs', number: 108},
+        //   {name: 'Meitnerium', symbol: 'Mt', number: 109},
+        //   {name: 'Ununnilium', symbol: 'Uun', number: 110},
+        //   {name: 'Unununium', symbol: 'Uuu', number: 111},
+        //   {name: 'Ununbium', symbol: 'Uub', number: 112},
+        //   {name: 'Ununtrium', symbol: 'Uut', number: 113},
+        //   {name: 'Ununquadium', symbol: 'Uuq', number: 114},
+        //   {name: 'Ununpentium', symbol: 'Uup', number: 115},
+        //   {name: 'Ununhexium', symbol: 'Uuh', number: 116},
+        //   {name: 'Ununseptium', symbol: 'Uus', number: 117},
+        //   {name: 'Ununoctium', symbol: 'Uuo', number: 118}
+        // ];
+
+
+        // form.addEventListener('iron-form-submit', function() {
+        //   alert('Form submitted with name: ' + form.serializeForm().name);
+        //   return false;
+        // });
+      }
+      selectedPropN (){
+        var selN =  Polymer.dom(this.$.selectedN).querySelectorAll("paper-button");
+        var jsonParam = this.param(selN);
+        jsonParam.glycanType = 'n-linked';
+        this.filterOutput = jsonParam;
+      }
+      selectedPropO(){
+        var selO = Polymer.dom(this.$.selectedO).querySelectorAll("paper-button");
+        var jsonParam = this.param(selO);
+        jsonParam.glycanType = 'o-linked';
+        this.filterOutput = jsonParam;
+      }
+      selectedPropNP(){
+        var selNP = Polymer.dom(this.$.selectedNP).querySelectorAll("paper-button");
+        var jsonParam = this.param(selNP);
+        jsonParam.glycanType = 'free';
+        this.filterOutput = jsonParam;
+      }
+      param(propArray){
+        var myJson = {};
+        for (var i = 0; i < propArray.length; i++) {
+          var x = propArray[i].getAttribute("data-id");
+          var s = x.split("=");
+          if (s[0] in myJson) {
+            myJson[s[0]].push(s[1])
+          } else {
+            myJson[s[0]]=[s[1]];
+          }
+        }
+        return myJson;
+      }
+      connectedCallback (){
+        super.connectedCallback();
+        this.$.ajaxDictionary.url = this.resolveUrl('dictionary/jsonGlobalProperties.json');
+        this.$.ajaxDictionary.generateRequest();
+        this.$.proteinDictionary.url = this.resolveUrl('http://mendel.isb-sib.ch:8083/api/proteins');
+        this.$.proteinDictionary.generateRequest();
+      }
+      handleResponse(data){
+        var jsonGlobalProperties = data.detail.response;
+        this.coreTypeO = jsonGlobalProperties['O-linked']['core'];
+        this.coreTypeN = jsonGlobalProperties['N-linked']['core'];
+        this.propO = jsonGlobalProperties['O-linked']['prop'];
+        this.propN = jsonGlobalProperties['N-linked']['prop'];
+        this.detO = jsonGlobalProperties['O-linked']['det'];
+        this.detN = jsonGlobalProperties['N-linked']['det'];
+        this.propNP = jsonGlobalProperties['Non attached to proteins']['prop'];
+        this.detNP = jsonGlobalProperties['Non attached to proteins']['det'];
+        this.coreTypeNP = jsonGlobalProperties['Non attached to proteins']['core'];
+      }
+      handleProtein(data){
+        var jsonProtein = data.detail.response;
+        var proteinList = [];
+        var proteinIds = [];
+        for (var f =0; f < jsonProtein.length; f ++){
+          var protFeatures = jsonProtein[f];
+          proteinList.push(protFeatures['name']);
+          if (protFeatures['uniprots'] != undefined){
+            var accs = protFeatures['uniprots'];
+            var uniAcc;
+            for ( uniAcc in accs){
+              proteinIds.push(accs[uniAcc]['uniprot_acc']);
+            };
+            // Array.prototype.push.apply(proteinIds, accs);
+          };
+        };
+        Array.prototype.push.apply(proteinList, proteinIds);
+        console.log(proteinList);
+      }
+      _toggleProtein () {
+        this.$.glycanFilterProt.toggle();
+        if(this.$.foldIcon.hasAttribute('disabled')){
+          this.$.expandIcon.setAttribute('disabled', 'true');
+          this.$.foldIcon.removeAttribute('disabled');
+        }else{
+          this.$.foldIcon.setAttribute('disabled', 'true');
+          this.$.expandIcon.removeAttribute('disabled');
+        }
+      }
+      _toggleNGlycan () {
+        this.$.glycanFilterN.toggle();
+        if(this.$.foldIcon.hasAttribute('disabled')){
+          this.$.expandIcon.setAttribute('disabled', 'true');
+          this.$.foldIcon.removeAttribute('disabled');
+        }else{
+          this.$.foldIcon.setAttribute('disabled', 'true');
+          this.$.expandIcon.removeAttribute('disabled');
+        }
+      }
+      _toggleOGlycan () {
+        this.$.glycanFilterO.toggle();
+        if(this.$.foldIcon.hasAttribute('disabled')){
+          this.$.expandIcon.setAttribute('disabled', 'true');
+          this.$.foldIcon.removeAttribute('disabled');
+        }else{
+          this.$.foldIcon.setAttribute('disabled', 'true');
+          this.$.expandIcon.removeAttribute('disabled');
+        }
+      }
+      _toggleNOGlycan () {
+        this.$.glycanFilterNO.toggle();
+        if(this.$.foldIcon.hasAttribute('disabled')){
+          this.$.expandIcon.setAttribute('disabled', 'true');
+          this.$.foldIcon.removeAttribute('disabled');
+        }else{
+          this.$.foldIcon.setAttribute('disabled', 'true');
+          this.$.expandIcon.removeAttribute('disabled');
+        }
+      }
+      clearFilter(event) {
+        var typeGlyco = event.target.getAttribute("typeLink");
+        var vr = this.shadowRoot.querySelector("#selected"+typeGlyco);
+        var toClear =  Polymer.dom(vr).querySelectorAll("paper-button");
+        for (var i = 0; i < toClear.length; i++) {
+          Polymer.dom(this.root).querySelector('paper-button[id='+toClear[i].id.replace("-clone",'')+']').hidden=false;
+          toClear[i].remove();
+        }
+      }
+      createTag(event) {
+       var typeTag = event.target.getAttribute("typeLink");
+       var list = Polymer.dom(this.root).querySelector("#selected"+typeTag);
+       var sourceEl = event.target;
+       var cloneEl = sourceEl.cloneNode(true);
+       event.target.hidden=true;
+       cloneEl.id=cloneEl.id+"-clone";
+       list.insertBefore(cloneEl, null);
+       cloneEl.addEventListener('tap', e => {this.destroyTag(e)});
+     }
+     destroyTag(pr) {
+       Polymer.dom(this.root).querySelector('paper-button[id='+pr.target.id.replace("-clone",'')+']').hidden=false;
+      pr.target.remove();
+     }
+     idCreator(id) {
+       return "d_"+id.replace(/ /g,'').replace(/\(/g, '').replace(/\)/g, '').replace(/\,/g, "").replace("/","").replace(/\'/g,"");
+     }
+    }
+    window.customElements.define(GlyconnectFilter.is, GlyconnectFilter);
     </script>
 </dom-module>

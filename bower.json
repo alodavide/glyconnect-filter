@@ -22,7 +22,7 @@
     "paper-tags-input": "^1.2.6",
     "paper-tags": "*",
     "paper-input": "^2.0.1",
-    "vaadin-combo-box": "^1.3.3",
+    "vaadin-combo-box": "^2.0.0",
     "iron-list": "^2.0.6",
     "polyfill": "*",
     "template": "^0.2.0",
