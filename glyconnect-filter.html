@@ -15,6 +15,7 @@
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="../iron-list/iron-list.html">
+<link rel="import" href="../paper-item/paper-item.html">
 <!--
 `glyconnect-filter`
 This element provides filter box in glyconnect
@@ -52,14 +53,14 @@ This element provides filter box in glyconnect
                     color: white !important;
                 };
             }
-            paper-button#filterToggleButton {
+            paper-button.filterToggleButton {
                 width: 100%;
             }
             paper-button.updateButton {
                 margin: 13px;
                 font-size: 16px;
             }
-            #glycanFilterHeader {
+            .glycanFilterHeader {
                 font-size: 16px;
                 font-weight: 500;
                 line-height: 25px;
@@ -97,6 +98,14 @@ This element provides filter box in glyconnect
                 background: #eeeeee;
                 @apply --paper-material-elevation-2;
             }
+            paper-item.fancy {
+              --paper-item-focused: {
+                background: var(--paper-amber-500);
+              };
+              --paper-item-focused-before: {
+                opacity: 0;
+              };
+            }
         </style>
         <iron-ajax
                 id="ajaxDictionary"
@@ -110,9 +119,15 @@ This element provides filter box in glyconnect
                 method="GET"
                 on-response="handleProtein"
         ></iron-ajax>
-        <app-header-layout id="glycanTypeFilter" mode="seamed">
-            <div id="glycanFilterHeader">
-                <paper-button id="filterToggleButton" class="indigo" on-click="_toggleProtein" toggles raised>
+        <iron-ajax
+                id="compoDictionary"
+                handle-as="json"
+                method="GET"
+                on-response="handleCompo"
+        ></iron-ajax>
+        <app-header-layout mode="seamed">
+            <div class ="glycanFilterHeader">
+                <paper-button class="indigo filterToggleButton" on-click="_toggleProtein" toggles raised>
                     <iron-icon id="expandIcon" icon="icons:chevron-right" alt="unfold" ></iron-icon>
                     <iron-icon id="foldIcon" icon="icons:expand-more" alt="fold" disabled></iron-icon>
                     Protein
@@ -120,13 +135,31 @@ This element provides filter box in glyconnect
             </div>
         </app-header-layout>
         <iron-collapse id="glycanFilterProt" class="horizontal center-justified">
-              <vaadin-combo-box id="changeEventDemo" required label="Protein"></vaadin-combo-box>
-              <paper-button class="indigo updateButton" id="setRandomValue" raised>Search</paper-button>
+              <vaadin-combo-box id="protDropDown" required label="Protein"></vaadin-combo-box>
+              <paper-button class="indigo updateButton" id="sendDataProt" raised>Search</paper-button>
         </iron-collapse>
         <br><br>
-        <app-header-layout id="glycanTypeFilter" mode="seamed">
-            <div id="glycanFilterHeader">
-                <paper-button id="filterToggleButton" class="indigo" on-click="_toggleNGlycan" toggles raised>
+        <app-header-layout mode="seamed">
+            <div class="glycanFilterHeader">
+                <paper-button class="filterToggleButton indigo" on-click="_toggleCompo" toggles raised>
+                    <iron-icon id="expandIcon" icon="icons:chevron-right" alt="unfold" ></iron-icon>
+                    <iron-icon id="foldIcon" icon="icons:expand-more" alt="fold" disabled></iron-icon>
+                    Composition
+                </paper-button>
+            </div>
+        </app-header-layout>
+        <iron-collapse id="glycanFilterCompo" class="horizontal center-justified">
+          <br>
+          <div>
+            <paper-item class='fancy'>Number of monosaccharide as follow: Hex, HexNAc, DeoxyHex (e.g. fucose), NeuAc, NeuAg, Pentose (e.g. xylose), Sulfate, Phosphate, KDN, KDO, HexA, Methyl, Acetyl, Other</paper-item>
+          </div>
+          <vaadin-combo-box id="compoDropDown" required label="Composition"></vaadin-combo-box>
+          <paper-button class="indigo updateButton" id="sendDataComp" raised>Search</paper-button>
+        </iron-collapse>
+        <br><br>
+        <app-header-layout mode="seamed">
+            <div class="glycanFilterHeader">
+                <paper-button class="indigo filterToggleButton" on-click="_toggleNGlycan" toggles raised>
                     <iron-icon id="expandIcon" icon="icons:chevron-right" alt="unfold" ></iron-icon>
                     <iron-icon id="foldIcon" icon="icons:expand-more" alt="fold" disabled></iron-icon>
                     N-linked glycans
@@ -174,9 +207,9 @@ This element provides filter box in glyconnect
              </div>
         </iron-collapse>
         <br><br>
-        <app-header-layout id="glycanTypeFilter" mode="seamed">
-            <div id="glycanFilterHeader">
-                <paper-button id="filterToggleButton" class="indigo" on-click="_toggleOGlycan" toggles raised>
+        <app-header-layout mode="seamed">
+            <div class="glycanFilterHeader">
+                <paper-button class="indigo filterToggleButton" on-click="_toggleOGlycan" toggles raised>
                     <iron-icon id="expandIcon" icon="icons:chevron-right" alt="unfold" ></iron-icon>
                     <iron-icon id="foldIcon" icon="icons:expand-more" alt="fold" disabled></iron-icon>
                     O-linked glycans
@@ -224,9 +257,9 @@ This element provides filter box in glyconnect
             </div>
         </iron-collapse>
         <br><br>
-        <app-header-layout id="glycanTypeFilter" mode="seamed">
-            <div id="glycanFilterHeader">
-                <paper-button id="filterToggleButton" class="indigo" on-click="_toggleNOGlycan" toggles raised>
+        <app-header-layout mode="seamed">
+            <div class="glycanFilterHeader">
+                <paper-button class="indigo filterToggleButton" on-click="_toggleNOGlycan" toggles raised>
                     <iron-icon id="expandIcon" icon="icons:chevron-right" alt="unfold" ></iron-icon>
                     <iron-icon id="foldIcon" icon="icons:expand-more" alt="fold" disabled></iron-icon>
                     Non-attached to proteins
@@ -335,6 +368,8 @@ This element provides filter box in glyconnect
         this.$.ajaxDictionary.generateRequest();
         this.$.proteinDictionary.url = this.resolveUrl('http://mendel.isb-sib.ch:8083/api/proteins');
         this.$.proteinDictionary.generateRequest();
+        this.$.compoDictionary.url = this.resolveUrl('http://mendel.isb-sib.ch:8083/api/glycosylations?composition?');
+        this.$.compoDictionary.generateRequest();
       }
       handleResponse(data){
         var jsonGlobalProperties = data.detail.response;
@@ -365,45 +400,50 @@ This element provides filter box in glyconnect
         };
         Array.prototype.push.apply(proteinList, proteinIds);
         // console.log(proteinList);
-        var combobox = Polymer.dom(this.root).querySelector('#changeEventDemo');
+        var combobox = Polymer.dom(this.root).querySelector('#protDropDown');
         var elements = proteinList;//["Hydrogen", "Helium", "Silicon"];
         combobox.items = elements;
-        Polymer.dom(this.root).querySelector('#setRandomValue').addEventListener('click', function() {
+        Polymer.dom(this.root).querySelector('#sendDataProt').addEventListener('click', function() {
           console.log(combobox.value);
         });
       }
+      handleCompo(data){
+        var jsonCompo = data.detail.response;
+        var compoList = [];
+        for (var c =0; c < jsonCompo.length; c ++){
+          var compo = jsonCompo[c]['composition'];
+          compoList.push(compo);
+        };
+        // console.log(compoList);
+        var vaadincompo = Polymer.dom(this.root).querySelector('#compoDropDown');
+        var elements = compoList;//["Hydrogen", "Helium", "Silicon"];
+        vaadincompo.items = elements;
+        Polymer.dom(this.root).querySelector('#sendDataComp').addEventListener('click', function() {
+          console.log(vaadincompo.value);
+        });
+      }
+
       _toggleProtein () {
         this.$.glycanFilterProt.toggle();
-        if(this.$.foldIcon.hasAttribute('disabled')){
-          this.$.expandIcon.setAttribute('disabled', 'true');
-          this.$.foldIcon.removeAttribute('disabled');
-        }else{
-          this.$.foldIcon.setAttribute('disabled', 'true');
-          this.$.expandIcon.removeAttribute('disabled');
-        }
+        this.expandFold()
+      }
+      _toggleCompo () {
+        this.$.glycanFilterCompo.toggle();
+        this.expandFold()
       }
       _toggleNGlycan () {
         this.$.glycanFilterN.toggle();
-        if(this.$.foldIcon.hasAttribute('disabled')){
-          this.$.expandIcon.setAttribute('disabled', 'true');
-          this.$.foldIcon.removeAttribute('disabled');
-        }else{
-          this.$.foldIcon.setAttribute('disabled', 'true');
-          this.$.expandIcon.removeAttribute('disabled');
-        }
+        this.expandFold()
       }
       _toggleOGlycan () {
         this.$.glycanFilterO.toggle();
-        if(this.$.foldIcon.hasAttribute('disabled')){
-          this.$.expandIcon.setAttribute('disabled', 'true');
-          this.$.foldIcon.removeAttribute('disabled');
-        }else{
-          this.$.foldIcon.setAttribute('disabled', 'true');
-          this.$.expandIcon.removeAttribute('disabled');
-        }
+        this.expandFold()
       }
       _toggleNOGlycan () {
         this.$.glycanFilterNO.toggle();
+        this.expandFold()
+      }
+      expandFold (){
         if(this.$.foldIcon.hasAttribute('disabled')){
           this.$.expandIcon.setAttribute('disabled', 'true');
           this.$.foldIcon.removeAttribute('disabled');

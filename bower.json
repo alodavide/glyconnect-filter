@@ -26,7 +26,8 @@
     "iron-list": "^2.0.6",
     "polyfill": "*",
     "template": "^0.2.0",
-    "iron-form": "^2.0.0"
+    "iron-form": "^2.0.0",
+    "paper-item": "^2.0.0"
   },
   "devDependencies": {
     "iron-demo-helpers": "PolymerElements/iron-demo-helpers#2.0-preview",
