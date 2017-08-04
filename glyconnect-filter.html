@@ -5,9 +5,9 @@
 <link rel="import" href="../app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../app-layout/app-header-layout/app-header-layout.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../iron-collapse/iron-collapse.html">
 <link rel="import" href="../sortable-list/sortable-list.html">
-<link rel="import" href="../paper-card/paper-card.html">
 <link rel="import" href="../paper-tabs/paper-tabs.html">
 <link rel="import" href="../iron-pages/iron-pages.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
@@ -16,6 +16,9 @@
 <link rel="import" href="../vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="../iron-list/iron-list.html">
 <link rel="import" href="../paper-item/paper-item.html">
+<link rel="import" href="../paper-toggle-button/paper-toggle-button.html">
+<link rel="import" href="../iron-localstorage/iron-localstorage.html">
+<link rel="import" href="../paper-slider/paper-slider.html">
 <!--
 `glyconnect-filter`
 This element provides filter box in glyconnect
@@ -106,6 +109,27 @@ This element provides filter box in glyconnect
                 opacity: 0;
               };
             }
+            .toggle-span-label {
+                position: relative;
+                display: inline-block;
+                vertical-align: middle;
+                padding-left:  8px;
+                padding-top: 2px;
+                pointer-events: none;
+                font-family: 'Roboto', 'Noto', sans-serif;
+                min-width: 140px;
+            }
+            .singleRangeBox{
+                width: 300px;
+                margin: 10px 20px 10px 20px;
+            }
+            #rangeBox {
+                padding: 30px 20px 20px 20px;
+            }
+            #clearIcon {
+              margin: 40px 20px 20px 20px;
+              float: right;
+            }
         </style>
         <iron-ajax
                 id="ajaxDictionary"
@@ -155,6 +179,33 @@ This element provides filter box in glyconnect
           </div>
           <vaadin-combo-box id="compoDropDown" required label="Composition"></vaadin-combo-box>
           <paper-button class="indigo updateButton" id="sendDataComp" raised>Search</paper-button>
+        </iron-collapse>
+        <br><br>
+        <app-header-layout mode="seamed">
+            <div class="glycanFilterHeader">
+                <paper-button class="filterToggleButton indigo" on-click="_toggleGlycanFilter" toggles raised>
+                    <iron-icon id="expandIcon" icon="icons:chevron-right" alt="unfold" ></iron-icon>
+                    <iron-icon id="foldIcon" icon="icons:expand-more" alt="fold" disabled></iron-icon>
+                    Composition
+                </paper-button>
+            </div>
+        </app-header-layout>
+        <iron-collapse id="glycanFilterBox" class="horizontal center-justified">
+          <iron-icon id="clearIcon" icon="icons:autorenew" alt="reset" on-click="_reset"></iron-icon>
+            <div id="rangeBox" class="layout horizontal wrap">
+                <template id="rangeBoxTemplate" is="dom-repeat" items="{{monosaccharides}}">
+                    <div class="singleRangeBox">
+                        <div class="layout horizontal">
+                            <paper-toggle-button id="{{item}}Toggle" checked on-change="_changeOfSlider">{{_getLabel(item)}} : </paper-toggle-button>
+                            <span id="{{item}}Label" class="toggle-span-label">More or equal to 0</span>
+                            <iron-localstorage id="{{item}}ToggleCache" name="{{item}}ToggleCache"></iron-localstorage>
+                        </div><br>
+                        <paper-slider id="{{item}}Range" pin snaps max="10" max-markers="10" step="1" on-change="_changeOfRange"></paper-slider>
+                        <iron-localstorage id="{{item}}RangeCache" name="{{item}}RangeCache"></iron-localstorage>
+                    </div>
+                </template>
+                <paper-button id="updateButton" class="indigo" on-tap='_getCompo'>Search</paper-button>
+            </div>
         </iron-collapse>
         <br><br>
         <app-header-layout mode="seamed">
@@ -325,11 +376,133 @@ This element provides filter box in glyconnect
             type: Array,
             reflectToAttribute: true,
             notify: true
-          }
+          },
+          monosaccharides: {
+            type: Array,
+            value: ['Hex', 'HexNAc', 'dHex', 'NeuAc', 'NeuGc', 'Pen', 'S', 'P', 'Kdn', 'Kdo', 'HexA',  'Methyl', 'Acetyl', 'Other']
+          },
+          labels: {
+              type: Object,
+              value: {
+                  'Hex': 'Hex',
+                  'HexNAc': 'HexNAc',
+                  'dHex': 'dHex',
+                  'NeuAc': 'NeuAc',
+                  'NeuGc': 'NeuGc',
+                  'Pen': 'Pentose',
+                  'S': 'Sulphate',
+                  'P': 'Phosphate',
+                  'Kdn': 'Kdn',
+                  'Kdo': 'Kdo',
+                  'HexA': 'HexA',
+                  'Methyl' : 'Methyl',
+                  'Acetyl' : 'Acetyl',
+                  'Other': 'Other'
+              }
+          },
         };
       }
       constructor() {
         super();
+      }
+      attached () {
+          this.async(function(){this._setTogglesAndRSliders();this._createGlycanFilter();},1);
+      }
+      _getLabel (monosaccharide) {
+          return this.labels[monosaccharide];
+      }
+      _toggleGlycanFilter () {
+          this._setTogglesAndRSliders();
+          this.$.glycanFilterBox.toggle();
+          if(this.$.foldIcon.hasAttribute('disabled')){
+              this.$.expandIcon.setAttribute('disabled', 'true');
+              this.$.foldIcon.removeAttribute('disabled');
+          }else{
+              this.$.foldIcon.setAttribute('disabled', 'true');
+              this.$.expandIcon.removeAttribute('disabled');
+          }
+      }
+      _setTogglesAndRSliders () {
+          for (var idx in this.monosaccharides){
+              var monosaccharide = this.monosaccharides[idx];
+                Polymer.dom(this.root).querySelector("#"+monosaccharide+"Range").value =   Polymer.dom(this.root).querySelector("#"+monosaccharide+"RangeCache").value;
+              if (Polymer.dom(this.root).querySelector("#"+monosaccharide+"ToggleCache").value=='unchecked'){
+                    Polymer.dom(this.root).querySelector("#"+monosaccharide+"Toggle").removeAttribute('checked');
+                    Polymer.dom(this.root).querySelector("#"+monosaccharide+"Toggle").setAttribute('unchecked',true)
+                    Polymer.dom(this.root).querySelector("#"+monosaccharide+"Range").setAttribute('disabled',true);
+              }else{
+                    Polymer.dom(this.root).querySelector("#"+monosaccharide+"Toggle").removeAttribute('unchecked');
+                    Polymer.dom(this.root).querySelector("#"+monosaccharide+"Toggle").setAttribute('checked',true);
+                    Polymer.dom(this.root).querySelector("#"+monosaccharide+"Label").innerHTML = "More or equal to "+   Polymer.dom(this.root).querySelector("#"+monosaccharide+"Range").value;
+              }
+          }
+      }
+      _getCompo () {
+          var rangeBox = this.$.rangeBox;
+          var paperInputs = Array.prototype.slice.call(rangeBox.getElementsByTagName('paper-slider'));
+          var filterObject = {};
+          var data = this;
+          paperInputs.forEach(function (item) {
+              // var rangeObject = {};
+              var monosaccharideId = item.id.replace("Range","");
+              // rangeObject["minRange"] = 0;
+              // rangeObject["presence"] = true;
+              // filterObject[monosaccharideId] = rangeObject;
+              console.log(data.shadowRoot.querySelector("#"+monosaccharideId+"Range").value);
+          });
+          data.filter = filterObject;
+      }
+      _reset () {
+          var rangeBox = this.$.rangeBox;
+          var paperInputs = Array.prototype.slice.call(rangeBox.getElementsByTagName('paper-slider'));
+          var filterObject = {};
+          var data = this;
+          paperInputs.forEach(function (item) {
+              var rangeObject = {};
+              var monosaccharideId = item.id.replace("Range","");
+              rangeObject["minRange"] = 0;
+              rangeObject["presence"] = true;
+              filterObject[monosaccharideId] = rangeObject;
+              data.shadowRoot.querySelector("#"+monosaccharideId+"Toggle").setAttribute('checked',true);
+              data.shadowRoot.querySelector("#"+monosaccharideId+"ToggleCache").value = true;
+              data.shadowRoot.querySelector("#"+monosaccharideId+"Range").value = 0;
+              data.shadowRoot.querySelector("#"+monosaccharideId+"RangeCache").value = 0;
+          });
+          data.filter = filterObject;
+      }
+      _changeOfSlider (event) {
+          var monosaccharide  = event.target.id.replace("Toggle","");
+          if(event.target.checked){
+              Polymer.dom(this.root).querySelector("#"+monosaccharide+"ToggleCache").value = 'checked';
+              Polymer.dom(this.root).querySelector("#"+monosaccharide+"Range").disabled  = false;
+              Polymer.dom(this.root).querySelector("#"+monosaccharide+"Label").textContent  =
+                  "More or equal to "+ Polymer.dom(this.root).querySelector("#"+monosaccharide+"Range").value;
+          } else{
+              Polymer.dom(this.root).querySelector("#"+monosaccharide+"ToggleCache").value = 'unchecked';
+              Polymer.dom(this.root).querySelector("#"+monosaccharide+"Range").disabled  = true;
+              Polymer.dom(this.root).querySelector("#"+monosaccharide+"Label").textContent  = "Not present";
+          }
+          this._createGlycanFilter();
+      }
+      _changeOfRange (event) {
+          var monosaccharide  = event.target.id.replace("Range","");
+          var value = event.target.value;
+          Polymer.dom(this.root).querySelector("#"+monosaccharide+"RangeCache").value  = +value;
+          Polymer.dom(this.root).querySelector("#"+monosaccharide+"Label").textContent  = "More or equal to "+value;
+          this._createGlycanFilter();
+      }
+      _createGlycanFilter () {
+          var rangeBox = this.$.rangeBox;
+          var paperInputs = Array.prototype.slice.call(rangeBox.getElementsByTagName('paper-slider'));
+          var filterObject = {};
+          paperInputs.forEach(function (item) {
+              var rangeObject = {};
+              var monosaccharideId = item.id.replace("Range","");
+              rangeObject["minRange"] = item.value;
+              rangeObject["presence"] = Polymer.dom(rangeBox).querySelector("#"+monosaccharideId+"Toggle").checked;
+              filterObject[monosaccharideId] = rangeObject;
+          });
+          this.filter = filterObject;
       }
       selectedPropN (){
         var selN =  Polymer.dom(this.$.selectedN).querySelectorAll("paper-button");
