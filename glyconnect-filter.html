@@ -200,10 +200,13 @@ This element provides filter box in glyconnect
            </paper-tabs>
            <iron-pages selected="{{selected}}">
               <div class="layout materialCard flex">
-                   <vaadin-upload accept="application/pdf"></vaadin-upload>
+                   <vaadin-upload accept="application/msword,text/plain"></vaadin-upload>
                </div>
                <div class="layout materialCard flex">
-                   <paper-input style ="padding: 10px" label="composition input"></paper-input>
+                   <paper-input style ="padding: 10px" label="input comma-separated compositions" id="compoCommaList" value="{{compositions}}"></paper-input>
+                   <div class="horizontal end-justified layout">
+                     <paper-button class="indigo updateButton" on-tap='_getCompoList'>Search</paper-button>
+                   </div>
                </div>
                <div class="layout materialCard flex"><link rel="import" href="../iron-list/iron-list.html">
                  <iron-icon id="clearIcon" icon="icons:autorenew" alt="reset" on-click="_reset"></iron-icon>
@@ -230,7 +233,9 @@ This element provides filter box in glyconnect
                                </div>
                            </div>
                        </template>
-                       <paper-button id="updateButton" class="indigo" on-tap='_getCompo'>Search</paper-button>
+                       <div class="horizontal end-justified layout">
+                         <paper-button class="indigo updateButton" on-tap='_getCompo'>Search</paper-button>
+                       </div>
                    </div>
                </div>
              </iron-pages>
@@ -410,6 +415,9 @@ This element provides filter box in glyconnect
             type: Array,
             value: ['Hex', 'HexNAc', 'dHex', 'NeuAc', 'NeuGc', 'Pen', 'S', 'P', 'Kdn', 'Kdo', 'HexA',  'Methyl', 'Acetyl', 'Other']
           },
+          compositions: {
+              type: String
+          },
           labels: {
               type: Object,
               value: {
@@ -468,6 +476,10 @@ This element provides filter box in glyconnect
               //       Polymer.dom(this.root).querySelector("#"+monosaccharide+"Label").innerHTML = "More or equal to "+   Polymer.dom(this.root).querySelector("#"+monosaccharide+"RangeMin").value;
               // }
           }
+      }
+      _getCompoList () {
+        var compolist = Polymer.dom(this.root).querySelector("#compoCommaList").value.replace(/ /g,"").split(",");
+        console.log(compolist);
       }
       _getCompo () {
           var rangeBox = this.$.rangeBox;
