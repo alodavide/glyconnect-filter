@@ -14,6 +14,7 @@
 <link rel="import" href="../paper-styles/element-styles/paper-material-styles.html">
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../vaadin-combo-box/vaadin-combo-box.html">
+<link rel="import" href="../vaadin-upload/vaadin-upload.html">
 <link rel="import" href="../iron-list/iron-list.html">
 <link rel="import" href="../paper-item/paper-item.html">
 <link rel="import" href="../paper-toggle-button/paper-toggle-button.html">
@@ -191,32 +192,49 @@ This element provides filter box in glyconnect
             </div>
         </app-header-layout>
         <iron-collapse id="glycanFilterBox" class="horizontal center-justified">
-          <iron-icon id="clearIcon" icon="icons:autorenew" alt="reset" on-click="_reset"></iron-icon>
-            <div id="rangeBox" class="layout horizontal wrap">
-                <template id="rangeBoxTemplate" is="dom-repeat" items="{{monosaccharides}}">
-                    <div class="doubleRangeBox">
-                        <!-- <div class="layout horizontal">
-                            <paper-toggle-button id="{{item}}Toggle" checked on-change="_changeOfSlider">{{_getLabel(item)}} : </paper-toggle-button>
-                            <span id="{{item}}Label" class="toggle-span-label"> {{_getLabel(item)}}: min value</span>
-                            <iron-localstorage id="{{item}}ToggleCache" name="{{item}}ToggleCache"></iron-localstorage>
-                        </div><br> -->
-                        <span id="{{item}}Label">{{_getLabel(item)}}</span>
-                        <div class="layout horizontal">
+          <div class="layout vertical flex">
+           <paper-tabs selected="{{selected}}"  no-bar>
+               <paper-tab>File upload</paper-tab>
+               <paper-tab>List of composition</paper-tab>
+               <paper-tab>Monosaccharide selectors</paper-tab>
+           </paper-tabs>
+           <iron-pages selected="{{selected}}">
+              <div class="layout materialCard flex">
+                   <vaadin-upload accept="application/pdf"></vaadin-upload>
+               </div>
+               <div class="layout materialCard flex">
+                   <paper-input style ="padding: 10px" label="composition input"></paper-input>
+               </div>
+               <div class="layout materialCard flex"><link rel="import" href="../iron-list/iron-list.html">
+                 <iron-icon id="clearIcon" icon="icons:autorenew" alt="reset" on-click="_reset"></iron-icon>
+                   <div id="rangeBox" class="layout horizontal wrap">
+                       <template id="rangeBoxTemplate" is="dom-repeat" items="{{monosaccharides}}">
+                           <div class="doubleRangeBox">
+                               <!-- <div class="layout horizontal">
+                                   <paper-toggle-button id="{{item}}Toggle" checked on-change="_changeOfSlider">{{_getLabel(item)}} : </paper-toggle-button>
+                                   <span id="{{item}}Label" class="toggle-span-label"> {{_getLabel(item)}}: min value</span>
+                                   <iron-localstorage id="{{item}}ToggleCache" name="{{item}}ToggleCache"></iron-localstorage>
+                               </div><br> -->
+                               <span id="{{item}}Label">{{_getLabel(item)}}</span>
+                               <div class="layout horizontal">
 
-                          <paper-slider id="{{item}}RangeMin" edge = 'Min' snaps max="12" max-markers="12" step="1" value = '0' on-change="_changeOfRange" editable></paper-slider>
-                          <span>Min</span>
-                          <iron-localstorage id="{{item}}RangeCacheMin" name="{{item}}RangeCacheMin"></iron-localstorage>
-                        </div>
-                        <div class="layout horizontal">
+                                 <paper-slider id="{{item}}RangeMin" edge = 'Min' snaps max="12" max-markers="12" step="1" value = '0' on-change="_changeOfRange" editable></paper-slider>
+                                 <span>Min</span>
+                                 <iron-localstorage id="{{item}}RangeCacheMin" name="{{item}}RangeCacheMin"></iron-localstorage>
+                               </div>
+                               <div class="layout horizontal">
 
-                          <paper-slider id="{{item}}RangeMax" edge = 'Max' snaps max="12" max-markers="12" step="1" value = '0' on-change="_changeOfRange" editable></paper-slider>
-                          <span>Max</span>
-                          <iron-localstorage id="{{item}}RangeCacheMax" name="{{item}}RangeCacheMax"></iron-localstorage>
-                        </div>
-                    </div>
-                </template>
-                <paper-button id="updateButton" class="indigo" on-tap='_getCompo'>Search</paper-button>
-            </div>
+                                 <paper-slider id="{{item}}RangeMax" edge = 'Max' snaps max="12" max-markers="12" step="1" value = '0' on-change="_changeOfRange" editable></paper-slider>
+                                 <span>Max</span>
+                                 <iron-localstorage id="{{item}}RangeCacheMax" name="{{item}}RangeCacheMax"></iron-localstorage>
+                               </div>
+                           </div>
+                       </template>
+                       <paper-button id="updateButton" class="indigo" on-tap='_getCompo'>Search</paper-button>
+                   </div>
+               </div>
+             </iron-pages>
+           </div>
         </iron-collapse>
         <br><br>
         <app-header-layout mode="seamed">
