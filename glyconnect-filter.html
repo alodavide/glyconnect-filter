@@ -131,6 +131,11 @@ This element provides filter box in glyconnect
               margin: 40px 20px 20px 20px;
               float: right;
             }
+            vaadin-upload.thick-border {
+                padding: 14px;
+                /*background: #eee;*/
+                /*border-radius: 0;*/
+            }
         </style>
         <iron-ajax
                 id="ajaxDictionary"
@@ -200,7 +205,16 @@ This element provides filter box in glyconnect
            </paper-tabs>
            <iron-pages selected="{{selected}}">
               <div class="layout materialCard flex">
-                   <vaadin-upload accept="application/msword,text/plain"></vaadin-upload>
+                   <!-- <vaadin-upload accept="application/msword,text/plain" id="rawDemo" on-tap="upload"></vaadin-upload> -->
+                   <vaadin-upload id="bUpload" nodrop class="thick-border" on-upload-before="uploadExperiment">
+                       <div class="drop-label" style= "padding: 20px">
+                           <iron-icon icon="description"></iron-icon>
+                           Drop your files here. (Only CSV and text files)
+                       </div>
+                   </vaadin-upload>
+                   <vaadin-upload id="manualUpload" no-auto></vaadin-upload>
+                    <br>
+                    <button id="uploadButton">Start Upload(s)</button>
                </div>
                <div class="layout materialCard flex">
                    <paper-input style ="padding: 10px" label="input comma-separated compositions" id="compoCommaList" value="{{compositions}}"></paper-input>
@@ -444,6 +458,39 @@ This element provides filter box in glyconnect
       }
       attached () {
           this.async(function(){this._setTogglesAndRSliders();},1);
+      }
+      ready() {
+       super.ready();
+        var upload = Polymer.dom(this.root).querySelector('#manualUpload');
+        var uploadButton = document.getElementById('uploadButton');
+
+        Polymer.dom(this.root).querySelector("#uploadButton").addEventListener('click', function() {
+          upload.uploadFiles();
+        });
+
+        // Change upload button text
+        upload.set('i18n.addFiles', {
+          one: 'Add File',
+          many: 'Add Files'
+        });
+      }
+      uploadExperiment (event){
+          event.preventDefault();
+          var upload =  Polymer.dom(this.root).querySelector("#bUpload");
+          var file = event.detail.file;
+          var that = this;
+          var reader = new FileReader();
+          console.log(reader);
+          reader.onload = function(e) {
+              var extension = file.name.slice(-4);
+              if(extension.toUpperCase() != ".CSV" && extension.toUpperCase() != ".TXT" ){
+                  upload.set(['files', upload.files.indexOf(file), 'error'], 'Extension Error. File must be CSV or TXT (i.e. example.csv, example.txt).');
+                  return;
+              }
+              var text = reader.result;
+              console.log(text);
+          };
+          reader.readAsText(file);
       }
       _getLabel (monosaccharide) {
           return this.labels[monosaccharide];
