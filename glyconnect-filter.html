@@ -70,7 +70,7 @@ This element provides filter box in glyconnect
                 line-height: 25px;
             }
             .card {
-                /*background-color: #cc3300;*/
+                background-color: #cc3300;
                 font-size: 16px;
                 padding: 15px 15px 15px 15px;
                 /*box-sizing: border-box;*/
@@ -110,16 +110,6 @@ This element provides filter box in glyconnect
                 opacity: 0;
               };
             }
-            /*.toggle-span-label {
-                position: relative;
-                display: inline-block;
-                vertical-align: middle;
-                padding-left:  8px;
-                padding-top: 2px;
-                pointer-events: none;
-                font-family: 'Roboto', 'Noto', sans-serif;
-                min-width: 140px;
-            }*/
             .doubleRangeBox{
                 width: 300px;
                 margin: 10px 20px 10px 20px;
@@ -149,12 +139,6 @@ This element provides filter box in glyconnect
                 method="GET"
                 on-response="handleProtein"
         ></iron-ajax>
-        <!-- <iron-ajax
-                id="compoDictionary"
-                handle-as="json"
-                method="GET"
-                on-response="handleCompo"
-        ></iron-ajax> -->
         <app-header-layout mode="seamed">
             <div class ="glycanFilterHeader">
                 <paper-button class="indigo filterToggleButton" on-click="_toggleProtein" toggles raised>
@@ -169,24 +153,6 @@ This element provides filter box in glyconnect
               <paper-button class="indigo updateButton" id="sendDataProt" raised>Search</paper-button>
         </iron-collapse>
         <br><br>
-        <!-- <app-header-layout mode="seamed">
-            <div class="glycanFilterHeader">
-                <paper-button class="filterToggleButton indigo" on-click="_toggleCompo" toggles raised>
-                    <iron-icon id="expandIcon" icon="icons:chevron-right" alt="unfold" ></iron-icon>
-                    <iron-icon id="foldIcon" icon="icons:expand-more" alt="fold" disabled></iron-icon>
-                    Composition
-                </paper-button>
-            </div>
-        </app-header-layout>
-        <iron-collapse id="glycanFilterCompo" class="horizontal center-justified">
-          <br>
-          <div>
-            <paper-item class='fancy'>Number of monosaccharides as follow: Hex, HexNAc, DeoxyHex (e.g. fucose), NeuAc, NeuAg, Pentose (e.g. xylose), Sulfate, Phosphate, KDN, KDO, HexA, Methyl, Acetyl, Other</paper-item>
-          </div>
-          <vaadin-combo-box id="compoDropDown" required label="Composition"></vaadin-combo-box>
-          <paper-button class="indigo updateButton" id="sendDataComp" raised>Search</paper-button>
-        </iron-collapse>
-        <br><br> -->
         <app-header-layout mode="seamed">
             <div class="glycanFilterHeader">
                 <paper-button class="filterToggleButton indigo" on-click="_toggleGlycanFilter" toggles raised>
@@ -198,23 +164,19 @@ This element provides filter box in glyconnect
         </app-header-layout>
         <iron-collapse id="glycanFilterBox" class="horizontal center-justified">
           <div class="layout vertical flex">
-           <paper-tabs selected="{{selected}}"  no-bar>
+           <paper-tabs selected="{{selected}}" no-bar>
                <paper-tab>File upload</paper-tab>
                <paper-tab>List of composition</paper-tab>
-               <paper-tab>Monosaccharide selectors</paper-tab>
+               <paper-tab on-click = '_reset'>Monosaccharide selectors</paper-tab>
            </paper-tabs>
            <iron-pages selected="{{selected}}">
               <div class="layout materialCard flex">
-                   <!-- <vaadin-upload accept="application/msword,text/plain" id="rawDemo" on-tap="upload"></vaadin-upload> -->
                    <vaadin-upload id="bUpload" nodrop class="thick-border" on-upload-before="uploadExperiment">
                        <div class="drop-label" style= "padding: 20px">
                            <iron-icon icon="description"></iron-icon>
                            Drop your files here. (Only CSV and text files)
                        </div>
                    </vaadin-upload>
-                   <vaadin-upload id="manualUpload" no-auto></vaadin-upload>
-                    <br>
-                    <button id="uploadButton">Start Upload(s)</button>
                </div>
                <div class="layout materialCard flex">
                    <paper-input style ="padding: 10px" label="input comma-separated compositions" id="compoCommaList" value="{{compositions}}"></paper-input>
@@ -222,35 +184,37 @@ This element provides filter box in glyconnect
                      <paper-button class="indigo updateButton" on-tap='_getCompoList'>Search</paper-button>
                    </div>
                </div>
-               <div class="layout materialCard flex"><link rel="import" href="../iron-list/iron-list.html">
-                 <iron-icon id="clearIcon" icon="icons:autorenew" alt="reset" on-click="_reset"></iron-icon>
-                   <div id="rangeBox" class="layout horizontal wrap">
-                       <template id="rangeBoxTemplate" is="dom-repeat" items="{{monosaccharides}}">
-                           <div class="doubleRangeBox">
-                               <!-- <div class="layout horizontal">
-                                   <paper-toggle-button id="{{item}}Toggle" checked on-change="_changeOfSlider">{{_getLabel(item)}} : </paper-toggle-button>
-                                   <span id="{{item}}Label" class="toggle-span-label"> {{_getLabel(item)}}: min value</span>
-                                   <iron-localstorage id="{{item}}ToggleCache" name="{{item}}ToggleCache"></iron-localstorage>
-                               </div><br> -->
-                               <span id="{{item}}Label">{{_getLabel(item)}}</span>
-                               <div class="layout horizontal">
+               <div>
+                 <div class="layout materialCard flex"><link rel="import" href="../iron-list/iron-list.html">
+                   <iron-icon id="clearIcon" icon="icons:autorenew" alt="reset" on-click="_reset"></iron-icon>
+                     <div id="rangeBox" class="layout horizontal wrap">
+                         <template is="dom-repeat" items="{{monosaccharides}}">
+                             <div id="{{item}}toHide" class="doubleRangeBox">
+                                 <span>{{_getLabel(item)}}</span>
+                                 <div class="layout horizontal">
 
-                                 <paper-slider id="{{item}}RangeMin" edge = 'Min' snaps max="12" max-markers="12" step="1" value = '0' on-change="_changeOfRange" editable></paper-slider>
-                                 <span>Min</span>
-                                 <iron-localstorage id="{{item}}RangeCacheMin" name="{{item}}RangeCacheMin"></iron-localstorage>
-                               </div>
-                               <div class="layout horizontal">
+                                   <paper-slider id="{{item}}RangeMin" edge = 'Min' snaps max="12" max-markers="12" step="1" value = '0' on-change="_changeOfRange" editable></paper-slider>
+                                   <span>Min</span>
+                                   <iron-localstorage id="{{item}}RangeCacheMin" name="{{item}}RangeCacheMin"></iron-localstorage>
+                                 </div>
+                                 <div class="layout horizontal">
 
-                                 <paper-slider id="{{item}}RangeMax" edge = 'Max' snaps max="12" max-markers="12" step="1" value = '0' on-change="_changeOfRange" editable></paper-slider>
-                                 <span>Max</span>
-                                 <iron-localstorage id="{{item}}RangeCacheMax" name="{{item}}RangeCacheMax"></iron-localstorage>
-                               </div>
-                           </div>
-                       </template>
-                       <div class="horizontal end-justified layout">
-                         <paper-button class="indigo updateButton" on-tap='_getCompo'>Search</paper-button>
-                       </div>
-                   </div>
+                                   <paper-slider id="{{item}}RangeMax" edge = 'Max' snaps max="12" max-markers="12" step="1" value = '0' on-change="_changeOfRange" editable></paper-slider>
+                                   <span>Max</span>
+                                   <iron-localstorage id="{{item}}RangeCacheMax" name="{{item}}RangeCacheMax"></iron-localstorage>
+                                 </div>
+                             </div>
+                         </template>
+                         <div class="horizontal end-justified layout">
+                           <paper-button class="indigo updateButton" on-tap='_getCompo'>Search</paper-button>
+                         </div>
+                     </div>
+                 </div>
+                 <div class="layout materialCard flex">
+                   <template is="dom-repeat" items="{{spareMonosac}}">
+                        <paper-button id={{item}} class="card" on-tap="createSelector">{{_getLabel(item)}}</paper-button>
+                   </template>
+                 </div>
                </div>
              </iron-pages>
            </div>
@@ -281,7 +245,7 @@ This element provides filter box in glyconnect
               </div>
             </div>
               <div class="layout vertical flex">
-               <paper-tabs selected="{{selected}}"  no-bar>
+               <paper-tabs selected="{{selected}}" no-bar>
                    <paper-tab>Cores</paper-tab>
                    <paper-tab>Structural properties</paper-tab>
                    <paper-tab>Determinants</paper-tab>
@@ -429,6 +393,10 @@ This element provides filter box in glyconnect
             type: Array,
             value: ['Hex', 'HexNAc', 'dHex', 'NeuAc', 'NeuGc', 'Pen', 'S', 'P', 'Kdn', 'Kdo', 'HexA',  'Methyl', 'Acetyl', 'Other']
           },
+          spareMonosac: {
+            type: Array,
+            value: ['S', 'P', 'Kdn', 'Kdo', 'HexA',  'Methyl', 'Acetyl', 'Other']
+          },
           compositions: {
               type: String
           },
@@ -459,21 +427,6 @@ This element provides filter box in glyconnect
       attached () {
           this.async(function(){this._setTogglesAndRSliders();},1);
       }
-      ready() {
-       super.ready();
-        var upload = Polymer.dom(this.root).querySelector('#manualUpload');
-        var uploadButton = document.getElementById('uploadButton');
-
-        Polymer.dom(this.root).querySelector("#uploadButton").addEventListener('click', function() {
-          upload.uploadFiles();
-        });
-
-        // Change upload button text
-        upload.set('i18n.addFiles', {
-          one: 'Add File',
-          many: 'Add Files'
-        });
-      }
       uploadExperiment (event){
           event.preventDefault();
           var upload =  Polymer.dom(this.root).querySelector("#bUpload");
@@ -495,6 +448,36 @@ This element provides filter box in glyconnect
       _getLabel (monosaccharide) {
           return this.labels[monosaccharide];
       }
+      clearFilter(event) {
+        var typeGlyco = event.target.getAttribute("typeLink");
+        var vr = this.shadowRoot.querySelector("#selected"+typeGlyco);
+        var toClear =  Polymer.dom(vr).querySelectorAll("paper-button");
+        for (var i = 0; i < toClear.length; i++) {
+          Polymer.dom(this.root).querySelector('paper-button[id='+toClear[i].id.replace("-clone",'')+']').hidden=false;
+          toClear[i].remove();
+        }
+      }
+      createTag(event) {
+       var typeTag = event.target.getAttribute("typeLink");
+       var list = Polymer.dom(this.root).querySelector("#selected"+typeTag);
+       var sourceEl = event.target;
+       var cloneEl = sourceEl.cloneNode(true);
+       event.target.hidden=true;
+       cloneEl.id=cloneEl.id+"-clone";
+       list.insertBefore(cloneEl, null);
+       cloneEl.addEventListener('tap', e => {this.destroyTag(e)});
+     }
+     createSelector(event) {
+       if(Polymer.dom(this.root).querySelector('#'+event.target.id+'toHide').hidden == true){
+         Polymer.dom(this.root).querySelector('#'+event.target.id+'toHide').hidden=false;
+       }else{
+         Polymer.dom(this.root).querySelector('#'+event.target.id+'toHide').hidden=true;
+       };
+    }
+     destroyTag(pr) {
+       Polymer.dom(this.root).querySelector('paper-button[id='+pr.target.id.replace("-clone",'')+']').hidden=false;
+      pr.target.remove();
+     }
       _toggleGlycanFilter () {
           this._setTogglesAndRSliders();
           this.$.glycanFilterBox.toggle();
@@ -513,15 +496,6 @@ This element provides filter box in glyconnect
               Polymer.dom(this.root).querySelector("#"+monosaccharide+"RangeMax").value =   Polymer.dom(this.root).querySelector("#"+monosaccharide+"RangeCacheMax").value;
               this._createGlycanFilter('Min');
               this._createGlycanFilter('Max');
-              // if (Polymer.dom(this.root).querySelector("#"+monosaccharide+"ToggleCache").value=='unchecked'){
-              //       Polymer.dom(this.root).querySelector("#"+monosaccharide+"Toggle").removeAttribute('checked');
-              //       Polymer.dom(this.root).querySelector("#"+monosaccharide+"Toggle").setAttribute('unchecked',true)
-              //       Polymer.dom(this.root).querySelector("#"+monosaccharide+"RangeMin").setAttribute('disabled',true);
-              // }else{
-              //       Polymer.dom(this.root).querySelector("#"+monosaccharide+"Toggle").removeAttribute('unchecked');
-              //       Polymer.dom(this.root).querySelector("#"+monosaccharide+"Toggle").setAttribute('checked',true);
-              //       Polymer.dom(this.root).querySelector("#"+monosaccharide+"Label").innerHTML = "More or equal to "+   Polymer.dom(this.root).querySelector("#"+monosaccharide+"RangeMin").value;
-              // }
           }
       }
       _getCompoList () {
@@ -532,11 +506,11 @@ This element provides filter box in glyconnect
           var rangeBox = this.$.rangeBox;
           var paperInputs = Array.prototype.slice.call(rangeBox.getElementsByTagName('paper-slider'));
           var data = this;
-          var compoString = '';
+          var compoString = [];
           paperInputs.forEach(function (item) {
-              var monosaccharideId = item.id.replace("RangeMin","");
-              var monoQuantity= data.shadowRoot.querySelector("#"+monosaccharideId+"RangeMin").value;
-              compoString += monoQuantity;
+            var edge = item.getAttribute('edge');
+            var monosaccharideId = item.id.replace("Range"+edge,"");
+            compoString += data.shadowRoot.querySelector("#"+monosaccharideId+"Range"+edge).value;
           });
           console.log(compoString);
       }
@@ -552,29 +526,15 @@ This element provides filter box in glyconnect
               rangeObject["minRange"] = 0;
               rangeObject["presence"] = true;
               filterObject[monosaccharideId] = rangeObject;
-              // data.shadowRoot.querySelector("#"+monosaccharideId+"Toggle").setAttribute('checked',true);
-              // data.shadowRoot.querySelector("#"+monosaccharideId+"ToggleCache").value = true;
               data.shadowRoot.querySelector("#"+monosaccharideId+"Range"+edge).value = 0;
               data.shadowRoot.querySelector("#"+monosaccharideId+"RangeCache"+edge).value = 0;
-              // var monosaccharidemin  = item.id.replace("RangeMin","");
-              // data.shadowRoot.querySelector("#"+monosaccharide+"Label").textContent  = "More or equal to 0";
           });
           data.filter = filterObject;
+          var spareMonosac = ['S', 'P', 'Kdn', 'Kdo', 'HexA',  'Methyl', 'Acetyl', 'Other'];
+          for (var h = 0; h < spareMonosac.length; h++) {
+            Polymer.dom(this.root).querySelector('#'+spareMonosac[h]+'toHide').hidden=true;
+          };
       }
-      // _changeOfSlider (event) {
-      //     var monosaccharide  = event.target.id.replace("Toggle","");
-      //     if(event.target.checked){
-      //         Polymer.dom(this.root).querySelector("#"+monosaccharide+"ToggleCache").value = 'checked';
-      //         Polymer.dom(this.root).querySelector("#"+monosaccharide+"RangeMin").disabled  = false;
-      //         Polymer.dom(this.root).querySelector("#"+monosaccharide+"Label").textContent  =
-      //             "More or equal to "+ Polymer.dom(this.root).querySelector("#"+monosaccharide+"RangeMin").value;
-      //     } else{
-      //         Polymer.dom(this.root).querySelector("#"+monosaccharide+"ToggleCache").value = 'unchecked';
-      //         Polymer.dom(this.root).querySelector("#"+monosaccharide+"RangeMin").disabled  = true;
-      //         Polymer.dom(this.root).querySelector("#"+monosaccharide+"Label").textContent  = "Not present";
-      //     }
-      //     this._createGlycanFilter();
-      // }
       _changeOfRange (event) {
           var minOrMax = event.target.getAttribute("edge");
 
@@ -677,30 +637,10 @@ This element provides filter box in glyconnect
           console.log(combobox.value);
         });
       }
-      // handleCompo(data){
-      //   var jsonCompo = data.detail.response;
-      //   var compoList = [];
-      //   for (var c =0; c < jsonCompo.length; c ++){
-      //     var compo = jsonCompo[c]['composition'];
-      //     compoList.push(compo);
-      //   };
-      //   // console.log(compoList);
-      //   var vaadincompo = Polymer.dom(this.root).querySelector('#compoDropDown');
-      //   var elements = compoList;//["Hydrogen", "Helium", "Silicon"];
-      //   vaadincompo.items = elements;
-      //   Polymer.dom(this.root).querySelector('#sendDataComp').addEventListener('click', function() {
-      //     console.log(vaadincompo.value);
-      //   });
-      // }
-
       _toggleProtein () {
         this.$.glycanFilterProt.toggle();
         this.expandFold()
       }
-      // _toggleCompo () {
-      //   this.$.glycanFilterCompo.toggle();
-      //   this.expandFold()
-      // }
       _toggleNGlycan () {
         this.$.glycanFilterN.toggle();
         this.expandFold()
@@ -722,29 +662,7 @@ This element provides filter box in glyconnect
           this.$.expandIcon.removeAttribute('disabled');
         }
       }
-      clearFilter(event) {
-        var typeGlyco = event.target.getAttribute("typeLink");
-        var vr = this.shadowRoot.querySelector("#selected"+typeGlyco);
-        var toClear =  Polymer.dom(vr).querySelectorAll("paper-button");
-        for (var i = 0; i < toClear.length; i++) {
-          Polymer.dom(this.root).querySelector('paper-button[id='+toClear[i].id.replace("-clone",'')+']').hidden=false;
-          toClear[i].remove();
-        }
-      }
-      createTag(event) {
-       var typeTag = event.target.getAttribute("typeLink");
-       var list = Polymer.dom(this.root).querySelector("#selected"+typeTag);
-       var sourceEl = event.target;
-       var cloneEl = sourceEl.cloneNode(true);
-       event.target.hidden=true;
-       cloneEl.id=cloneEl.id+"-clone";
-       list.insertBefore(cloneEl, null);
-       cloneEl.addEventListener('tap', e => {this.destroyTag(e)});
-     }
-     destroyTag(pr) {
-       Polymer.dom(this.root).querySelector('paper-button[id='+pr.target.id.replace("-clone",'')+']').hidden=false;
-      pr.target.remove();
-     }
+
      idCreator(id) {
        return "d_"+id.replace(/ /g,'').replace(/\(/g, '').replace(/\)/g, '').replace(/\,/g, "").replace("/","").replace(/\'/g,"");
      }
