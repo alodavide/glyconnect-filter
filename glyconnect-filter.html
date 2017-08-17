@@ -20,6 +20,8 @@
 <link rel="import" href="../paper-toggle-button/paper-toggle-button.html">
 <link rel="import" href="../iron-localstorage/iron-localstorage.html">
 <link rel="import" href="../paper-slider/paper-slider.html">
+<link rel="import" href="../iron-autogrow-textarea/iron-autogrow-textarea.html">
+
 <!--
 `glyconnect-filter`
 This element provides filter box in glyconnect
@@ -126,6 +128,15 @@ This element provides filter box in glyconnect
                 /*background: #eee;*/
                 /*border-radius: 0;*/
             }
+            .textarea{
+              /*background-color: #E6E6E6;*/
+              width: 520px;
+              font-size: 14px;
+              border-color: var(--paper-indigo-500);
+              padding: 30px 20px 20px 20px;
+              margin: 40px 20px 20px 20px;
+              border-radius: 5px;
+            }
         </style>
         <iron-ajax
                 id="ajaxDictionary"
@@ -167,7 +178,7 @@ This element provides filter box in glyconnect
            <paper-tabs selected="{{selected}}" no-bar>
                <paper-tab>File upload</paper-tab>
                <paper-tab>List of composition</paper-tab>
-               <paper-tab on-click = '_reset'>Monosaccharide selectors</paper-tab>
+               <paper-tab on-click = '_resetAll'>Monosaccharide selectors</paper-tab>
            </paper-tabs>
            <iron-pages selected="{{selected}}">
               <div class="layout materialCard flex">
@@ -179,6 +190,7 @@ This element provides filter box in glyconnect
                    </vaadin-upload>
                </div>
                <div class="layout materialCard flex">
+
                    <paper-input style ="padding: 10px" label="input comma-separated compositions" id="compoCommaList" value="{{compositions}}"></paper-input>
                    <div class="horizontal end-justified layout">
                      <paper-button class="indigo updateButton" on-tap='_getCompoList'>Search</paper-button>
@@ -205,11 +217,18 @@ This element provides filter box in glyconnect
                                  </div>
                              </div>
                          </template>
-                         <div class="horizontal end-justified layout">
-                           <paper-button class="indigo updateButton" on-tap='_getCompo'>Search</paper-button>
-                         </div>
+
+                     </div>
+                        <iron-autogrow-textarea label="" class = 'textarea' id="compoFromSelectors" value="{{compoCopied}}"></iron-autogrow-textarea>
+                     <!-- <paper-input style ="padding: 10px" id="compoFromSelectors" value="{{compoCopied}}"></paper-input> -->
+                     <div>
+                       <paper-button class="indigo updateButton" on-tap='_addCompo'>Add composition</paper-button>
+                     </div>
+                     <div class="horizontal end-justified layout">
+                       <paper-button class="indigo updateButton" on-tap='_getCompo'>Search</paper-button>
                      </div>
                  </div>
+
                  <div class="layout materialCard flex">
                    <template is="dom-repeat" items="{{spareMonosac}}">
                         <paper-button id={{item}} class="card" on-tap="createSelector">{{_getLabel(item)}}</paper-button>
@@ -400,6 +419,9 @@ This element provides filter box in glyconnect
           compositions: {
               type: String
           },
+          compoCopied: {
+              type: String
+          },
           labels: {
               type: Object,
               value: {
@@ -502,38 +524,84 @@ This element provides filter box in glyconnect
         var compolist = Polymer.dom(this.root).querySelector("#compoCommaList").value.replace(/ /g,"").split(",");
         console.log(compolist);
       }
-      _getCompo () {
+      getAllCompo (){
           var rangeBox = this.$.rangeBox;
           var paperInputs = Array.prototype.slice.call(rangeBox.getElementsByTagName('paper-slider'));
           var data = this;
-          var compoString = [];
+          var compoString = '';
           paperInputs.forEach(function (item) {
             var edge = item.getAttribute('edge');
             var monosaccharideId = item.id.replace("Range"+edge,"");
             compoString += data.shadowRoot.querySelector("#"+monosaccharideId+"Range"+edge).value;
+            compoString +=',';
           });
-          console.log(compoString);
+          return compoString;
+        }
+      _getCompo () {
+        if(Polymer.dom(this.root).querySelector("#compoFromSelectors").value==''){
+          var compoToParse = this.getAllCompo();
+          compoToParse = this.createStringCompo(compoToParse);
+        }else{
+          var compoToParse = Polymer.dom(this.root).querySelector("#compoFromSelectors").value;
+        };
+        var allCompo = compoToParse.split('; ');
+        allCompo.splice(-1,1)
+        console.log(allCompo);
+      }
+      _addCompo(){
+        var compoToParse = this.getAllCompo();
+        var parsed = this.createStringCompo(compoToParse);
+        console.log(parsed);
+        var firstCompo=Polymer.dom(this.root).querySelector("#compoFromSelectors").value;
+        Polymer.dom(this.root).querySelector("#compoFromSelectors").value +=parsed;
+      }
+      createStringCompo(compoFromSlider){
+        var compoArray = compoFromSlider.split(',')
+        compoArray.splice(-1,1);
+        var reWriteCompo = '';
+        for (var ca=0; ca < compoArray.length; ca +=2){
+            var compoMinMax = compoArray[ca]+compoArray[ca+1];
+            if (compoMinMax.length == 2 && compoMinMax[0]==compoMinMax[1]){
+              reWriteCompo += compoMinMax[0]+',';
+            }else if (compoMinMax.length == 2 && compoMinMax[0]!=compoMinMax[1]){
+              reWriteCompo += compoMinMax[0]+'-'+compoMinMax[1]+',';
+            } else if (compoMinMax.length == 3){
+              var min= compoMinMax[0];
+              var max = compoMinMax.slice(1,3);
+              reWriteCompo += min+'-'+max+',';
+            }else if(compoMinMax.length == 4){
+              reWriteCompo += compoMinMax.slice(0,2)+'-'+compoMinMax.slice(2,4)+',';
+            };
+        };
+        return reWriteCompo.slice(0,-1)+'; ';
+      }
+      resetSelector(){
+        var rangeBox = this.$.rangeBox;
+        var paperInputs = Array.prototype.slice.call(rangeBox.getElementsByTagName('paper-slider'));
+        var filterObject = {};
+        var data = this;
+        paperInputs.forEach(function (item) {
+            var edge = item.getAttribute('edge');
+            var rangeObject = {};
+            var monosaccharideId = item.id.replace("Range"+edge,"");
+            rangeObject["minRange"] = 0;
+            rangeObject["presence"] = true;
+            filterObject[monosaccharideId] = rangeObject;
+            data.shadowRoot.querySelector("#"+monosaccharideId+"Range"+edge).value = 0;
+            data.shadowRoot.querySelector("#"+monosaccharideId+"RangeCache"+edge).value = 0;
+        });
+        data.filter = filterObject;
+        var spareMonosac = ['S', 'P', 'Kdn', 'Kdo', 'HexA',  'Methyl', 'Acetyl', 'Other'];
+        for (var h = 0; h < spareMonosac.length; h++) {
+          Polymer.dom(this.root).querySelector('#'+spareMonosac[h]+'toHide').hidden=true;
+        };
       }
       _reset () {
-          var rangeBox = this.$.rangeBox;
-          var paperInputs = Array.prototype.slice.call(rangeBox.getElementsByTagName('paper-slider'));
-          var filterObject = {};
-          var data = this;
-          paperInputs.forEach(function (item) {
-              var edge = item.getAttribute('edge');
-              var rangeObject = {};
-              var monosaccharideId = item.id.replace("Range"+edge,"");
-              rangeObject["minRange"] = 0;
-              rangeObject["presence"] = true;
-              filterObject[monosaccharideId] = rangeObject;
-              data.shadowRoot.querySelector("#"+monosaccharideId+"Range"+edge).value = 0;
-              data.shadowRoot.querySelector("#"+monosaccharideId+"RangeCache"+edge).value = 0;
-          });
-          data.filter = filterObject;
-          var spareMonosac = ['S', 'P', 'Kdn', 'Kdo', 'HexA',  'Methyl', 'Acetyl', 'Other'];
-          for (var h = 0; h < spareMonosac.length; h++) {
-            Polymer.dom(this.root).querySelector('#'+spareMonosac[h]+'toHide').hidden=true;
-          };
+          this.resetSelector();
+      }
+      _resetAll(){
+        this.resetSelector();
+        Polymer.dom(this.root).querySelector("#compoFromSelectors").value='';
       }
       _changeOfRange (event) {
           var minOrMax = event.target.getAttribute("edge");
