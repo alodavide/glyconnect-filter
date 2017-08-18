@@ -27,6 +27,7 @@
 This element provides filter box in glyconnect
 @demo demo/index.html
 -->
+<!-- file_format_morten=[Hex]5 [HexNAc]5 [dHex]2 [NeuAc]3 -->
 
 <dom-module id="glyconnect-filter">
     <template>
@@ -521,7 +522,10 @@ This element provides filter box in glyconnect
           }
       }
       _getCompoList () {
-        var compolist = Polymer.dom(this.root).querySelector("#compoCommaList").value.replace(/ /g,"").split(",");
+        var compolist = Polymer.dom(this.root).querySelector("#compoCommaList").value
+        if(compolist != undefined){
+            compolist = compolist.replace(/[.'\/#!$%\^\\\^&\*;:{}=\-_`~()]/g,"").split(",");
+        }
         console.log(compolist);
       }
       getAllCompo (){
