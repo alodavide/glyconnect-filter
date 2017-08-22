@@ -186,16 +186,24 @@ This element provides filter box in glyconnect
                    <vaadin-upload id="bUpload" nodrop class="thick-border" on-upload-before="uploadExperiment">
                        <div class="drop-label" style= "padding: 20px">
                            <iron-icon icon="description"></iron-icon>
-                           Drop your files here. (Only CSV and text files)
+                           Drop your files here (only text files).<br>
+                            <p>Compositions have to be separated by comma and written as Oxford nomenclature or using the following monosaccharide abbreviations: </p>
+                            <p>Hex, HexNAc, dHex (e.g. fucose), NeuAc, NeuGc, Pen (e.g. xylose), S (sulphate), P (phosphate), KDN, KDO, HexA (e.g. GlcA), Met (methyl), Ac (acetyl), Other</p>
+                            <p>e.g. Hex HexNAc3 dHex0-4 (for more than 1 monosaccharide specify the corresponding number, for range use -).</p>
+                            <p></p>
                        </div>
                    </vaadin-upload>
                </div>
                <div class="layout materialCard flex">
-
-                   <paper-input style ="padding: 10px" label="input comma-separated compositions" id="compoCommaList" value="{{compositions}}"></paper-input>
-                   <div class="horizontal end-justified layout">
-                     <paper-button class="indigo updateButton" on-tap='_getCompoList'>Search</paper-button>
-                   </div>
+                 <div style="padding:10px">
+                  <p>Compositions have to be written as Oxford nomenclature or using the following monosaccharide abbreviations: </p>
+                  <p>Hex, HexNAc, dHex (e.g. fucose), NeuAc, NeuGc, Pen (e.g. xylose), S (sulphate), P (phosphate), KDN, KDO, HexA (e.g. GlcA), Met (methyl), Ac (acetyl), Other</p>
+                  <p>e.g. Hex HexNAc3 dHex0-4 (for more than 1 monosaccharide specify the corresponding number, for range use -)</p>
+                 </div>
+                 <paper-input style ="padding: 10px" label="input comma-separated compositions" id="compoCommaList" value="{{compositions}}"></paper-input>
+                 <div class="horizontal end-justified layout">
+                   <paper-button class="indigo updateButton" on-tap='_getCompoList'>Search</paper-button>
+                 </div>
                </div>
                <div>
                  <div class="layout materialCard flex"><link rel="import" href="../iron-list/iron-list.html">
@@ -459,8 +467,8 @@ This element provides filter box in glyconnect
           console.log(reader);
           reader.onload = function(e) {
               var extension = file.name.slice(-4);
-              if(extension.toUpperCase() != ".CSV" && extension.toUpperCase() != ".TXT" ){
-                  upload.set(['files', upload.files.indexOf(file), 'error'], 'Extension Error. File must be CSV or TXT (i.e. example.csv, example.txt).');
+              if(extension.toUpperCase() != ".TXT" ){
+                  upload.set(['files', upload.files.indexOf(file), 'error'], 'Extension Error. File must be TXT (i.e. example.txt).');
                   return;
               }
               var text = reader.result;
@@ -556,7 +564,7 @@ This element provides filter box in glyconnect
           });
           for (var key in monosacDico){
             if (monosacDico.hasOwnProperty(key)){
-              compoString +=key+monosacDico[key]+',';
+              compoString +=key+monosacDico[key]+' ';
                 // console.log(key, dictionary[key]);
             };
           };
@@ -569,7 +577,7 @@ This element provides filter box in glyconnect
         }else{
           var compoToParse = Polymer.dom(this.root).querySelector("#compoFromSelectors").value;
         };
-        var allCompo = compoToParse.split('; ');
+        var allCompo = compoToParse.split(', ');
         allCompo.splice(-1,1)
         console.log(allCompo);
       }
@@ -580,7 +588,7 @@ This element provides filter box in glyconnect
         Polymer.dom(this.root).querySelector("#compoFromSelectors").value +=parsed;
       }
       createStringCompo(compoFromSlider){
-        var compoArray = compoFromSlider.split(',')
+        var compoArray = compoFromSlider.split(' ')
         compoArray.splice(-1,1);
         var reWriteCompo = '';
         for (var ca=0; ca < compoArray.length; ca +=1){
@@ -589,18 +597,18 @@ This element provides filter box in glyconnect
             var monos = compoMinMax.substring(0,firstDigit);
             compoMinMax = compoMinMax.substring(firstDigit);
             if (compoMinMax.length == 2 && compoMinMax[0]==compoMinMax[1] && compoMinMax[0] != '0'){
-              reWriteCompo += monos+compoMinMax[0]+',';
+              reWriteCompo += monos+compoMinMax[0]+' ';
             }else if (compoMinMax.length == 2 && compoMinMax[0]!=compoMinMax[1]){
-              reWriteCompo += monos+compoMinMax[0]+'-'+compoMinMax[1]+',';
+              reWriteCompo += monos+compoMinMax[0]+'-'+compoMinMax[1]+' ';
             } else if (compoMinMax.length == 3){
               var min= compoMinMax[0];
               var max = compoMinMax.slice(1,3);
-              reWriteCompo += monos+min+'-'+max+',';
+              reWriteCompo += monos+min+'-'+max+' ';
             }else if(compoMinMax.length == 4){
-              reWriteCompo += monos+compoMinMax.slice(0,2)+'-'+compoMinMax.slice(2,4)+',';
+              reWriteCompo += monos+compoMinMax.slice(0,2)+'-'+compoMinMax.slice(2,4)+' ';
             };
         };
-        return reWriteCompo.slice(0,-1)+'; ';
+        return reWriteCompo.slice(0,-1)+', ';
       }
       resetSelector(){
         var rangeBox = this.$.rangeBox;
