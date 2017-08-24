@@ -162,6 +162,30 @@ This element provides filter box in glyconnect
         </app-header-layout>
         <iron-collapse id="glycanFilterProt" class="horizontal center-justified">
               <vaadin-combo-box id="protDropDown" required label="Protein"></vaadin-combo-box>
+              <div>
+                <div class="layout materialCard flex">
+                  <app-toolbar>
+                      <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
+                      <span class="title">Species</span>
+                  </app-toolbar>
+                  <div id="availableSpecies" class="enzymeSelected">
+                    <template is="dom-repeat" items="{{species}}">
+                         <paper-button typeLink="Protein" id={{_getSpecies(item)}}Prot class="card" on-tap="createTag">{{item}}</paper-button>
+                    </template>
+                  </div>
+                </div>
+                <div id= "selectedSpecies" class="layout materialCard flex">
+                      <app-toolbar>
+                          <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
+                          <span class="title">Selected species</span>
+                      </app-toolbar>
+                      <div id="selectedProtein" class="enzymeSelected">
+                       </div>
+                      <!-- <div class="horizontal end-justified layout">
+                          <paper-button class="indigo updateButton">Clear</paper-button>
+                      </div> -->
+                </div>
+              </div>
               <paper-button class="indigo updateButton" id="sendDataProt" raised>Search</paper-button>
         </iron-collapse>
         <br><br>
@@ -425,6 +449,11 @@ This element provides filter box in glyconnect
             type: Array,
             value: ['S', 'P', 'Kdn', 'Kdo', 'HexA',  'Methyl', 'Acetyl', 'Other']
           },
+          // species: {
+          //   type: Array,
+          //   value: ['All']
+          //   // notify: true
+          // },
           compositions: {
               type: String
           },
@@ -455,6 +484,10 @@ This element provides filter box in glyconnect
       constructor() {
         super();
       }
+      ready() {
+       super.ready();
+       Polymer.dom(this.root).querySelector('#selectedSpecies').hidden=true;
+      }
       attached () {
           this.async(function(){this._setTogglesAndRSliders();},1);
       }
@@ -478,6 +511,10 @@ This element provides filter box in glyconnect
       }
       _getLabel (monosaccharide) {
           return this.labels[monosaccharide];
+      }
+      _getSpecies(it){
+        var it2 = it.replace(/ /g,'').replace(/./g, '');
+        return it2
       }
       clearFilter(event) {
         var typeGlyco = event.target.getAttribute("typeLink");
@@ -717,12 +754,21 @@ This element provides filter box in glyconnect
         this.coreTypeNP = jsonGlobalProperties['Non attached to proteins']['core'];
       }
       handleProtein(data){
+
         var jsonProtein = data.detail.response;
         var proteinList = [];
         var proteinIds = [];
+        var nameSpecies = {};
         for (var f =0; f < jsonProtein.length; f ++){
           var protFeatures = jsonProtein[f];
-          proteinList.push(protFeatures['name']);
+          name = protFeatures['name'].toLowerCase().replace(" ","");
+          if (nameSpecies.hasOwnProperty(name)){
+            nameSpecies[name].push(protFeatures['taxonomy']);
+              // console.log(key, dictionary[key]);
+          }else{
+            nameSpecies[name] = [protFeatures['taxonomy']];
+            proteinList.push(protFeatures['name']);
+          };
           if (protFeatures['uniprots'] != undefined){
             var accs = protFeatures['uniprots'];
             var uniAcc;
@@ -736,9 +782,17 @@ This element provides filter box in glyconnect
         var combobox = Polymer.dom(this.root).querySelector('#protDropDown');
         var elements = proteinList;//["Hydrogen", "Helium", "Silicon"];
         combobox.items = elements;
-        Polymer.dom(this.root).querySelector('#sendDataProt').addEventListener('click', function() {
-          console.log(combobox.value);
-        });
+        Polymer.dom(this.root).querySelector('#protDropDown').addEventListener('change', e => {this.printSP(combobox.value, nameSpecies)});//function() {
+      }
+      printSP (protein, dicName){
+        var speciesForChoice = dicName[protein.toLowerCase().replace(" ","")];
+        if(speciesForChoice.length >1){
+          Polymer.dom(this.root).querySelector('#selectedSpecies').hidden=false;
+          speciesForChoice.push('All');
+        }else{
+          Polymer.dom(this.root).querySelector('#selectedSpecies').hidden=true;
+        };
+        this.species = speciesForChoice;
       }
       _toggleProtein () {
         this.$.glycanFilterProt.toggle();
