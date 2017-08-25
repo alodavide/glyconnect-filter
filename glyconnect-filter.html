@@ -170,7 +170,7 @@ This element provides filter box in glyconnect
                   </app-toolbar>
                   <div id="availableSpecies" class="enzymeSelected">
                     <template is="dom-repeat" items="{{species}}">
-                         <paper-button typeLink="Protein" id={{_getSpecies(item)}}Prot class="card" on-tap="createTag">{{item}}</paper-button>
+                         <paper-button typeLink="Protein" id="{{_getLabelSpecies(item)}}Prot" class="card" on-tap="createTag">{{item}}</paper-button>
                     </template>
                   </div>
                 </div>
@@ -449,11 +449,10 @@ This element provides filter box in glyconnect
             type: Array,
             value: ['S', 'P', 'Kdn', 'Kdo', 'HexA',  'Methyl', 'Acetyl', 'Other']
           },
-          // species: {
-          //   type: Array,
-          //   value: ['All']
-          //   // notify: true
-          // },
+          species: {
+            type: Array,
+            // notify: true
+          },
           compositions: {
               type: String
           },
@@ -478,6 +477,9 @@ This element provides filter box in glyconnect
                   'Acetyl' : 'Acetyl',
                   'Other': 'Other'
               }
+          },
+          labSpecies: {
+              type: Object,
           },
         };
       }
@@ -512,9 +514,10 @@ This element provides filter box in glyconnect
       _getLabel (monosaccharide) {
           return this.labels[monosaccharide];
       }
-      _getSpecies(it){
-        var it2 = it.replace(/ /g,'').replace(/./g, '');
-        return it2
+      _getLabelSpecies(first){
+        var second = first.replace(/ /g, "");
+        var third = second.replace(/\./g, "");
+        return third
       }
       clearFilter(event) {
         var typeGlyco = event.target.getAttribute("typeLink");
@@ -531,7 +534,9 @@ This element provides filter box in glyconnect
        var sourceEl = event.target;
        var cloneEl = sourceEl.cloneNode(true);
        event.target.hidden=true;
+       console.log(cloneEl);
        cloneEl.id=cloneEl.id+"-clone";
+       console.log(cloneEl.id);
        list.insertBefore(cloneEl, null);
        cloneEl.addEventListener('tap', e => {this.destroyTag(e)});
      }
@@ -544,6 +549,7 @@ This element provides filter box in glyconnect
     }
      destroyTag(pr) {
        Polymer.dom(this.root).querySelector('paper-button[id='+pr.target.id.replace("-clone",'')+']').hidden=false;
+       console.log(pr.target.id.replace("-clone",''));
       pr.target.remove();
      }
       _toggleGlycanFilter () {
@@ -754,19 +760,20 @@ This element provides filter box in glyconnect
         this.coreTypeNP = jsonGlobalProperties['Non attached to proteins']['core'];
       }
       handleProtein(data){
-
         var jsonProtein = data.detail.response;
         var proteinList = [];
         var proteinIds = [];
         var nameSpecies = {};
+        var allSp = [];
         for (var f =0; f < jsonProtein.length; f ++){
           var protFeatures = jsonProtein[f];
+          var tax = protFeatures['taxonomy'];
+          allSp.push(tax);
           name = protFeatures['name'].toLowerCase().replace(" ","");
           if (nameSpecies.hasOwnProperty(name)){
-            nameSpecies[name].push(protFeatures['taxonomy']);
-              // console.log(key, dictionary[key]);
+            nameSpecies[name].push(tax);
           }else{
-            nameSpecies[name] = [protFeatures['taxonomy']];
+            nameSpecies[name] = [tax];
             proteinList.push(protFeatures['name']);
           };
           if (protFeatures['uniprots'] != undefined){
@@ -778,7 +785,6 @@ This element provides filter box in glyconnect
           };
         };
         Array.prototype.push.apply(proteinList, proteinIds);
-        // console.log(proteinList);
         var combobox = Polymer.dom(this.root).querySelector('#protDropDown');
         var elements = proteinList;//["Hydrogen", "Helium", "Silicon"];
         combobox.items = elements;
@@ -787,6 +793,7 @@ This element provides filter box in glyconnect
       printSP (protein, dicName){
         var speciesForChoice = dicName[protein.toLowerCase().replace(" ","")];
         if(speciesForChoice.length >1){
+          console.log(speciesForChoice);
           Polymer.dom(this.root).querySelector('#selectedSpecies').hidden=false;
           speciesForChoice.push('All');
         }else{
