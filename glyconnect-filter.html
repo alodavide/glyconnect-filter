@@ -170,7 +170,7 @@ This element provides filter box in glyconnect
                   </app-toolbar>
                   <div id="availableSpecies" class="enzymeSelected">
                     <template is="dom-repeat" items="{{species}}">
-                         <paper-button typeLink="Protein" id="{{_getLabelSpecies(item)}}Prot" class="card" on-tap="createTag">{{item}}</paper-button>
+                         <paper-button typeLink="Protein" id="{{_getLabelSpecies(item)}}Prot" speciesButton="{{item}}" class="card" on-tap="createTag">{{item}}</paper-button>
                     </template>
                   </div>
                 </div>
@@ -181,12 +181,9 @@ This element provides filter box in glyconnect
                       </app-toolbar>
                       <div id="selectedProtein" class="enzymeSelected">
                        </div>
-                      <!-- <div class="horizontal end-justified layout">
-                          <paper-button class="indigo updateButton">Clear</paper-button>
-                      </div> -->
                 </div>
               </div>
-              <paper-button class="indigo updateButton" id="sendDataProt" raised>Search</paper-button>
+              <paper-button class="indigo updateButton" taxo="{{item}}" id="sendDataProt" raised on-tap="_searchProtein">Search</paper-button>
         </iron-collapse>
         <br><br>
         <app-header-layout mode="seamed">
@@ -515,9 +512,30 @@ This element provides filter box in glyconnect
           return this.labels[monosaccharide];
       }
       _getLabelSpecies(first){
-        var second = first.replace(/ /g, "");
+        var second = first.replace(/ /g, "_");
         var third = second.replace(/\./g, "");
         return third
+      }
+      _searchProtein(){
+        var myJson={};
+        var protein = Polymer.dom(this.root).querySelector('#protDropDown').value;
+        if (Polymer.dom(this.root).querySelector('#selectedSpecies').hidden==false){
+          var allTaxo = Polymer.dom(this.$.selectedSpecies).querySelectorAll("paper-button");
+          for (var i = 0; i < allTaxo.length; i++) {
+            var x = allTaxo[i].id;
+            var y = x.replace('Prot-clone', '').replace('_', ' ');
+            console.log(y);
+            if ('taxonomy' in myJson) {
+              myJson['taxonomy'].push(y);
+            } else {
+              myJson['taxonomy']=[y];
+            };
+          };
+
+        }
+        myJson['protein']=protein;
+        console.log(myJson);
+        // console.log(Polymer.dom(this.root).querySelector('#protDropDown').value);
       }
       clearFilter(event) {
         var typeGlyco = event.target.getAttribute("typeLink");
@@ -710,6 +728,7 @@ This element provides filter box in glyconnect
       selectedPropN (){
         var selN =  Polymer.dom(this.$.selectedN).querySelectorAll("paper-button");
         var jsonParam = this.param(selN);
+        console.log(jsonParam);
         jsonParam.glycanType = 'n-linked';
         this.filterOutput = jsonParam;
       }
@@ -726,6 +745,7 @@ This element provides filter box in glyconnect
         this.filterOutput = jsonParam;
       }
       param(propArray){
+        console.log(propArray[0]);
         var myJson = {};
         for (var i = 0; i < propArray.length; i++) {
           var x = propArray[i].getAttribute("data-id");
