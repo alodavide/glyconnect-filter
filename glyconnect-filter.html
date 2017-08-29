@@ -21,6 +21,7 @@
 <link rel="import" href="../iron-localstorage/iron-localstorage.html">
 <link rel="import" href="../paper-slider/paper-slider.html">
 <link rel="import" href="../iron-autogrow-textarea/iron-autogrow-textarea.html">
+<link rel="import" href="../glycosetta-js/glycosetta-js.html">
 
 <!--
 `glyconnect-filter`
@@ -161,7 +162,7 @@ This element provides filter box in glyconnect
             </div>
         </app-header-layout>
         <iron-collapse id="glycanFilterProt" class="horizontal center-justified">
-              <vaadin-combo-box id="protDropDown" required label="Protein"></vaadin-combo-box>
+              <vaadin-combo-box typeLink="Protein" id="protDropDown" required label="Protein"></vaadin-combo-box>
               <div>
                 <div class="layout materialCard flex">
                   <app-toolbar>
@@ -170,7 +171,7 @@ This element provides filter box in glyconnect
                   </app-toolbar>
                   <div id="availableSpecies" class="enzymeSelected">
                     <template is="dom-repeat" items="{{species}}">
-                         <paper-button typeLink="Protein" id="{{_getLabelSpecies(item)}}Prot" speciesButton="{{item}}" class="card" on-tap="createTag">{{item}}</paper-button>
+                         <paper-button typeLink="Protein" id="{{_getLabelSpecies(item)}}Prot" speciesButton="{{item}}" class="card" on-tap="checkHowmany">{{item}}</paper-button>
                     </template>
                   </div>
                 </div>
@@ -180,6 +181,9 @@ This element provides filter box in glyconnect
                           <span class="title">Selected species</span>
                       </app-toolbar>
                       <div id="selectedProtein" class="enzymeSelected">
+                       </div>
+                       <div class="horizontal end-justified layout">
+                           <paper-button typeLink="Protein" class="indigo updateButton" on-tap="clearFilter">Clear</paper-button>
                        </div>
                 </div>
               </div>
@@ -219,9 +223,12 @@ This element provides filter box in glyconnect
                  <div style="padding:10px">
                   <p>Compositions have to be written as Oxford nomenclature or using the following monosaccharide abbreviations: </p>
                   <p>Hex, HexNAc, dHex (e.g. fucose), NeuAc, NeuGc, Pen (e.g. xylose), S (sulphate), P (phosphate), KDN, KDO, HexA (e.g. GlcA), Met (methyl), Ac (acetyl), Other</p>
-                  <p>e.g. Hex HexNAc3 dHex0-4 (for more than 1 monosaccharide specify the corresponding number, for range use -)</p>
+                  <p>e.g. HexNAc3 dHex0-4 (for more than 1 monosaccharide specify the corresponding number, for range use -)</p>
                  </div>
                  <paper-input style ="padding: 10px" label="input comma-separated compositions" id="compoCommaList" value="{{compositions}}"></paper-input>
+                 <div class="layout wrap">
+                   <glycosetta-js input-value="A2G2S2"></glycosetta-js>
+                 </div>
                  <div class="horizontal end-justified layout">
                    <paper-button class="indigo updateButton" on-tap='_getCompoList'>Search</paper-button>
                  </div>
@@ -475,8 +482,11 @@ This element provides filter box in glyconnect
                   'Other': 'Other'
               }
           },
-          labSpecies: {
+          protSpecies: {
               type: Object,
+          },
+          count: {
+              type: Array,
           },
         };
       }
@@ -486,6 +496,7 @@ This element provides filter box in glyconnect
       ready() {
        super.ready();
        Polymer.dom(this.root).querySelector('#selectedSpecies').hidden=true;
+       Polymer.dom(this.root).querySelector('#protDropDown').addEventListener('change', e => {this.printSP(e)});
       }
       attached () {
           this.async(function(){this._setTogglesAndRSliders();},1);
@@ -520,11 +531,10 @@ This element provides filter box in glyconnect
         var myJson={};
         var protein = Polymer.dom(this.root).querySelector('#protDropDown').value;
         if (Polymer.dom(this.root).querySelector('#selectedSpecies').hidden==false){
-          var allTaxo = Polymer.dom(this.$.selectedSpecies).querySelectorAll("paper-button");
+          var allTaxo = Polymer.dom(this.$.selectedProtein).querySelectorAll("paper-button");
           for (var i = 0; i < allTaxo.length; i++) {
             var x = allTaxo[i].id;
             var y = x.replace('Prot-clone', '').replace('_', ' ');
-            console.log(y);
             if ('taxonomy' in myJson) {
               myJson['taxonomy'].push(y);
             } else {
@@ -534,8 +544,6 @@ This element provides filter box in glyconnect
 
         }
         myJson['protein']=protein;
-        console.log(myJson);
-        // console.log(Polymer.dom(this.root).querySelector('#protDropDown').value);
       }
       clearFilter(event) {
         var typeGlyco = event.target.getAttribute("typeLink");
@@ -546,15 +554,18 @@ This element provides filter box in glyconnect
           toClear[i].remove();
         }
       }
+      checkHowmany(event){
+        if(this.species.length >1){
+          this.createTag(event);
+        };
+      }
       createTag(event) {
        var typeTag = event.target.getAttribute("typeLink");
        var list = Polymer.dom(this.root).querySelector("#selected"+typeTag);
        var sourceEl = event.target;
        var cloneEl = sourceEl.cloneNode(true);
        event.target.hidden=true;
-       console.log(cloneEl);
        cloneEl.id=cloneEl.id+"-clone";
-       console.log(cloneEl.id);
        list.insertBefore(cloneEl, null);
        cloneEl.addEventListener('tap', e => {this.destroyTag(e)});
      }
@@ -567,7 +578,6 @@ This element provides filter box in glyconnect
     }
      destroyTag(pr) {
        Polymer.dom(this.root).querySelector('paper-button[id='+pr.target.id.replace("-clone",'')+']').hidden=false;
-       console.log(pr.target.id.replace("-clone",''));
       pr.target.remove();
      }
       _toggleGlycanFilter () {
@@ -602,34 +612,21 @@ This element provides filter box in glyconnect
           var paperInputs = Array.prototype.slice.call(rangeBox.getElementsByTagName('paper-slider'));
           var data = this;
           var compoString = '';
-          var monosacDico = {'Hex': '',
-          'HexNAc': '',
-          'dHex': '',
-          'NeuAc': '',
-          'NeuGc': '',
-          'Pen': '',
-          'S': '',
-          'P': '',
-          'Kdn': '',
-          'Kdo': '',
-          'HexA': '',
-          'Methyl' : '',
-          'Acetyl' : '',
-          'Other': ''};
+          var monosacDico = {};
           paperInputs.forEach(function (item) {
             var edge = item.getAttribute('edge');
             var monosaccharideId = item.id.replace("Range"+edge,"");
-            monosacDico[monosaccharideId] += data.shadowRoot.querySelector("#"+monosaccharideId+"Range"+edge).value;
-            // compoString += data.shadowRoot.querySelector("#"+monosaccharideId+"Range"+edge).value;
-            // compoString +=',';
+            if (monosacDico.hasOwnProperty( monosaccharideId)){
+              monosacDico[monosaccharideId] += data.shadowRoot.querySelector("#"+monosaccharideId+"Range"+edge).value;
+            }else{monosacDico[monosaccharideId]=''+data.shadowRoot.querySelector("#"+monosaccharideId+"Range"+edge).value};
           });
           for (var key in monosacDico){
             if (monosacDico.hasOwnProperty(key)){
               compoString +=key+monosacDico[key]+' ';
-                // console.log(key, dictionary[key]);
             };
           };
           return compoString;
+
         }
       _getCompo () {
         if(Polymer.dom(this.root).querySelector("#compoFromSelectors").value==''){
@@ -728,7 +725,6 @@ This element provides filter box in glyconnect
       selectedPropN (){
         var selN =  Polymer.dom(this.$.selectedN).querySelectorAll("paper-button");
         var jsonParam = this.param(selN);
-        console.log(jsonParam);
         jsonParam.glycanType = 'n-linked';
         this.filterOutput = jsonParam;
       }
@@ -745,7 +741,6 @@ This element provides filter box in glyconnect
         this.filterOutput = jsonParam;
       }
       param(propArray){
-        console.log(propArray[0]);
         var myJson = {};
         for (var i = 0; i < propArray.length; i++) {
           var x = propArray[i].getAttribute("data-id");
@@ -800,26 +795,60 @@ This element provides filter box in glyconnect
             var accs = protFeatures['uniprots'];
             var uniAcc;
             for ( uniAcc in accs){
+              nameSpecies[accs[uniAcc]['uniprot_acc'].toLowerCase()]=[tax];
               proteinIds.push(accs[uniAcc]['uniprot_acc']);
             };
           };
         };
+        var result = { };
+        for(var i = 0; i < allSp.length; ++i) {
+            if(!result[allSp[i]])
+                result[allSp[i]] = 0;
+            ++result[allSp[i]];
+        };
+        this.count = result;
         Array.prototype.push.apply(proteinList, proteinIds);
         var combobox = Polymer.dom(this.root).querySelector('#protDropDown');
         var elements = proteinList;//["Hydrogen", "Helium", "Silicon"];
         combobox.items = elements;
-        Polymer.dom(this.root).querySelector('#protDropDown').addEventListener('change', e => {this.printSP(combobox.value, nameSpecies)});//function() {
+        this.protSpecies = nameSpecies;
       }
-      printSP (protein, dicName){
-        var speciesForChoice = dicName[protein.toLowerCase().replace(" ","")];
-        if(speciesForChoice.length >1){
-          console.log(speciesForChoice);
+      printSP (e){
+        this.clearFilter(e);
+        var val = Polymer.dom(this.root).querySelector('#protDropDown').value;
+        if(val != ''){
+          var speciesForChoice = this.protSpecies[val.toLowerCase().replace(" ","")];
+          var newSpecies = speciesForChoice.slice(0);
+        }else{
+          var newSpecies = [];
+        };
+        if(newSpecies.length >1){
+          newSpecies = this.orderSpecies(newSpecies);
           Polymer.dom(this.root).querySelector('#selectedSpecies').hidden=false;
-          speciesForChoice.push('All');
+          newSpecies.push('All');
         }else{
           Polymer.dom(this.root).querySelector('#selectedSpecies').hidden=true;
         };
-        this.species = speciesForChoice;
+        this.species = newSpecies;
+      }
+      orderSpecies(listOfSpecies){
+        var countSpecies = this.count;
+        var toOrder = {};
+        var sortable = [];
+        for(var w =0; w < listOfSpecies.length; w++){
+          toOrder[listOfSpecies[w]]=countSpecies[listOfSpecies[w]];
+        };
+        for (var speci in toOrder) {
+            sortable.push([speci, toOrder[speci]]);
+        };
+        sortable.sort(function(a, b) {
+            return b[1] -a[1];
+        });
+        var sorted = [];
+        for(var t =0; t < sortable.length; t++){
+          sorted.push(sortable[t][0]);
+        };
+        return sorted
       }
       _toggleProtein () {
         this.$.glycanFilterProt.toggle();
