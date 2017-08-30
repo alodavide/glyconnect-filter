@@ -21,7 +21,7 @@
 <link rel="import" href="../iron-localstorage/iron-localstorage.html">
 <link rel="import" href="../paper-slider/paper-slider.html">
 <link rel="import" href="../iron-autogrow-textarea/iron-autogrow-textarea.html">
-<link rel="import" href="../glycosetta-js/glycosetta-js.html">
+<link rel="import" href="../glycosetta-stone/glycosetta-stone.html">
 
 <!--
 `glyconnect-filter`
@@ -227,7 +227,7 @@ This element provides filter box in glyconnect
                  </div>
                  <paper-input style ="padding: 10px" label="input comma-separated compositions" id="compoCommaList" value="{{compositions}}"></paper-input>
                  <div class="layout wrap">
-                   <glycosetta-js input-value="A2G2S2"></glycosetta-js>
+                   <glycosetta-stone id="oxfordInput" input-value=""></glycosetta-stone>
                  </div>
                  <div class="horizontal end-justified layout">
                    <paper-button class="indigo updateButton" on-tap='_getCompoList'>Search</paper-button>
@@ -605,7 +605,8 @@ This element provides filter box in glyconnect
         if(compolist != undefined){
             compolist = compolist.replace(/[.'\/#!$%\^\\\^&\*;:{}=\-_`~()]/g,"").split(",");
         }
-        console.log(compolist);
+         Polymer.dom(this.root).querySelector("#oxfordInput").inputValue=compolist;
+         console.log(Polymer.dom(this.root).querySelector("#oxfordInput").inputValue);
       }
       getAllCompo (){
           var rangeBox = this.$.rangeBox;
