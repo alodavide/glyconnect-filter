@@ -527,6 +527,7 @@ This element provides filter box in glyconnect
           var reader = new FileReader();
           console.log(reader);
           reader.onload = function(event) {
+            upload.set(['files', upload.files.indexOf(file), 'status'], null);
               var extension = file.name.slice(-4);
               if(extension.toUpperCase() != ".TXT" ){
                   upload.set(['files', upload.files.indexOf(file), 'error'], 'Extension Error. File must be TXT (i.e. example.txt).');
@@ -537,9 +538,11 @@ This element provides filter box in glyconnect
               if(text.includes('Hex') === true){
                 console.log(text.split(","));
               }else{
-                this.fromUp=text.split(",");
+                that.fromUp=text.split(",");
               }
-              console.log(this.fromUp);
+              console.log(file);
+            upload.set(['files', upload.files.indexOf(file), 'progress'], 100);
+            upload.set(['files', upload.files.indexOf(file), 'complete'], true);
           };
           reader.readAsText(file);
       }
