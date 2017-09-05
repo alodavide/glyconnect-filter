@@ -576,7 +576,6 @@ This element provides filter box in glyconnect
           };
         }
         myJson['protein']=protein;
-        console.log(myJson);
         this.filterOutput = myJson;
       }
       clearFilter(event) {
@@ -652,16 +651,20 @@ This element provides filter box in glyconnect
           var mono = {'Hex': 0,'HexNAc': 0,'dHex': 0,'NeuAc': 0,'NeuGc': 0, 'Pen': 0, 'S': 0,'P': 0,'Kdn': 0,'Kdo': 0,'HexA': 0,'Met' : 0,'Ac' : 0,'Other':0};
           var extracted = listOfCompo[c].trim().split(' ');
           console.log(extracted);
-
           for(var b =0; b<extracted.length; b ++){
             var remaining = '';
             var quant = 0;
             var regex = /[2-9]/;
-            if(regex.test(extracted[b]) === true){
+            console.log(extracted[b]);
+            var match = extracted[b].match(/\d+/g);
+            if(match != []){
+                console.log(match);
                 var quantInd =  extracted[b].search(/\d/);
                 console.log(quantInd);
+                console.log(extracted[b]);
                 quant += parseInt(extracted[b].substring(quantInd));
                 remaining += extracted[b].substring(0, quantInd);
+                console.log(remaining);
                 console.log(extracted[b].substring(quantInd));
             }else{
               quant += 1;
