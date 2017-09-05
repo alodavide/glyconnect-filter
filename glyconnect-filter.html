@@ -565,15 +565,17 @@ This element provides filter box in glyconnect
           for (var i = 0; i < allTaxo.length; i++) {
             var x = allTaxo[i].id;
             var y = x.replace('Prot-clone', '').replace('_', ' ');
+            if (y === 'All'){continue;}
             if ('taxonomy' in myJson) {
               myJson['taxonomy'].push(y);
             } else {
               myJson['taxonomy']=[y];
             };
           };
-
         }
         myJson['protein']=protein;
+        console.log(myJson);
+        this.filterOutput = myJson;
       }
       clearFilter(event) {
         var typeGlyco = event.target.getAttribute("typeLink");
@@ -855,14 +857,27 @@ This element provides filter box in glyconnect
         }else{
           var newSpecies = [];
         };
-        if(newSpecies.length >1){
+        newSpecies.sort();
+        var newArray = [];
+        for (var s=0; s<newSpecies.length; s ++){
+          if (newArray.length == 0){
+            newArray.push(newSpecies[s])
+          }else{
+            if(newArray.includes(newSpecies[s])){
+              continue;
+            }else{
+              newArray.push(newSpecies[s]);
+            };
+          };
+        }
+        if(newArray.length >1){
           newSpecies = this.orderSpecies(newSpecies);
           Polymer.dom(this.root).querySelector('#selectedSpecies').hidden=false;
-          newSpecies.push('All');
+          newArray.push('All');
         }else{
           Polymer.dom(this.root).querySelector('#selectedSpecies').hidden=true;
         };
-        this.species = newSpecies;
+        this.species = newArray;
       }
       orderSpecies(listOfSpecies){
         var countSpecies = this.count;
