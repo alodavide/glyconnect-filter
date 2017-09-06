@@ -17,7 +17,6 @@
 <link rel="import" href="../iron-list/iron-list.html">
 <link rel="import" href="../paper-item/paper-item.html">
 <link rel="import" href="../paper-toggle-button/paper-toggle-button.html">
-<link rel="import" href="../iron-localstorage/iron-localstorage.html">
 <link rel="import" href="../paper-slider/paper-slider.html">
 <link rel="import" href="../iron-autogrow-textarea/iron-autogrow-textarea.html">
 <link rel="import" href="../glycosetta-stone/glycosetta-stone.html">
@@ -28,7 +27,6 @@ This element provides filter box in glyconnect
 @demo demo/index.html
 -->
 <!-- file_format_morten=[Hex]5 [HexNAc]5 [dHex]2 [NeuAc]3 -->
-
 <dom-module id="glyconnect-filter">
     <template>
         <style is="custom-style" include="iron-flex iron-flex-alignment paper-material-styles"></style>
@@ -211,7 +209,7 @@ This element provides filter box in glyconnect
                        <div class="drop-label" style= "padding: 20px">
                            <iron-icon icon="description"></iron-icon>
                            Drop your files here (only text files).<br>
-                            <p>Compositions have to be separated by comma and written as Oxford nomenclature or using the following monosaccharide abbreviations: </p>
+                            <p>Write comma-separated compositions as Oxford nomenclature or using the following monosaccharide abbreviations: </p>
                             <p>Hex, HexNAc, dHex (e.g. fucose), NeuAc, NeuGc, Pen (e.g. xylose), S (sulphate), P (phosphate), KDN, KDO, HexA (e.g. GlcA), Met (methyl), Ac (acetyl), Other</p>
                             <p>e.g. Hex HexNAc3 dHex4 (for more than 1 monosaccharide specify the corresponding number).</p>
                             <p></p>
@@ -226,7 +224,7 @@ This element provides filter box in glyconnect
                </div>
                <div class="layout materialCard flex">
                  <div style="padding:10px">
-                  <p>Compositions have to be written as Oxford nomenclature (CAPITAL letters) or using the following monosaccharide abbreviations: </p>
+                  <p>Write compositions as Oxford nomenclature (CAPITAL letters) or using the following monosaccharide abbreviations: </p>
                   <p>Hex, HexNAc, dHex (e.g. fucose), NeuAc, NeuGc, Pen (e.g. xylose), S (sulphate), P (phosphate), KDN, KDO, HexA (e.g. GlcA), Met (methyl), Ac (acetyl), Other</p>
                   <p>e.g. Hex HexNAc3 dHex4 (for more than 1 monosaccharide specify the corresponding number)</p>
                  </div>
@@ -248,29 +246,20 @@ This element provides filter box in glyconnect
                </div>
                <div>
                  <div class="layout materialCard flex"><link rel="import" href="../iron-list/iron-list.html">
-                   <iron-icon id="clearIcon" icon="icons:autorenew" alt="reset" on-click="_reset"></iron-icon>
+                   <iron-icon id="clearIcon" icon="icons:autorenew" alt="reset" on-click="resetSelector"></iron-icon>
                      <div id="rangeBox" class="layout horizontal wrap">
                          <template is="dom-repeat" items="{{monosaccharides}}">
                              <div id="{{item}}toHide" class="doubleRangeBox">
                                  <span>{{_getLabel(item)}}</span>
                                  <div class="layout horizontal">
-
-                                   <paper-slider id="{{item}}RangeMin" edge = 'Min' snaps max="12" max-markers="12" step="1" value = '0' on-change="_changeOfRange" editable></paper-slider>
-                                   <span>Min</span>
-                                   <iron-localstorage id="{{item}}RangeCacheMin" name="{{item}}RangeCacheMin"></iron-localstorage>
-                                 </div>
-                                 <div class="layout horizontal">
-
-                                   <paper-slider id="{{item}}RangeMax" edge = 'Max' snaps max="12" max-markers="12" step="1" value = '0' on-change="_changeOfRange" editable></paper-slider>
-                                   <span>Max</span>
-                                   <iron-localstorage id="{{item}}RangeCacheMax" name="{{item}}RangeCacheMax"></iron-localstorage>
+                                   <paper-slider id="{{item}}RangeMin" snaps max="12" max-markers="12" step="1" value = '0' editable></paper-slider>
+                                   <span>Value</span>
                                  </div>
                              </div>
                          </template>
 
                      </div>
                         <iron-autogrow-textarea label="" class = 'textarea' id="compoFromSelectors" value="{{compoCopied}}"></iron-autogrow-textarea>
-                     <!-- <paper-input style ="padding: 10px" id="compoFromSelectors" value="{{compoCopied}}"></paper-input> -->
                      <div>
                        <paper-button class="indigo updateButton" on-tap='_addCompo'>Add composition</paper-button>
                      </div>
@@ -468,7 +457,6 @@ This element provides filter box in glyconnect
           },
           species: {
             type: Array,
-            // notify: true
           },
           fromUp: {
             type: Array,
@@ -525,6 +513,25 @@ This element provides filter box in glyconnect
       openDialog() {
         this.$.dialog.open();
       }
+      _searchProtein(){
+        var myJson={};
+        var protein = Polymer.dom(this.root).querySelector('#protDropDown').value;
+        if (Polymer.dom(this.root).querySelector('#selectedSpecies').hidden==false){
+          var allTaxo = Polymer.dom(this.$.selectedProtein).querySelectorAll("paper-button");
+          for (var i = 0; i < allTaxo.length; i++) {
+            var x = allTaxo[i].id;
+            var y = x.replace('Prot-clone', '').replace('_', ' ');
+            if (y === 'All'){continue;}
+            if ('taxonomy' in myJson) {
+              myJson['taxonomy'].push(y);
+            } else {
+              myJson['taxonomy']=[y];
+            };
+          };
+        }
+        myJson['protein']=protein;
+        this.filterOutput = myJson;
+      }
       uploadExperiment (event){
           event.preventDefault();
           var upload =  Polymer.dom(this.root).querySelector("#bUpload");
@@ -562,25 +569,6 @@ This element provides filter box in glyconnect
         var second = first.replace(/ /g, "_");
         var third = second.replace(/\./g, "");
         return third
-      }
-      _searchProtein(){
-        var myJson={};
-        var protein = Polymer.dom(this.root).querySelector('#protDropDown').value;
-        if (Polymer.dom(this.root).querySelector('#selectedSpecies').hidden==false){
-          var allTaxo = Polymer.dom(this.$.selectedProtein).querySelectorAll("paper-button");
-          for (var i = 0; i < allTaxo.length; i++) {
-            var x = allTaxo[i].id;
-            var y = x.replace('Prot-clone', '').replace('_', ' ');
-            if (y === 'All'){continue;}
-            if ('taxonomy' in myJson) {
-              myJson['taxonomy'].push(y);
-            } else {
-              myJson['taxonomy']=[y];
-            };
-          };
-        }
-        myJson['protein']=protein;
-        this.filterOutput = myJson;
       }
       clearFilter(event) {
         var typeGlyco = event.target.getAttribute("typeLink");
@@ -631,10 +619,7 @@ This element provides filter box in glyconnect
       _setTogglesAndRSliders () {
           for (var idx in this.monosaccharides){
               var monosaccharide = this.monosaccharides[idx];
-              Polymer.dom(this.root).querySelector("#"+monosaccharide+"RangeMin").value =   Polymer.dom(this.root).querySelector("#"+monosaccharide+"RangeCacheMin").value;
-              Polymer.dom(this.root).querySelector("#"+monosaccharide+"RangeMax").value =   Polymer.dom(this.root).querySelector("#"+monosaccharide+"RangeCacheMax").value;
-              this._createGlycanFilter('Min');
-              this._createGlycanFilter('Max');
+              Polymer.dom(this.root).querySelector("#"+monosaccharide+"RangeMin").value = 0;
           }
       }
       _getCompoList () {
@@ -691,9 +676,9 @@ This element provides filter box in glyconnect
                   mono['Kdo'] += quant; //Translating into integer and adding
             }else if (remaining==='HexA') {
                   mono['HexA'] += quant; //Translating into integer and adding
-            }else if (remaining==='Met') {
+            }else if (remaining==='Met' || remaining==='Methyl') {
                   mono['Met'] += quant; //Translating into integer and adding
-            }else if (remaining==='Ac') {
+            }else if (remaining==='Ac' || remaining==='Acetyl') {
                   mono['Ac'] += quant; //Translating into integer and adding
             }else if (remaining==='Other') {
                   mono['Other'] += quant; //Translating into integer and adding
@@ -707,7 +692,6 @@ This element provides filter box in glyconnect
           };
           listOfFourteen.push(monoMerge);
         };
-
         return listOfFourteen;
       }
       getAllCompo (){
@@ -717,11 +701,11 @@ This element provides filter box in glyconnect
           var compoString = '';
           var monosacDico = {};
           paperInputs.forEach(function (item) {
-            var edge = item.getAttribute('edge');
-            var monosaccharideId = item.id.replace("Range"+edge,"");
+            // var edge = item.getAttribute('edge');
+            var monosaccharideId = item.id.replace("RangeMin","");
             if (monosacDico.hasOwnProperty( monosaccharideId)){
-              monosacDico[monosaccharideId] += data.shadowRoot.querySelector("#"+monosaccharideId+"Range"+edge).value;
-            }else{monosacDico[monosaccharideId]=''+data.shadowRoot.querySelector("#"+monosaccharideId+"Range"+edge).value};
+              monosacDico[monosaccharideId] += data.shadowRoot.querySelector("#"+monosaccharideId+"RangeMin").value;
+            }else{monosacDico[monosaccharideId]=''+data.shadowRoot.querySelector("#"+monosaccharideId+"RangeMin").value};
           });
           for (var key in monosacDico){
             if (monosacDico.hasOwnProperty(key)){
@@ -729,7 +713,6 @@ This element provides filter box in glyconnect
             };
           };
           return compoString;
-
         }
       _getCompo () {
         if(Polymer.dom(this.root).querySelector("#compoFromSelectors").value==''){
@@ -739,12 +722,16 @@ This element provides filter box in glyconnect
           var compoToParse = Polymer.dom(this.root).querySelector("#compoFromSelectors").value;
         };
         var allCompo = compoToParse.split(', ');
-        allCompo.splice(-1,1)
+        allCompo.splice(-1,1);
+        var toVisualize = {};
+        toVisualize['composition'] = this.parseCompo(allCompo);
+        this.filterOutput = toVisualize;
+        console.log(this.filterOutput)
       }
       _addCompo(){
         var compoToParse = this.getAllCompo();
         var parsed = this.createStringCompo(compoToParse);
-        var firstCompo=Polymer.dom(this.root).querySelector("#compoFromSelectors").value;
+        // var firstCompo=Polymer.dom(this.root).querySelector("#compoFromSelectors").value;
         Polymer.dom(this.root).querySelector("#compoFromSelectors").value +=parsed;
       }
       createStringCompo(compoFromSlider){
@@ -752,21 +739,15 @@ This element provides filter box in glyconnect
         compoArray.splice(-1,1);
         var reWriteCompo = '';
         for (var ca=0; ca < compoArray.length; ca +=1){
-            var compoMinMax = compoArray[ca];//+compoArray[ca+1];
-            var firstDigit = compoMinMax.search(/\d/);
-            var monos = compoMinMax.substring(0,firstDigit);
-            compoMinMax = compoMinMax.substring(firstDigit);
-            if (compoMinMax.length == 2 && compoMinMax[0]==compoMinMax[1] && compoMinMax[0] != '0'){
-              reWriteCompo += monos+compoMinMax[0]+' ';
-            }else if (compoMinMax.length == 2 && compoMinMax[0]!=compoMinMax[1]){
-              reWriteCompo += monos+compoMinMax[0]+'-'+compoMinMax[1]+' ';
-            } else if (compoMinMax.length == 3){
-              var min= compoMinMax[0];
-              var max = compoMinMax.slice(1,3);
-              reWriteCompo += monos+min+'-'+max+' ';
-            }else if(compoMinMax.length == 4){
-              reWriteCompo += monos+compoMinMax.slice(0,2)+'-'+compoMinMax.slice(2,4)+' ';
-            };
+            var itemMonosac = compoArray[ca];//+compoArray[ca+1];
+            var firstDigit = itemMonosac.search(/\d/);
+            var monos = itemMonosac.substring(0,firstDigit);
+            var numberOf = itemMonosac.substring(firstDigit);
+            if (numberOf === '0'){
+              continue;
+            }else if (numberOf === '1') {
+              reWriteCompo += monos + ' '
+            }else{reWriteCompo += monos+numberOf+ ' '}
         };
         return reWriteCompo.slice(0,-1)+', ';
       }
@@ -776,14 +757,13 @@ This element provides filter box in glyconnect
         var filterObject = {};
         var data = this;
         paperInputs.forEach(function (item) {
-            var edge = item.getAttribute('edge');
+            // var edge = item.getAttribute('edge');
             var rangeObject = {};
-            var monosaccharideId = item.id.replace("Range"+edge,"");
+            var monosaccharideId = item.id.replace("RangeMin","");
             rangeObject["minRange"] = 0;
             rangeObject["presence"] = true;
             filterObject[monosaccharideId] = rangeObject;
-            data.shadowRoot.querySelector("#"+monosaccharideId+"Range"+edge).value = 0;
-            data.shadowRoot.querySelector("#"+monosaccharideId+"RangeCache"+edge).value = 0;
+            data.shadowRoot.querySelector("#"+monosaccharideId+"RangeMin").value = 0;
         });
         data.filter = filterObject;
         var spareMonosac = ['S', 'P', 'Kdn', 'Kdo', 'HexA',  'Methyl', 'Acetyl', 'Other'];
@@ -791,38 +771,9 @@ This element provides filter box in glyconnect
           Polymer.dom(this.root).querySelector('#'+spareMonosac[h]+'toHide').hidden=true;
         };
       }
-      _reset () {
-          this.resetSelector();
-      }
       _resetAll(){
         this.resetSelector();
         Polymer.dom(this.root).querySelector("#compoFromSelectors").value='';
-      }
-      _changeOfRange (event) {
-          var minOrMax = event.target.getAttribute("edge");
-
-          var monosaccharide  = event.target.id.replace("Range"+minOrMax,"");
-          var value = event.target.value;
-          if (minOrMax == 'Min'){
-            Polymer.dom(this.root).querySelector("#"+monosaccharide+"RangeMax").value  = +value;
-            Polymer.dom(this.root).querySelector("#"+monosaccharide+"RangeCacheMax").value  = +value;
-          };
-          Polymer.dom(this.root).querySelector("#"+monosaccharide+"RangeCache"+minOrMax).value  = +value;
-          // Polymer.dom(this.root).querySelector("#"+monosaccharide+"Label").textContent  = "More or equal to "+value;
-          this._createGlycanFilter(minOrMax);
-      }
-      _createGlycanFilter (minOrMax) {
-          var rangeBox = this.$.rangeBox;
-          var paperInputs = Array.prototype.slice.call(rangeBox.getElementsByTagName('paper-slider'));
-          var filterObject = {};
-          paperInputs.forEach(function (item) {
-              var rangeObject = {};
-              var monosaccharideId = item.id.replace("Range"+minOrMax,"");
-              rangeObject["minRange"] = item.value;
-              // rangeObject["presence"] = Polymer.dom(rangeBox).querySelector("#"+monosaccharideId+"Toggle").checked;
-              filterObject[monosaccharideId] = rangeObject;
-          });
-          this.filter = filterObject;
       }
       selectedPropN (){
         var selN =  Polymer.dom(this.$.selectedN).querySelectorAll("paper-button");
@@ -990,7 +941,6 @@ This element provides filter box in glyconnect
           this.$.expandIcon.removeAttribute('disabled');
         }
       }
-
      idCreator(id) {
        return "d_"+id.replace(/ /g,'').replace(/\(/g, '').replace(/\)/g, '').replace(/\,/g, "").replace("/","").replace(/\'/g,"");
      }
