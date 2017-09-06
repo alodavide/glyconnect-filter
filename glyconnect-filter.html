@@ -216,8 +216,11 @@ This element provides filter box in glyconnect
                             <p>e.g. Hex HexNAc3 dHex4 (for more than 1 monosaccharide specify the corresponding number).</p>
                             <p></p>
                        </div>
+                       <div class="layout wrap">
+                         <glycosetta-stone id="oxfordFile" input-value=""></glycosetta-stone>
+                       </div>
                        <div class="horizontal end-justified layout">
-                         <paper-button class="indigo updateButton" on-tap="parseOxford">Go</paper-button>
+                         <paper-button class="indigo updateButton" on-tap="sendData">Submit</paper-button>
                        </div>
                    </vaadin-upload>
                </div>
@@ -503,6 +506,9 @@ This element provides filter box in glyconnect
           count: {
               type: Array,
           },
+          textFromFileOx: {
+              type: Array,
+          },
         };
       }
       constructor() {
@@ -524,8 +530,8 @@ This element provides filter box in glyconnect
           var upload =  Polymer.dom(this.root).querySelector("#bUpload");
           var file = event.detail.file;
           var that = this;
+          var glycosetta = Polymer.dom(this.root).querySelector("#oxfordFile");
           var reader = new FileReader();
-          console.log(reader);
           reader.onload = function(event) {
             upload.set(['files', upload.files.indexOf(file), 'status'], null);
               var extension = file.name.slice(-4);
@@ -536,20 +542,18 @@ This element provides filter box in glyconnect
               var text = event.target.result;
               text = text.replace(/\r?\n|\r/g, '').replace(/, /g, ',').trim();
               if(text.includes('Hex') === true){
-                console.log(text.split(","));
+                that.fromUp = that.parseCompo(text.split(","));
               }else{
-                that.fromUp=text.split(",");
+                var fromSetta = glycosetta.translate(text.split(","));
+                that.fromUp = fromSetta;
               }
-              console.log(file);
             upload.set(['files', upload.files.indexOf(file), 'progress'], 100);
             upload.set(['files', upload.files.indexOf(file), 'complete'], true);
           };
           reader.readAsText(file);
       }
-
-      parseOxford(){
-        console.log(this.fromUp);
-         Polymer.dom(this.root).querySelector("#oxfordInput").inputValue=this.fromUp;
+      sendData(){
+        this.filterOutput = this.fromUp;
       }
       _getLabel (monosaccharide) {
           return this.labels[monosaccharide];
@@ -640,37 +644,31 @@ This element provides filter box in glyconnect
             compolist = compolist.replace(/[.'\/#!$%\^\\\^&\*;:{}=\-_`~()]/g,"").split(",");
         }
         if(compolist[0].includes("Hex") === false){
-         var fromGlycosetta = Polymer.dom(this.root).querySelector("#oxfordInput").inputValue=compolist;
-       }else{this.parseCompo(compolist)};
-      //  compoRequest['composition']=compolist;
-      //  console.log(compoRequest);
+         var parsedCompo= Polymer.dom(this.root).querySelector("#oxfordInput").translate(compolist);
+         }else{
+           var parsedCompo = this.parseCompo(compolist);
+        };
+       compoRequest['composition']=parsedCompo;
+       this.filterOutput = compoRequest;
       }
       parseCompo(listOfCompo){
         var listOfFourteen = [];
         for(var c =0; c<listOfCompo.length; c ++){
           var mono = {'Hex': 0,'HexNAc': 0,'dHex': 0,'NeuAc': 0,'NeuGc': 0, 'Pen': 0, 'S': 0,'P': 0,'Kdn': 0,'Kdo': 0,'HexA': 0,'Met' : 0,'Ac' : 0,'Other':0};
           var extracted = listOfCompo[c].trim().split(' ');
-          console.log(extracted);
           for(var b =0; b<extracted.length; b ++){
             var remaining = '';
             var quant = 0;
             var regex = /[2-9]/;
-            console.log(extracted[b]);
             var match = extracted[b].match(/\d+/g);
-            if(match != []){
-                console.log(match);
+            if(match != null){
                 var quantInd =  extracted[b].search(/\d/);
-                console.log(quantInd);
-                console.log(extracted[b]);
                 quant += parseInt(extracted[b].substring(quantInd));
                 remaining += extracted[b].substring(0, quantInd);
-                console.log(remaining);
-                console.log(extracted[b].substring(quantInd));
             }else{
               quant += 1;
               remaining += extracted[b];
             };
-
             if (remaining==='HexNAc') {
               mono['HexNAc'] += quant;
             } else if (remaining==='Hex') {
@@ -701,7 +699,6 @@ This element provides filter box in glyconnect
                   mono['Other'] += quant; //Translating into integer and adding
             };
           };
-          console.log(mono);
           var monoMerge = '';
           for(var key in mono){
             if (mono.hasOwnProperty(key)) {
@@ -710,7 +707,7 @@ This element provides filter box in glyconnect
           };
           listOfFourteen.push(monoMerge);
         };
-        console.log(listOfFourteen);
+
         return listOfFourteen;
       }
       getAllCompo (){
@@ -743,7 +740,6 @@ This element provides filter box in glyconnect
         };
         var allCompo = compoToParse.split(', ');
         allCompo.splice(-1,1)
-        console.log(allCompo);
       }
       _addCompo(){
         var compoToParse = this.getAllCompo();

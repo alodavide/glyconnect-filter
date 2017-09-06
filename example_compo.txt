@@ -1,1 +1,1 @@
-﻿Hex0-6 HexNAc2 dHex1, Kdn1 Hex0-8 NeuAc2, Hex5 HexNAc2-6 Pen0-3 P0-2, Hex4 HexNAc2, Hex4 HexNAc5 NeuAc2
+﻿Hex6 HexNAc2 dHex, Kdn Hex8 NeuAc2, Hex5 HexNAc2 Pen P2, Hex4 HexNAc2, Hex4 HexNAc5 NeuAc2
