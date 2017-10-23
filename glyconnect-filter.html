@@ -6,7 +6,6 @@
 <link rel="import" href="../app-layout/app-header-layout/app-header-layout.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
-<link rel="import" href="../iron-collapse/iron-collapse.html">
 <link rel="import" href="../paper-tabs/paper-tabs.html">
 <link rel="import" href="../iron-pages/iron-pages.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
@@ -15,11 +14,9 @@
 <link rel="import" href="../vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="../vaadin-upload/vaadin-upload.html">
 <link rel="import" href="../iron-list/iron-list.html">
-<link rel="import" href="../paper-item/paper-item.html">
-<link rel="import" href="../paper-toggle-button/paper-toggle-button.html">
+<!-- <link rel="import" href="../paper-toggle-button/paper-toggle-button.html"> -->
 <link rel="import" href="../paper-slider/paper-slider.html">
 <link rel="import" href="../iron-autogrow-textarea/iron-autogrow-textarea.html">
-<link rel="import" href="../glycosetta-stone/glycosetta-stone.html">
 <link rel="import" href="../paper-dialog/paper-dialog.html">
 <!--
 `glyconnect-filter`
@@ -36,13 +33,6 @@ This element provides filter box in glyconnect
             }
             iron-icon[disabled]{
                 display: none;
-            }
-            .enzymeList{
-                padding: 5px;
-                @apply(--layout-horizontal);
-                @apply(--layout-wrap);
-                min-width: 200px;
-                align-content: center;
             }
             .enzymeSelected{
                 padding: 5px;
@@ -65,24 +55,14 @@ This element provides filter box in glyconnect
                 margin: 13px;
                 font-size: 16px;
             }
-            .glycanFilterHeader {
-                font-size: 16px;
-                font-weight: 500;
-                line-height: 25px;
-            }
             .card {
                 background-color: #cc3300;
                 font-size: 16px;
+                /*font-weight: 400;*/
                 padding: 15px 15px 15px 15px;
-                /*box-sizing: border-box;*/
                 margin: 10px;
                 flex: 0 0 auto;
                 color: white;
-            }
-            paper-tab:not(:last-child) {
-                border-right: solid;
-                border-color: #757575 ;
-                border-width: 1px;
             }
             paper-tab.iron-selected {
                 background-color: var(--paper-indigo-500);
@@ -103,14 +83,6 @@ This element provides filter box in glyconnect
                 background: #eeeeee;
                 @apply --paper-material-elevation-2;
             }
-            paper-item.fancy {
-              --paper-item-focused: {
-                background: var(--paper-amber-500);
-              };
-              --paper-item-focused-before: {
-                opacity: 0;
-              };
-            }
             .doubleRangeBox{
                 width: 300px;
                 margin: 10px 20px 10px 20px;
@@ -123,18 +95,23 @@ This element provides filter box in glyconnect
               float: right;
             }
             vaadin-upload.thick-border {
-                padding: 14px;
-                /*background: #eee;*/
-                /*border-radius: 0;*/
+                padding: 14px;*/
             }
             .textarea{
-              /*background-color: #E6E6E6;*/
               width: 520px;
               font-size: 14px;
               border-color: var(--paper-indigo-500);
               padding: 30px 20px 20px 20px;
               margin: 40px 20px 20px 20px;
               border-radius: 5px;
+            }
+            #buttons {
+                width: 20%;
+            }
+            #selection {
+              margin-left: 20px;
+              min-width: 70%;
+              max-width: 70%;
             }
         </style>
         <iron-ajax
@@ -149,295 +126,163 @@ This element provides filter box in glyconnect
                 method="GET"
                 on-response="handleProtein"
         ></iron-ajax>
-        <app-header-layout mode="seamed">
-            <div class ="glycanFilterHeader">
-                <paper-button class="indigo filterToggleButton" on-click="_toggleProtein" toggles raised>
-                    <iron-icon id="expandIcon" icon="icons:chevron-right" alt="unfold" ></iron-icon>
-                    <iron-icon id="foldIcon" icon="icons:expand-more" alt="fold" disabled></iron-icon>
-                    Protein
-                </paper-button>
-            </div>
-        </app-header-layout>
-        <iron-collapse id="glycanFilterProt" class="horizontal center-justified">
-              <vaadin-combo-box typeLink="Protein" id="protDropDown" required label="Protein"></vaadin-combo-box>
-              <div>
+        <div class="layout horizontal">
+          <div class="layout vertical" id="buttons">
+                <paper-button class="indigo updateButton filterToggleButton" raised on-tap="_toggleProtein">Protein</paper-button>
+                <paper-button class="indigo updateButton filterToggleButton" raised on-tap="_toggleCompo">Composition</paper-button>
+                <paper-button id="N" typeLink="" class="indigo updateButton filterToggleButton" raised on-tap="populate">N-linked glycans</paper-button>
+                <paper-button id="O" typeLink="" class="indigo updateButton filterToggleButton" raised on-tap="populate">O-linked glycans</paper-button>
+                <paper-button id="Free" typeLink="" class="indigo updateButton filterToggleButton" raised on-tap="populate">Free glycans</paper-button>
+          </div>
+          <div id="selection" >
+              <div  id="chosen">
                 <div class="layout materialCard flex">
-                  <app-toolbar>
-                      <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
-                      <span class="title">Species</span>
-                  </app-toolbar>
-                  <div id="availableSpecies" class="enzymeSelected">
-                    <template is="dom-repeat" items="{{species}}">
-                         <paper-button typeLink="Protein" id="{{_getLabelSpecies(item)}}Prot" speciesButton="{{item}}" class="card" on-tap="checkHowmany">{{item}}</paper-button>
-                    </template>
-                  </div>
-                </div>
-                <div id= "selectedSpecies" class="layout materialCard flex">
                       <app-toolbar>
                           <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
-                          <span class="title">Selected species</span>
+                          <span class="title">{{linkIcon}}-Glycans</span>
                       </app-toolbar>
-                      <div id="selectedProtein" class="enzymeSelected">
+                      <div id="selected" class="enzymeSelected">
                        </div>
-                       <div class="horizontal end-justified layout">
-                           <paper-button typeLink="Protein" class="indigo updateButton" on-tap="clearFilter">Clear</paper-button>
-                       </div>
+                      <div class="horizontal end-justified layout">
+                          <paper-button class="indigo updateButton" on-tap="selectedFeature">Search</paper-button>
+                          <paper-button typeLink="" class="indigo updateButton" on-tap="clearFilter">Clear</paper-button>
+                      </div>
                 </div>
-              </div>
-              <paper-button class="indigo updateButton" taxo="{{item}}" id="sendDataProt" raised on-tap="_searchProtein">Search</paper-button>
-        </iron-collapse>
-        <br><br>
-        <app-header-layout mode="seamed">
-            <div class="glycanFilterHeader">
-                <paper-button class="filterToggleButton indigo" on-click="_toggleGlycanFilter" toggles raised>
-                    <iron-icon id="expandIcon" icon="icons:chevron-right" alt="unfold" ></iron-icon>
-                    <iron-icon id="foldIcon" icon="icons:expand-more" alt="fold" disabled></iron-icon>
-                    Composition
-                </paper-button>
-            </div>
-        </app-header-layout>
-        <iron-collapse id="glycanFilterBox" class="horizontal center-justified">
-          <div class="layout vertical flex">
-           <paper-tabs selected="{{selected}}" no-bar>
-               <paper-tab>File upload</paper-tab>
-               <paper-tab>List of composition</paper-tab>
-               <paper-tab on-click = '_resetAll'>Monosaccharide selectors</paper-tab>
-           </paper-tabs>
-           <iron-pages selected="{{selected}}">
-              <div class="layout materialCard flex">
-                   <vaadin-upload id="bUpload" nodrop class="thick-border" on-upload-before="uploadExperiment">
-                       <div class="drop-label" style= "padding: 20px">
-                           <iron-icon icon="description"></iron-icon>
-                           Drop your files here (only text files).<br>
-                            <p>Write comma-separated compositions as Oxford nomenclature or using the following monosaccharide abbreviations: </p>
-                            <p>Hex, HexNAc, dHex (e.g. fucose), NeuAc, NeuGc, Pen (e.g. xylose), S (sulphate), P (phosphate), KDN, KDO, HexA (e.g. GlcA), Met (methyl), Ac (acetyl), Other</p>
-                            <p>e.g. Hex HexNAc3 dHex4 (for more than 1 monosaccharide specify the corresponding number).</p>
-                            <p></p>
-                       </div>
-                       <div class="layout wrap">
-                         <glycosetta-stone id="oxfordFile" input-value=""></glycosetta-stone>
-                       </div>
-                       <div class="horizontal end-justified layout">
-                         <paper-button class="indigo updateButton" on-tap="sendData">Submit</paper-button>
-                       </div>
-                   </vaadin-upload>
+                <div class="layout vertical flex">
+                   <paper-tabs selected="{{selected}}" no-bar>
+                       <paper-tab>Cores</paper-tab>
+                       <paper-tab>Structural properties</paper-tab>
+                       <paper-tab>Determinants</paper-tab>
+                   </paper-tabs>
+                   <iron-pages selected="{{selected}}">
+                    <div class="layout materialCard flex">
+                         <template is="dom-repeat" items="{{core}}">
+                              <paper-button typeLink="" id={{idCreator(item.name)}} raised data-id$="{{item.class}}={{item.name}}" coreTypeN="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
+                         </template>
+                     </div>
+                     <div class="layout materialCard flex">
+                         <template is="dom-repeat" items="{{prop}}">
+                             <paper-button typeLink="" id="{{item.name}}" raised data-id$="{{item.class}}={{item.name}}" propN="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
+                         </template>
+                     </div>
+                     <div class="layout materialCard flex"><link rel="import" href="../iron-list/iron-list.html">
+                         <template is="dom-repeat" items="{{det}}">
+                             <paper-button typeLink="" id="{{idCreator(item.name)}}" raised data-id$="{{item.class}}={{item.name}}" detN="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
+                         </template>
+                     </div>
+                 </iron-pages>
                </div>
-               <div class="layout materialCard flex">
-                 <div style="padding:10px">
-                  <p>Write compositions as Oxford nomenclature (CAPITAL letters) or using the following monosaccharide abbreviations: </p>
-                  <p>Hex, HexNAc, dHex (e.g. fucose), NeuAc, NeuGc, Pen (e.g. xylose), S (sulphate), P (phosphate), KDN, KDO, HexA (e.g. GlcA), Met (methyl), Ac (acetyl), Other</p>
-                  <p>e.g. Hex HexNAc3 dHex4 (for more than 1 monosaccharide specify the corresponding number)</p>
+             </div>
+             <div id="proteinSection">
+               <vaadin-combo-box style="margin:20px" typeLink="Protein" id="protDropDown" required label="Protein"></vaadin-combo-box>
+                 <div class="layout materialCard flex">
+                   <app-toolbar>
+                       <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
+                       <span class="title">Species</span>
+                   </app-toolbar>
+                   <div id="availableSpecies" class="enzymeSelected">
+                     <template is="dom-repeat" items="{{species}}">
+                          <paper-button typeLink="Protein" id="{{_getLabelSpecies(item)}}Prot" speciesButton="{{item}}" class="card" on-tap="checkHowmany">{{item}}</paper-button>
+                     </template>
+                   </div>
                  </div>
-                 <paper-button class="indigo updateButton" raised on-tap="openDialog">Input example</paper-button>
-                 <paper-dialog id="dialog" modal>
-                    <p>Oxford: M3, Fa2, A2, A2[3]G1, A2G2, A2G2S1, FA2, FA2[6]G1, FA2G2S2, A4G4, A4, Hy, C</p><br>
-                    <p>Hex3 HexNAc5 dHex2, Hex HexNAc dHex2, Hex HexNAc dHex NeuAc, Hex4 HexNAc3 Pen, Hex5 HexNAc4 P</p>
-                    <div class="buttons">
-                      <paper-button dialog-confirm autofocus>Close</paper-button>
-                    </div>
-                 </paper-dialog>
-                 <paper-input style ="padding: 10px" label="input comma-separated compositions" id="compoCommaList" value="{{compositions}}"></paper-input>
-                 <div class="layout wrap">
-                   <glycosetta-stone id="oxfordInput" input-value=""></glycosetta-stone>
+                 <div id= "selectedSpecies" class="layout materialCard flex">
+                       <app-toolbar>
+                           <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
+                           <span class="title">Selected species</span>
+                       </app-toolbar>
+                       <div id="selectedProtein" class="enzymeSelected">
+                        </div>
                  </div>
                  <div class="horizontal end-justified layout">
-                   <paper-button class="indigo updateButton" on-tap='_getCompoList'>Search</paper-button>
-                 </div>
-               </div>
-               <div>
-                 <div class="layout materialCard flex"><link rel="import" href="../iron-list/iron-list.html">
-                   <iron-icon id="clearIcon" icon="icons:autorenew" alt="reset" on-click="resetSelector"></iron-icon>
-                     <div id="rangeBox" class="layout horizontal wrap">
-                         <template is="dom-repeat" items="{{monosaccharides}}">
-                             <div id="{{item}}toHide" class="doubleRangeBox">
-                                 <span>{{_getLabel(item)}}</span>
-                                 <div class="layout horizontal">
-                                   <paper-slider id="{{item}}RangeMin" snaps max="12" max-markers="12" step="1" value = '0' editable></paper-slider>
-                                   <span>Value</span>
-                                 </div>
+                   <paper-button typeLink="Protein" class="indigo updateButton" on-tap="clearFilter">Clear</paper-button>
+                   <paper-button class="indigo updateButton" taxo="{{item}}" id="sendDataProt" raised on-tap="_searchProtein">Search</paper-button>
+                </div>
+            </div>
+            <div id="compoSection">
+                <div class="layout vertical flex">
+                   <paper-tabs selected="{{selected}}" no-bar>
+                       <paper-tab>File upload</paper-tab>
+                       <paper-tab>List of composition</paper-tab>
+                       <paper-tab on-click = '_resetAll'>Monosaccharide selectors</paper-tab>
+                   </paper-tabs>
+                  <iron-pages selected="{{selected}}">
+                    <div class="layout materialCard flex">
+                         <vaadin-upload id="bUpload" nodrop class="thick-border" on-upload-before="uploadExperiment">
+                             <div class="drop-label" style= "padding: 20px">
+                                 <iron-icon icon="description"></iron-icon>
+                                 Drop your files here (only text files).<br>
+                                  <p>Write comma-separated compositions as Oxford nomenclature or using the following monosaccharide abbreviations: </p>
+                                  <p>Hex, HexNAc, dHex (e.g. fucose), NeuAc, NeuGc, Pen (e.g. xylose), S (sulphate), P (phosphate), KDN, KDO, HexA (e.g. GlcA), Met (methyl), Ac (acetyl), Other</p>
+                                  <p>e.g. Hex HexNAc3 dHex4 (for more than 1 monosaccharide specify the corresponding number).</p>
+                                  <p></p>
                              </div>
-                         </template>
-
+                             <div class="horizontal end-justified layout">
+                               <paper-button class="indigo updateButton" on-tap="sendData">Submit</paper-button>
+                             </div>
+                         </vaadin-upload>
                      </div>
-                        <iron-autogrow-textarea label="" class = 'textarea' id="compoFromSelectors" value="{{compoCopied}}"></iron-autogrow-textarea>
+                     <div class="layout materialCard flex">
+                       <div style="padding:10px">
+                        <p>Write compositions as Oxford nomenclature (CAPITAL letters) or using the following monosaccharide abbreviations: </p>
+                        <p>Hex, HexNAc, dHex (e.g. fucose), NeuAc, NeuGc, Pen (e.g. xylose), S (sulphate), P (phosphate), KDN, KDO, HexA (e.g. GlcA), Met (methyl), Ac (acetyl), Other</p>
+                        <p>e.g. Hex HexNAc3 dHex4 (for more than 1 monosaccharide specify the corresponding number)</p>
+                       </div>
+                       <paper-button class="indigo updateButton" raised on-tap="openDialog">Input example</paper-button>
+                       <paper-dialog id="dialog" modal>
+                          <p>Oxford: M3, Fa2, A2, A2[3]G1, A2G2, A2G2S1, FA2, FA2[6]G1, FA2G2S2, A4G4, A4, Hy, C</p><br>
+                          <p>Hex3 HexNAc5 dHex2, Hex HexNAc dHex2, Hex HexNAc dHex NeuAc, Hex4 HexNAc3 Pen, Hex5 HexNAc4 P</p>
+                          <div class="buttons">
+                            <paper-button dialog-confirm autofocus>Close</paper-button>
+                          </div>
+                       </paper-dialog>
+                       <paper-input style ="padding: 10px" label="input comma-separated compositions" id="compoCommaList" value="{{compositions}}"></paper-input>
+                       <div class="horizontal end-justified layout">
+                         <paper-button class="indigo updateButton" on-tap='_getCompoList'>Search</paper-button>
+                       </div>
+                     </div>
                      <div>
-                       <paper-button class="indigo updateButton" on-tap='_addCompo'>Add composition</paper-button>
-                     </div>
-                     <div class="horizontal end-justified layout">
-                       <paper-button class="indigo updateButton" on-tap='_getCompo'>Search</paper-button>
-                     </div>
-                 </div>
+                       <div class="layout materialCard flex"><link rel="import" href="../iron-list/iron-list.html">
+                         <iron-icon id="clearIcon" icon="icons:autorenew" alt="reset" on-click="resetSelector"></iron-icon>
+                           <div id="rangeBox" class="layout horizontal wrap">
+                               <template is="dom-repeat" items="{{monosaccharides}}">
+                                   <div id="{{item}}toHide" class="doubleRangeBox">
+                                       <span>{{_getLabel(item)}}</span>
+                                       <div class="layout horizontal">
+                                         <paper-slider id="{{item}}RangeMin" snaps max="12" max-markers="12" step="1" value = '0' editable></paper-slider>
+                                         <span>Value</span>
+                                       </div>
+                                   </div>
+                               </template>
 
-                 <div class="layout materialCard flex">
-                   <template is="dom-repeat" items="{{spareMonosac}}">
-                        <paper-button id={{item}} class="card" on-tap="createSelector">{{_getLabel(item)}}</paper-button>
-                   </template>
+                           </div>
+                              <iron-autogrow-textarea label="" class = 'textarea' id="compoFromSelectors" value="{{compoCopied}}"></iron-autogrow-textarea>
+                           <div>
+                             <paper-button class="indigo updateButton" on-tap='_addCompo'>Add composition</paper-button>
+                           </div>
+                           <div class="horizontal end-justified layout">
+                             <paper-button class="indigo updateButton" on-tap='_getCompo'>Search</paper-button>
+                           </div>
+                       </div>
+
+                       <div class="layout materialCard flex">
+                         <template is="dom-repeat" items="{{spareMonosac}}">
+                              <paper-button id={{item}} class="card" on-tap="createSelector">{{_getLabel(item)}}</paper-button>
+                         </template>
+                       </div>
+                     </div>
+                   </iron-pages>
                  </div>
-               </div>
-             </iron-pages>
-           </div>
-        </iron-collapse>
-        <br><br>
-        <app-header-layout mode="seamed">
-            <div class="glycanFilterHeader">
-                <paper-button class="indigo filterToggleButton" on-click="_toggleNGlycan" toggles raised>
-                    <iron-icon id="expandIcon" icon="icons:chevron-right" alt="unfold" ></iron-icon>
-                    <iron-icon id="foldIcon" icon="icons:expand-more" alt="fold" disabled></iron-icon>
-                    N-linked glycans
-                </paper-button>
             </div>
-        </app-header-layout>
-        <iron-collapse id="glycanFilterN" class="horizontal center-justified">
-            <div class="layout horizontal flex" >
-              <div class="layout materialCard flex">
-                    <app-toolbar>
-                        <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
-                        <span class="title">N-Glycan</span>
-                    </app-toolbar>
-                    <div id="selectedN" class="enzymeSelected">
-                     </div>
-                    <div class="horizontal end-justified layout">
-                        <paper-button class="indigo updateButton" on-tap="selectedPropN">Search</paper-button>
-                        <paper-button typeLink="N" class="indigo updateButton" on-tap="clearFilter">Clear</paper-button>
-                    </div>
-              </div>
-            </div>
-              <div class="layout vertical flex">
-               <paper-tabs selected="{{selected}}" no-bar>
-                   <paper-tab>Cores</paper-tab>
-                   <paper-tab>Structural properties</paper-tab>
-                   <paper-tab>Determinants</paper-tab>
-               </paper-tabs>
-               <iron-pages selected="{{selected}}">
-                  <div class="layout materialCard flex">
-                       <template is="dom-repeat" items="{{coreTypeN}}">
-                            <paper-button typeLink="N" id={{item.name}}N raised data-id$="{{item.class}}={{item.name}}" coreTypeN="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
-                       </template>
-                   </div>
-                   <div class="layout materialCard flex">
-                       <template is="dom-repeat" items="{{propN}}">
-                           <paper-button typeLink="N" id="{{item.name}}N" raised data-id$="{{item.class}}={{item.name}}" propN="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
-                       </template>
-                   </div>
-                   <div class="layout materialCard flex"><link rel="import" href="../iron-list/iron-list.html">
-                       <template is="dom-repeat" items="{{detN}}">
-                           <paper-button typeLink="N" id="{{idCreator(item.name)}}N" raised data-id$="{{item.class}}={{item.name}}" detN="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
-                       </template>
-                   </div>
-               </iron-pages>
-             </div>
-        </iron-collapse>
-        <br><br>
-        <app-header-layout mode="seamed">
-            <div class="glycanFilterHeader">
-                <paper-button class="indigo filterToggleButton" on-click="_toggleOGlycan" toggles raised>
-                    <iron-icon id="expandIcon" icon="icons:chevron-right" alt="unfold" ></iron-icon>
-                    <iron-icon id="foldIcon" icon="icons:expand-more" alt="fold" disabled></iron-icon>
-                    O-linked glycans
-                </paper-button>
-            </div>
-        </app-header-layout>
-        <iron-collapse id="glycanFilterO" class="horizontal center-justified">
-            <div class="layout horizontal flex" >
-                <div class="layout materialCard flex">
-                    <app-toolbar>
-                        <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
-                        <span class="title">O-Glycan</span>
-                    </app-toolbar>
-                    <div id="selectedO" class="enzymeSelected">
-                     </div>
-                    <div class="horizontal end-justified layout">
-                      <paper-button class="indigo updateButton" on-tap="selectedPropO">Search</paper-button>
-                      <paper-button typeLink="O" class="indigo updateButton" on-tap="clearFilter">Clear</paper-button>
-                    </div>
-                </div>
-            </div>
-            <div class="layout vertical flex">
-             <paper-tabs selected="{{selected}}"  no-bar>
-                 <paper-tab>Cores</paper-tab>
-                 <paper-tab>Structural properties</paper-tab>
-                 <paper-tab>Determinants</paper-tab>
-             </paper-tabs>
-             <iron-pages selected="{{selected}}">
-                <div class="layout materialCard flex">
-                    <template is="dom-repeat" items="{{coreTypeO}}">
-                        <paper-button typeLink="O" raised id={{idCreator(item.name)}}O data-id$="{{item.class}}={{item.name}}" coreTypeO="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}} </paper-button>
-                    </template>
-                </div>
-                <div class="layout materialCard flex">
-                    <template is="dom-repeat" items="{{propO}}">
-                        <paper-button typeLink="O" raised id={{item.name}}O data-id$="{{item.class}}={{item.name}}" propO="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
-                    </template>
-                </div>
-                <div class="layout materialCard flex">
-                    <template is="dom-repeat" items="{{detO}}">
-                        <paper-button typeLink="O" raised id={{idCreator(item.name)}}O data-id$="{{item.class}}={{item.name}}" detO="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
-                    </template>
-                </div>
-              </iron-pages>
-            </div>
-        </iron-collapse>
-        <br><br>
-        <app-header-layout mode="seamed">
-            <div class="glycanFilterHeader">
-                <paper-button class="indigo filterToggleButton" on-click="_toggleNOGlycan" toggles raised>
-                    <iron-icon id="expandIcon" icon="icons:chevron-right" alt="unfold" ></iron-icon>
-                    <iron-icon id="foldIcon" icon="icons:expand-more" alt="fold" disabled></iron-icon>
-                    Non-attached to proteins
-                </paper-button>
-            </div>
-        </app-header-layout>
-        <iron-collapse id="glycanFilterNO" class="horizontal center-justified">
-            <div class="layout horizontal flex" >
-                <div class="layout materialCard flex">
-                    <app-toolbar>
-                        <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
-                        <span class="title"> Non-attached to proteins</span>
-                    </app-toolbar>
-                    <div id="selectedNP" class="enzymeSelected">
-                     </div>
-                    <div class="horizontal end-justified layout">
-                      <paper-button class="indigo updateButton" on-tap="selectedPropNP">Search</paper-button>
-                      <paper-button typeLink="NP" class="indigo updateButton" on-tap="clearFilter">Clear</paper-button>
-                    </div>
-                </div>
-            </div>
-            <div class="layout vertical flex">
-             <paper-tabs selected="{{selected}}"  no-bar>
-                 <paper-tab>Cores</paper-tab>
-                 <paper-tab>Structural properties</paper-tab>
-                 <paper-tab>Determinants</paper-tab>
-             </paper-tabs>
-             <iron-pages selected="{{selected}}">
-                <div class="layout materialCard flex">
-                    <template is="dom-repeat" items="{{coreTypeNP}}">
-                        <paper-button typeLink="NP" raised id={{item.name}}NP data-id$="{{item.class}}={{item.name}}" coreTypeNP="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}} </paper-button>
-                    </template>
-                </div>
-                <div class="layout materialCard flex">
-                    <template is="dom-repeat" items="{{propNP}}">
-                        <paper-button typeLink="NP" raised id={{item.name}}NP data-id$="{{item.class}}={{item.name}}" propNP="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
-                    </template>
-                </div>
-                <div class="layout materialCard flex">
-                    <template is="dom-repeat" items="{{detNP}}">
-                        <paper-button typeLink="NP" raised id={{idCreator(item.name)}}NP data-id$="{{item.class}}={{item.name}}" detO="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
-                    </template>
-                </div>
-              </iron-pages>
-            </div>
-        </iron-collapse>
+        </div>
+      </div>
     </template>
-
     <script>
     /** @polymerElement */
     class GlyconnectFilter extends Polymer.Element {
       static get is() { return 'glyconnect-filter'; }
       static get properties() {
         return {
-          repos: {
-            type: Array
-          },
           selected: {
             type: String,
             value: 0
@@ -494,8 +339,12 @@ This element provides filter box in glyconnect
           count: {
               type: Array,
           },
-          textFromFileOx: {
-              type: Array,
+          linkIcon: {
+            type: String,
+          },
+          jsonGlobalProperties: {
+              type: Object,
+              reflectToAttribute: true
           },
         };
       }
@@ -504,6 +353,9 @@ This element provides filter box in glyconnect
       }
       ready() {
        super.ready();
+       Polymer.dom(this.root).querySelector('#chosen').hidden=true;
+       Polymer.dom(this.root).querySelector('#proteinSection').hidden=true;
+       Polymer.dom(this.root).querySelector('#compoSection').hidden=true;
        Polymer.dom(this.root).querySelector('#selectedSpecies').hidden=true;
        Polymer.dom(this.root).querySelector('#protDropDown').addEventListener('change', e => {this.printSP(e)});
       }
@@ -512,6 +364,162 @@ This element provides filter box in glyconnect
       }
       openDialog() {
         this.$.dialog.open();
+      }
+      connectedCallback (){
+        super.connectedCallback();
+        this.$.ajaxDictionary.url = this.resolveUrl('dictionary/jsonGlobalProperties.json');
+        this.$.ajaxDictionary.generateRequest();
+        this.$.proteinDictionary.url = this.resolveUrl('http://mendel.isb-sib.ch:8083/api/proteins');
+        this.$.proteinDictionary.generateRequest();
+      }
+      handleResponse(data){
+        this.jsonGlobalProperties = data.detail.response;
+      }
+      populate(event) {
+        Polymer.dom(this.root).querySelector('#proteinSection').hidden=true;
+        Polymer.dom(this.root).querySelector('#compoSection').hidden=true;
+        this.clearFilter(event);
+        Polymer.dom(this.root).querySelector('#chosen').hidden=false;
+        this.linkIcon = event.target.id;
+        if(this.linkIcon === "N"){
+          this.core = this.jsonGlobalProperties['N-linked']['core'];
+          this.det = this.jsonGlobalProperties['N-linked']['det'];
+          this.prop = this.jsonGlobalProperties['N-linked']['prop'];
+        }else if (this.linkIcon === "O"){
+          this.core = this.jsonGlobalProperties['O-linked']['core'];
+          this.prop = this.jsonGlobalProperties['O-linked']['prop'];
+          this.det = this.jsonGlobalProperties['O-linked']['det'];
+        }else{
+          this.prop = this.jsonGlobalProperties['Non attached to proteins']['prop'];
+          this.det = this.jsonGlobalProperties['Non attached to proteins']['det'];
+          this.core = this.jsonGlobalProperties['Non attached to proteins']['core'];
+        }
+      }
+      selectedFeature (){
+        var sel =  Polymer.dom(this.$.selected).querySelectorAll("paper-button");
+        var jsonParam = this.param(sel);
+        if( this.linkIcon === "Free"){
+         jsonParam.glycanType = this.linkIcon.toLowerCase();
+       }else{
+        jsonParam.glycanType = this.linkIcon.toLowerCase()+'-linked';
+      }
+        this.filterOutput = jsonParam;
+      }
+      clearFilter(event) {
+        var typeGlyco = event.target.getAttribute("typeLink");
+        var vr = this.shadowRoot.querySelector("#selected"+typeGlyco);
+        console.log(vr);
+        var toClear =  Polymer.dom(vr).querySelectorAll("paper-button");
+        for (var i = 0; i < toClear.length; i++) {
+          Polymer.dom(this.root).querySelector('paper-button[id='+toClear[i].id.replace("-clone",'')+']').hidden=false;
+          toClear[i].remove();
+        }
+      }
+      _toggleProtein () {
+        Polymer.dom(this.root).querySelector('#chosen').hidden=true;
+        Polymer.dom(this.root).querySelector('#proteinSection').hidden=false;
+        Polymer.dom(this.root).querySelector('#compoSection').hidden=true;
+        Polymer.dom(this.root).querySelector('#selectedSpecies').hidden=true;
+        Polymer.dom(this.root).querySelector('#protDropDown').value="";
+        this.species=[];
+        var selSpecies = Polymer.dom(this.root).querySelector("#selectedSpecies");
+        var toDelete =  Polymer.dom(selSpecies).querySelectorAll("paper-button");
+        for (var i = 0; i < toDelete.length; i++) {
+          toDelete[i].remove();
+        }
+      }
+      _toggleCompo () {
+        Polymer.dom(this.root).querySelector('#chosen').hidden=true;
+        Polymer.dom(this.root).querySelector('#proteinSection').hidden=true;
+        Polymer.dom(this.root).querySelector('#compoSection').hidden=false;
+      }
+      handleProtein(data){
+        var jsonProtein = data.detail.response;
+        var proteinList = [];
+        var proteinIds = [];
+        var nameSpecies = {};
+        var allSp = [];
+        for (var f =0; f < jsonProtein.length; f ++){
+          var protFeatures = jsonProtein[f];
+          var tax = protFeatures['taxonomy'];
+          allSp.push(tax);
+          name = protFeatures['name'].toLowerCase().replace(" ","");
+          if (nameSpecies.hasOwnProperty(name)){
+            nameSpecies[name].push(tax);
+          }else{
+            nameSpecies[name] = [tax];
+            proteinList.push(protFeatures['name']);
+          };
+          if (protFeatures['uniprots'] != undefined){
+            var accs = protFeatures['uniprots'];
+            var uniAcc;
+            for ( uniAcc in accs){
+              nameSpecies[accs[uniAcc]['uniprot_acc'].toLowerCase()]=[tax];
+              proteinIds.push(accs[uniAcc]['uniprot_acc']);
+            };
+          };
+        };
+        var result = { };
+        for(var i = 0; i < allSp.length; ++i) {
+            if(!result[allSp[i]])
+                result[allSp[i]] = 0;
+            ++result[allSp[i]];
+        };
+        this.count = result;
+        Array.prototype.push.apply(proteinList, proteinIds);
+        var combobox = Polymer.dom(this.root).querySelector('#protDropDown');
+        var elements = proteinList;//["Hydrogen", "Helium", "Silicon"];
+        combobox.items = elements;
+        this.protSpecies = nameSpecies;
+      }
+      printSP (e){
+        var val = Polymer.dom(this.root).querySelector('#protDropDown').value;
+        if(val != ''){
+          var speciesForChoice = this.protSpecies[val.toLowerCase().replace(" ","")];
+          var newSpecies = speciesForChoice.slice(0);
+        }else{
+          var newSpecies = [];
+        };
+        newSpecies.sort();
+        var newArray = [];
+        for (var s=0; s<newSpecies.length; s ++){
+          if (newArray.length == 0){
+            newArray.push(newSpecies[s])
+          }else{
+            if(newArray.includes(newSpecies[s])){
+              continue;
+            }else{
+              newArray.push(newSpecies[s]);
+            };
+          };
+        }
+        if(newArray.length >1){
+          newSpecies = this.orderSpecies(newSpecies);
+          Polymer.dom(this.root).querySelector('#selectedSpecies').hidden=false;
+          newArray.push('All');
+        }else{
+          Polymer.dom(this.root).querySelector('#selectedSpecies').hidden=true;
+        };
+        this.species = newArray;
+      }
+      orderSpecies(listOfSpecies){
+        var countSpecies = this.count;
+        var toOrder = {};
+        var sortable = [];
+        for(var w =0; w < listOfSpecies.length; w++){
+          toOrder[listOfSpecies[w]]=countSpecies[listOfSpecies[w]];
+        };
+        for (var speci in toOrder) {
+            sortable.push([speci, toOrder[speci]]);
+        };
+        sortable.sort(function(a, b) {
+            return b[1] -a[1];
+        });
+        var sorted = [];
+        for(var t =0; t < sortable.length; t++){
+          sorted.push(sortable[t][0]);
+        };
+        return sorted
       }
       _searchProtein(){
         var myJson={};
@@ -531,9 +539,10 @@ This element provides filter box in glyconnect
         }
         myJson['protein']=protein;
         this.filterOutput = myJson;
+        console.log(myJson);
       }
       uploadExperiment (event){
-          event.preventDefault();Polymer.dom(this.root).querySelector('#chosen').hidden=true;
+          event.preventDefault();
           var upload =  Polymer.dom(this.root).querySelector("#bUpload");
           var file = event.detail.file;
           var that = this;
@@ -551,7 +560,7 @@ This element provides filter box in glyconnect
               if(text.includes('Hex') === true){
                 that.fromUp = that.parseCompo(text.split(","));
               }else{
-                var fromSetta = glycosetta.translate(text.split(","));
+                var fromSetta = that._translate(text.split(","));
                 that.fromUp = fromSetta;
               }
             upload.set(['files', upload.files.indexOf(file), 'progress'], 100);
@@ -570,16 +579,6 @@ This element provides filter box in glyconnect
         var third = second.replace(/\./g, "");
         return third
       }
-      clearFilter(event) {
-        var typeGlyco = event.target.getAttribute("typeLink");
-        var vr = this.shadowRoot.querySelector("#selected"+typeGlyco);
-        var toClear =  Polymer.dom(vr).querySelectorAll("paper-button");
-        console.log(toClear);
-        for (var i = 0; i < toClear.length; i++) {
-          Polymer.dom(this.root).querySelector('paper-button[id='+toClear[i].id.replace("-clone",'')+']').hidden=false;
-          toClear[i].remove();
-        }
-      }
       checkHowmany(event){
         if(this.species.length >1){
           this.createTag(event);
@@ -588,7 +587,6 @@ This element provides filter box in glyconnect
       createTag(event) {
        var typeTag = event.target.getAttribute("typeLink");
        var list = Polymer.dom(this.root).querySelector("#selected"+typeTag);
-       console.log(list);
        var sourceEl = event.target;
        var cloneEl = sourceEl.cloneNode(true);
        event.target.hidden=true;
@@ -607,17 +605,6 @@ This element provides filter box in glyconnect
        Polymer.dom(this.root).querySelector('paper-button[id='+pr.target.id.replace("-clone",'')+']').hidden=false;
       pr.target.remove();
      }
-      _toggleGlycanFilter () {
-          this._setTogglesAndRSliders();
-          this.$.glycanFilterBox.toggle();
-          if(this.$.foldIcon.hasAttribute('disabled')){
-              this.$.expandIcon.setAttribute('disabled', 'true');
-              this.$.foldIcon.removeAttribute('disabled');
-          }else{
-              this.$.foldIcon.setAttribute('disabled', 'true');
-              this.$.expandIcon.removeAttribute('disabled');
-          }
-      }
       _setTogglesAndRSliders () {
           for (var idx in this.monosaccharides){
               var monosaccharide = this.monosaccharides[idx];
@@ -631,7 +618,7 @@ This element provides filter box in glyconnect
             compolist = compolist.replace(/[.'\/#!$%\^\\\^&\*;:{}=\-_`~()]/g,"").split(",");
         }
         if(compolist[0].includes("Hex") === false){
-         var parsedCompo= Polymer.dom(this.root).querySelector("#oxfordInput").translate(compolist);
+         var parsedCompo= this._translate(compolist);
          }else{
            var parsedCompo = this.parseCompo(compolist);
         };
@@ -753,13 +740,89 @@ This element provides filter box in glyconnect
         };
         return reWriteCompo.slice(0,-1)+', ';
       }
+      _translate(compolist) {
+          var translated2 = [];
+          for (var el in compolist){
+            var hex = 3;//Hexose
+            var hexnac = 2; //Hexnac
+            var deHex = 0; //Deoxyhexose
+            var neuac = 0; //NeuAC
+            var e = compolist[el];
+            var translated = "";
+            if (e.includes("(") === true) { //if it contains a percentage
+                var splitCap = e.split(/(?=[A-Z ])/); //Split should occur by capital letter and space
+            } else {
+                var splitCap = e.split(/(?=[A-Z])/); //else no percentage available so splitting only occurs by Capitals
+            }
+            for (var i = 0; i < splitCap.length; i++) {
+                var index = splitCap[i].indexOf('[');
+                if(index != -1){
+                  splitCap[i]=splitCap[i].slice(0,index);
+                };
+                if (splitCap[i].includes("A") === true) {
+                    hexnac += this.howMany(splitCap[i], "A"); //Translating into integer and adding
+                    // add conditions for "-"
+                } else if (splitCap[i].includes("B") === true) {
+                    hexnac += this.howMany(splitCap[i], "B"); //Translating into integer and adding
+                } else if (splitCap[i].includes("F") === true || splitCap[i].includes("Fa") === true) {
+                    deHex += this.howMany(splitCap[i], "F"); //Translating into integer and adding
+                } else if (splitCap[i].includes("G") === true) {
+                    hex += this.howMany(splitCap[i], "G"); //Translating into integer and adding
+                } else if (splitCap[i].includes("S") === true) {
+                    neuac += this.howMany(splitCap[i], "S"); //Translating into integer and adding
+                } else if (splitCap[i].includes("L") === true) {
+                    neuac += this.howMany(splitCap[i], "L"); //Translating into integer and adding
+                } else if (splitCap[i].includes("E") === true) {
+                    neuac += this.howMany(splitCap[i], "E"); //Translating into integer and adding
+                } else if (splitCap[i].includes("H") === true) {
+                    if (splitCap[i] === "Hy") {
+                      hex = 5;
+                      hexnac = 3;
+                    }
+                } else if (splitCap[i].includes("C") === true) {
+                    hex = 3;
+                    hexnac = 4;
+                } else if (splitCap[i].includes("M") === true) {
+                    if (e.includes("Man") === true) { //TODO: This does NOT take into account ManX-Y (ranges)
+                        if (e.includes("-") === true) { //if it is a range
+                            var range = e.replace("Man", "");
+                            var range = range.split("-");
+                            // TODO: what do we do with ranges?
+                        } else { //No range = party
+                            hex += parseInt(e.replace("Man", "")) - 3; //removing 3 as they already in the core
+                        }
+                    } else { //else it's just M
+                        if (e.includes("-") === true) { //if it is a range
+                            var range = e.replace("M", "");
+                            var range = range.split("-");
+                            // TODO: what do we do with ranges?
+                        } else { //No range = party
+                            hex += this.howMany(splitCap[i], "M") - 3; //removing 3 as they already in the core
+                        }
+                    }
+                }
+            }
+            translated = '' + hex + hexnac + deHex + neuac + "0000000000";
+            translated2.push(translated)
+          }
+          return translated2;
+      }
+      howMany(typeMono, acronym){
+        if (typeMono.includes('a')){
+          typeMono = typeMono[0]+typeMono.substr(2);
+        }
+        var howmany = typeMono.replace(acronym, "");
+        if(howmany==''){
+          howmany = '1';
+        };
+        return parseInt(howmany)
+      }
       resetSelector(){
         var rangeBox = this.$.rangeBox;
         var paperInputs = Array.prototype.slice.call(rangeBox.getElementsByTagName('paper-slider'));
         var filterObject = {};
         var data = this;
         paperInputs.forEach(function (item) {
-            // var edge = item.getAttribute('edge');
             var rangeObject = {};
             var monosaccharideId = item.id.replace("RangeMin","");
             rangeObject["minRange"] = 0;
@@ -777,24 +840,6 @@ This element provides filter box in glyconnect
         this.resetSelector();
         Polymer.dom(this.root).querySelector("#compoFromSelectors").value='';
       }
-      selectedPropN (){
-        var selN =  Polymer.dom(this.$.selectedN).querySelectorAll("paper-button");
-        var jsonParam = this.param(selN);
-        jsonParam.glycanType = 'n-linked';
-        this.filterOutput = jsonParam;
-      }
-      selectedPropO(){
-        var selO = Polymer.dom(this.$.selectedO).querySelectorAll("paper-button");
-        var jsonParam = this.param(selO);
-        jsonParam.glycanType = 'o-linked';
-        this.filterOutput = jsonParam;
-      }
-      selectedPropNP(){
-        var selNP = Polymer.dom(this.$.selectedNP).querySelectorAll("paper-button");
-        var jsonParam = this.param(selNP);
-        jsonParam.glycanType = 'free';
-        this.filterOutput = jsonParam;
-      }
       param(propArray){
         var myJson = {};
         for (var i = 0; i < propArray.length; i++) {
@@ -807,142 +852,6 @@ This element provides filter box in glyconnect
           }
         }
         return myJson;
-      }
-      connectedCallback (){
-        super.connectedCallback();
-        this.$.ajaxDictionary.url = this.resolveUrl('dictionary/jsonGlobalProperties.json');
-        this.$.ajaxDictionary.generateRequest();
-        this.$.proteinDictionary.url = this.resolveUrl('http://mendel.isb-sib.ch:8083/api/proteins');
-        this.$.proteinDictionary.generateRequest();
-        // this.$.compoDictionary.url = this.resolveUrl('http://mendel.isb-sib.ch:8083/api/glycosylations?composition?');
-        // this.$.compoDictionary.generateRequest();
-      }
-      handleResponse(data){
-        var jsonGlobalProperties = data.detail.response;
-        console.log(jsonGlobalProperties);
-        this.coreTypeO = jsonGlobalProperties['O-linked']['core'];
-        this.coreTypeN = jsonGlobalProperties['N-linked']['core'];
-        this.propO = jsonGlobalProperties['O-linked']['prop'];
-        this.propN = jsonGlobalProperties['N-linked']['prop'];
-        this.detO = jsonGlobalProperties['O-linked']['det'];
-        this.detN = jsonGlobalProperties['N-linked']['det'];
-        this.propNP = jsonGlobalProperties['Non attached to proteins']['prop'];
-        this.detNP = jsonGlobalProperties['Non attached to proteins']['det'];
-        this.coreTypeNP = jsonGlobalProperties['Non attached to proteins']['core'];
-      }
-      handleProtein(data){
-        var jsonProtein = data.detail.response;
-        var proteinList = [];
-        var proteinIds = [];
-        var nameSpecies = {};
-        var allSp = [];
-        for (var f =0; f < jsonProtein.length; f ++){
-          var protFeatures = jsonProtein[f];
-          var tax = protFeatures['taxonomy'];
-          allSp.push(tax);
-          name = protFeatures['name'].toLowerCase().replace(" ","");
-          if (nameSpecies.hasOwnProperty(name)){
-            nameSpecies[name].push(tax);
-          }else{
-            nameSpecies[name] = [tax];
-            proteinList.push(protFeatures['name']);
-          };
-          if (protFeatures['uniprots'] != undefined){
-            var accs = protFeatures['uniprots'];
-            var uniAcc;
-            for ( uniAcc in accs){
-              nameSpecies[accs[uniAcc]['uniprot_acc'].toLowerCase()]=[tax];
-              proteinIds.push(accs[uniAcc]['uniprot_acc']);
-            };
-          };
-        };
-        var result = { };
-        for(var i = 0; i < allSp.length; ++i) {
-            if(!result[allSp[i]])
-                result[allSp[i]] = 0;
-            ++result[allSp[i]];
-        };
-        this.count = result;
-        Array.prototype.push.apply(proteinList, proteinIds);
-        var combobox = Polymer.dom(this.root).querySelector('#protDropDown');
-        var elements = proteinList;//["Hydrogen", "Helium", "Silicon"];
-        combobox.items = elements;
-        this.protSpecies = nameSpecies;
-      }
-      printSP (e){
-        this.clearFilter(e);
-        var val = Polymer.dom(this.root).querySelector('#protDropDown').value;
-        if(val != ''){
-          var speciesForChoice = this.protSpecies[val.toLowerCase().replace(" ","")];
-          var newSpecies = speciesForChoice.slice(0);
-        }else{
-          var newSpecies = [];
-        };
-        newSpecies.sort();
-        var newArray = [];
-        for (var s=0; s<newSpecies.length; s ++){
-          if (newArray.length == 0){
-            newArray.push(newSpecies[s])
-          }else{
-            if(newArray.includes(newSpecies[s])){
-              continue;
-            }else{
-              newArray.push(newSpecies[s]);
-            };
-          };
-        }
-        if(newArray.length >1){
-          newSpecies = this.orderSpecies(newSpecies);
-          Polymer.dom(this.root).querySelector('#selectedSpecies').hidden=false;
-          newArray.push('All');
-        }else{
-          Polymer.dom(this.root).querySelector('#selectedSpecies').hidden=true;
-        };
-        this.species = newArray;
-      }
-      orderSpecies(listOfSpecies){
-        var countSpecies = this.count;
-        var toOrder = {};
-        var sortable = [];
-        for(var w =0; w < listOfSpecies.length; w++){
-          toOrder[listOfSpecies[w]]=countSpecies[listOfSpecies[w]];
-        };
-        for (var speci in toOrder) {
-            sortable.push([speci, toOrder[speci]]);
-        };
-        sortable.sort(function(a, b) {
-            return b[1] -a[1];
-        });
-        var sorted = [];
-        for(var t =0; t < sortable.length; t++){
-          sorted.push(sortable[t][0]);
-        };
-        return sorted
-      }
-      _toggleProtein () {
-        this.$.glycanFilterProt.toggle();
-        this.expandFold()
-      }
-      _toggleNGlycan () {
-        this.$.glycanFilterN.toggle();
-        this.expandFold()
-      }
-      _toggleOGlycan () {
-        this.$.glycanFilterO.toggle();
-        this.expandFold()
-      }
-      _toggleNOGlycan () {
-        this.$.glycanFilterNO.toggle();
-        this.expandFold()
-      }
-      expandFold (){
-        if(this.$.foldIcon.hasAttribute('disabled')){
-          this.$.expandIcon.setAttribute('disabled', 'true');
-          this.$.foldIcon.removeAttribute('disabled');
-        }else{
-          this.$.foldIcon.setAttribute('disabled', 'true');
-          this.$.expandIcon.removeAttribute('disabled');
-        }
       }
      idCreator(id) {
        return "d_"+id.replace(/ /g,'').replace(/\(/g, '').replace(/\)/g, '').replace(/\,/g, "").replace("/","").replace(/\'/g,"");
