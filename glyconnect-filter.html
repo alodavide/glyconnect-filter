@@ -401,17 +401,6 @@ This element provides filter box in glyconnect
       handleResponse(data){
         this.jsonGlobalProperties = data.detail.response;
       }
-      onHover(e){
-        console.log("E");
-        //e.srcElement.classList.remove('hovered');
-        e.srcElement.image=this.imgsrc+"/images.png";
-      }
-
-      onUnhover(e){
-        e.srcElement.image=this.imgsrc+"/images.png";
-        console.log("A");
-        //e.srcElement.classList.add('hovered');
-      }
       populate(event) {
         Polymer.dom(this.root).querySelector('#proteinSection').hidden=true;
         Polymer.dom(this.root).querySelector('#compoSection').hidden=true;
@@ -441,12 +430,10 @@ This element provides filter box in glyconnect
         jsonParam.glycanType = this.linkIcon.toLowerCase()+'-linked';
       }
         this.filterOutput = jsonParam;
-        console.log(this.filterOutput);
       }
       clearFilter(event) {
         var typeGlyco = event.target.getAttribute("typeLink");
         var vr = this.shadowRoot.querySelector("#selected"+typeGlyco);
-        console.log(vr);
         var toClear =  Polymer.dom(vr).querySelectorAll("paper-card");
         for (var i = 0; i < toClear.length; i++) {
           Polymer.dom(this.root).querySelector('paper-card[id='+toClear[i].id.replace("-clone",'')+']').hidden=false;
@@ -577,7 +564,6 @@ This element provides filter box in glyconnect
         }
         myJson['protein']=protein;
         this.filterOutput = myJson;
-        console.log(myJson);
       }
       uploadExperiment (event){
           event.preventDefault();
@@ -757,7 +743,6 @@ This element provides filter box in glyconnect
         var toVisualize = {};
         toVisualize['composition'] = this.parseCompo(allCompo);
         this.filterOutput = toVisualize;
-        console.log(this.filterOutput)
       }
       _addCompo(){
         var compoToParse = this.getAllCompo();
