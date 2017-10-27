@@ -19,6 +19,7 @@
 <link rel="import" href="../paper-card/paper-card.html">
 <link rel="import" href="../iron-autogrow-textarea/iron-autogrow-textarea.html">
 <link rel="import" href="../paper-dialog/paper-dialog.html">
+<link rel="import" href="../paper-tooltip/paper-tooltip.html">
 <!--
 `glyconnect-filter`
 This element provides filter box in glyconnect
@@ -55,6 +56,17 @@ This element provides filter box in glyconnect
             paper-button.updateButton {
                 margin: 13px;
                 font-size: 16px;
+            }
+            .deter {
+                background-color: #cc3300;
+                font-size: 16px;
+                /*font-weight: 400;*/
+                padding: 15px 15px 15px 15px;
+                margin: 10px;
+                flex: 0 0 auto;
+                color: white;
+                width: 150px;
+
             }
             .card {
                 background-color: #cc3300;
@@ -114,10 +126,10 @@ This element provides filter box in glyconnect
               min-width: 70%;
               max-width: 70%;
             }
-            paper-card.placeholder-image {
+            /*paper-card {
                 width: 200px;
                 height: 200px,
-            }
+            }*/
 
         </style>
         <iron-ajax
@@ -163,17 +175,17 @@ This element provides filter box in glyconnect
                    <iron-pages selected="{{selected}}">
                     <div class="layout materialCard flex">
                          <template is="dom-repeat" items="{{core}}">
-                              <paper-button typeLink="" id={{idCreator(item.name)}} raised data-id$="{{item.class}}={{item.name}}" coreTypeN="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
+                              <paper-card typeLink="" id={{idCreator(item.name)}} raised data-id$="{{item.class}}={{item.name}}" coreTypeN="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-card>
                          </template>
                      </div>
                      <div class="layout materialCard flex">
                          <template is="dom-repeat" items="{{prop}}">
-                             <paper-button typeLink="" id="{{item.name}}" raised data-id$="{{item.class}}={{item.name}}" propN="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-button>
+                             <paper-card typeLink="" id="{{item.name}}" raised data-id$="{{item.class}}={{item.name}}" propN="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-card>
                          </template>
                      </div>
                      <div class="layout materialCard flex"><link rel="import" href="../iron-list/iron-list.html">
                          <template is="dom-repeat" items="{{det}}">
-                           <paper-card typeLink="" id="{{idCreator(item.name)}}" raised data-id$="{{item.class}}={{item.name}}" detN="{{item}}" image="{{imgsrc}}/[[item.modifiedName]].png" placeholder-image="{{imgsrc}}/images.jpg" preload-image class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-card>
+                           <paper-card typeLink="" id="{{idCreator(item.name)}}" raised data-id$="{{item.class}}={{item.name}}" detN="{{item}}" image="{{imgsrc}}/[[item.modifiedName]].png" class="deter" style$="background-color:{{item.color}}" on-tap="createTag"><paper-tooltip>{{item.name}}</paper-tooltip></paper-card>
                              <!-- <paper-button typeLink="" id="{{idCreator(item.name)}}" raised data-id$="{{item.class}}={{item.name}}" detN="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag"> -->
                             <!-- {{item.name}}</paper-button> -->
                          </template>
@@ -190,7 +202,7 @@ This element provides filter box in glyconnect
                    </app-toolbar>
                    <div id="availableSpecies" class="enzymeSelected">
                      <template is="dom-repeat" items="{{species}}">
-                          <paper-button typeLink="Protein" id="{{_getLabelSpecies(item)}}Prot" speciesButton="{{item}}" class="card" on-tap="checkHowmany">{{item}}</paper-button>
+                          <paper-card typeLink="Protein" id="{{_getLabelSpecies(item)}}Prot" speciesButton="{{item}}" class="card" on-tap="checkHowmany">{{item}}</paper-card>
                      </template>
                    </div>
                  </div>
@@ -389,6 +401,17 @@ This element provides filter box in glyconnect
       handleResponse(data){
         this.jsonGlobalProperties = data.detail.response;
       }
+      onHover(e){
+        console.log("E");
+        //e.srcElement.classList.remove('hovered');
+        e.srcElement.image=this.imgsrc+"/images.png";
+      }
+
+      onUnhover(e){
+        e.srcElement.image=this.imgsrc+"/images.png";
+        console.log("A");
+        //e.srcElement.classList.add('hovered');
+      }
       populate(event) {
         Polymer.dom(this.root).querySelector('#proteinSection').hidden=true;
         Polymer.dom(this.root).querySelector('#compoSection').hidden=true;
@@ -410,7 +433,7 @@ This element provides filter box in glyconnect
         }
       }
       selectedFeature (){
-        var sel =  Polymer.dom(this.$.selected).querySelectorAll("paper-button");
+        var sel =  Polymer.dom(this.$.selected).querySelectorAll("paper-card");
         var jsonParam = this.param(sel);
         if( this.linkIcon === "Free"){
          jsonParam.glycanType = this.linkIcon.toLowerCase();
@@ -418,14 +441,15 @@ This element provides filter box in glyconnect
         jsonParam.glycanType = this.linkIcon.toLowerCase()+'-linked';
       }
         this.filterOutput = jsonParam;
+        console.log(this.filterOutput);
       }
       clearFilter(event) {
         var typeGlyco = event.target.getAttribute("typeLink");
         var vr = this.shadowRoot.querySelector("#selected"+typeGlyco);
         console.log(vr);
-        var toClear =  Polymer.dom(vr).querySelectorAll("paper-button");
+        var toClear =  Polymer.dom(vr).querySelectorAll("paper-card");
         for (var i = 0; i < toClear.length; i++) {
-          Polymer.dom(this.root).querySelector('paper-button[id='+toClear[i].id.replace("-clone",'')+']').hidden=false;
+          Polymer.dom(this.root).querySelector('paper-card[id='+toClear[i].id.replace("-clone",'')+']').hidden=false;
           toClear[i].remove();
         }
       }
@@ -437,7 +461,7 @@ This element provides filter box in glyconnect
         Polymer.dom(this.root).querySelector('#protDropDown').value="";
         this.species=[];
         var selSpecies = Polymer.dom(this.root).querySelector("#selectedSpecies");
-        var toDelete =  Polymer.dom(selSpecies).querySelectorAll("paper-button");
+        var toDelete =  Polymer.dom(selSpecies).querySelectorAll("paper-card");
         for (var i = 0; i < toDelete.length; i++) {
           toDelete[i].remove();
         }
@@ -539,7 +563,7 @@ This element provides filter box in glyconnect
         var myJson={};
         var protein = Polymer.dom(this.root).querySelector('#protDropDown').value;
         if (Polymer.dom(this.root).querySelector('#selectedSpecies').hidden==false){
-          var allTaxo = Polymer.dom(this.$.selectedProtein).querySelectorAll("paper-button");
+          var allTaxo = Polymer.dom(this.$.selectedProtein).querySelectorAll("paper-card");
           for (var i = 0; i < allTaxo.length; i++) {
             var x = allTaxo[i].id;
             var y = x.replace('Prot-clone', '').replace('_', ' ');
@@ -603,6 +627,9 @@ This element provides filter box in glyconnect
        var list = Polymer.dom(this.root).querySelector("#selected"+typeTag);
        var sourceEl = event.target;
        var cloneEl = sourceEl.cloneNode(true);
+       for(var i in sourceEl.properties) {
+          cloneEl[i] = sourceEl[i]
+        }
        event.target.hidden=true;
        cloneEl.id=cloneEl.id+"-clone";
        list.insertBefore(cloneEl, null);
@@ -616,7 +643,8 @@ This element provides filter box in glyconnect
        };
     }
      destroyTag(pr) {
-       Polymer.dom(this.root).querySelector('paper-button[id='+pr.target.id.replace("-clone",'')+']').hidden=false;
+       Polymer.dom(this.root).querySelector('paper-card[id='+pr.target.id.replace("-clone",'')+']').hidden=false;
+      //  Polymer.dom(this.root).querySelector('paper-button[id='+pr.target.id.replace("-clone",'')+']').hidden=false;
       pr.target.remove();
      }
       _setTogglesAndRSliders () {
