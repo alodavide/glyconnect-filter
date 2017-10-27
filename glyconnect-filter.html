@@ -126,11 +126,9 @@ This element provides filter box in glyconnect
               min-width: 70%;
               max-width: 70%;
             }
-            /*paper-card {
-                width: 200px;
-                height: 200px,
-            }*/
-
+            paper-card[hidden] {
+              display: none;
+            }
         </style>
         <iron-ajax
                 id="ajaxDictionary"
@@ -430,6 +428,7 @@ This element provides filter box in glyconnect
         jsonParam.glycanType = this.linkIcon.toLowerCase()+'-linked';
       }
         this.filterOutput = jsonParam;
+        console.log(this.filterOutput);
       }
       clearFilter(event) {
         var typeGlyco = event.target.getAttribute("typeLink");
