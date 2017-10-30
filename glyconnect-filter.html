@@ -17,7 +17,6 @@
 <link rel="import" href="../paper-slider/paper-slider.html">
 <link rel="import" href="../paper-card/paper-card.html">
 <link rel="import" href="../iron-autogrow-textarea/iron-autogrow-textarea.html">
-<link rel="import" href="../paper-dialog/paper-dialog.html">
 <link rel="import" href="../paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../neon-animation/web-animations.html">
 <!--
@@ -246,14 +245,8 @@ This element provides filter box in glyconnect
                         <p>Hex, HexNAc, dHex (e.g. fucose), NeuAc, NeuGc, Pen (e.g. xylose), S (sulphate), P (phosphate), KDN, KDO, HexA (e.g. GlcA), Met (methyl), Ac (acetyl), Other</p>
                         <p>e.g. Hex HexNAc3 dHex4 (for more than 1 monosaccharide specify the corresponding number)</p>
                        </div>
-                       <paper-button class="indigo updateButton" raised on-tap="openDialog">Input example</paper-button>
-                       <paper-dialog id="dialog" modal>
-                          <p>Oxford: M3, Fa2, A2, A2[3]G1, A2G2, A2G2S1, FA2, FA2[6]G1, FA2G2S2, A4G4, A4, Hy, C</p><br>
-                          <p>Hex3 HexNAc5 dHex2, Hex HexNAc dHex2, Hex HexNAc dHex NeuAc, Hex4 HexNAc3 Pen, Hex5 HexNAc4 P</p>
-                          <div class="buttons">
-                            <paper-button dialog-confirm autofocus>Close</paper-button>
-                          </div>
-                       </paper-dialog>
+                       <paper-button class="indigo updateButton" raised on-tap="inputOxford">Oxford input example</paper-button>
+                       <paper-button class="indigo updateButton" raised on-tap="inputMonosac">Monosaccharide abbreviations input example</paper-button>
                        <paper-input style ="padding: 10px" label="input comma-separated compositions" id="compoCommaList" value="{{compositions}}"></paper-input>
                        <div class="horizontal end-justified layout">
                          <paper-button class="indigo updateButton" on-tap='_getCompoList'>Search</paper-button>
@@ -386,8 +379,11 @@ This element provides filter box in glyconnect
       attached () {
           this.async(function(){this._setTogglesAndRSliders();},1);
       }
-      openDialog() {
-        this.$.dialog.open();
+      inputOxford() {
+        Polymer.dom(this.root).querySelector("#compoCommaList").value="M3, Fa2, A2, A2[3]G1, A2G2, FA2, FA2[6]G1, FA2G2S2, A4G4, Hy, C"
+      }
+      inputMonosac() {
+        Polymer.dom(this.root).querySelector("#compoCommaList").value="Hex3 HexNAc5, HexNAc dHex NeuAc, Hex4 HexNAc3 Pen, Hex5 HexNAc4 P"
       }
       connectedCallback (){
         super.connectedCallback();
