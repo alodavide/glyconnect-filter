@@ -13,11 +13,11 @@
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="../vaadin-upload/vaadin-upload.html">
+<link rel="import" href="../paper-dialog/paper-dialog.html">
 <link rel="import" href="../iron-list/iron-list.html">
 <link rel="import" href="../paper-slider/paper-slider.html">
 <link rel="import" href="../paper-card/paper-card.html">
 <link rel="import" href="../iron-autogrow-textarea/iron-autogrow-textarea.html">
-<link rel="import" href="../paper-dialog/paper-dialog.html">
 <link rel="import" href="../paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../neon-animation/web-animations.html">
 <!--
@@ -173,19 +173,17 @@ This element provides filter box in glyconnect
                    <iron-pages selected="{{selected}}">
                     <div class="layout materialCard flex">
                          <template is="dom-repeat" items="{{core}}">
-                              <paper-card typeLink="" id={{idCreator(item.name)}} raised data-id$="{{item.class}}={{item.name}}" coreTypeN="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-card>
+                              <paper-card typeLink="" id={{idCreator(item.name)}} raised data-id$="{{item.class}}={{item.name}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-card>
                          </template>
                      </div>
                      <div class="layout materialCard flex">
                          <template is="dom-repeat" items="{{prop}}">
-                             <paper-card typeLink="" id="{{item.name}}" raised data-id$="{{item.class}}={{item.name}}" propN="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-card>
+                             <paper-card typeLink="" id="{{item.name}}" raised data-id$="{{item.class}}={{item.name}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-card>
                          </template>
                      </div>
-                     <div class="layout materialCard flex"><link rel="import" href="../iron-list/iron-list.html">
+                     <div class="layout materialCard flex">
                          <template is="dom-repeat" items="{{det}}">
-                           <paper-card typeLink="" id="{{idCreator(item.name)}}" raised data-id$="{{item.class}}={{item.name}}" detN="{{item}}" image="{{imgsrc}}/[[item.modifiedName]].png" class="deter" style$="background-color:{{item.color}}" on-tap="createTag"><paper-tooltip>{{item.name}}</paper-tooltip></paper-card>
-                             <!-- <paper-button typeLink="" id="{{idCreator(item.name)}}" raised data-id$="{{item.class}}={{item.name}}" detN="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag"> -->
-                            <!-- {{item.name}}</paper-button> -->
+                           <paper-card typeLink="" id="{{idCreator(item.name)}}" raised data-id$="{{item.class}}={{item.name}}" image="{{imgsrc}}/[[item.modifiedName]].png" class="deter" style$="background-color:{{item.color}}" on-tap="createTag"><paper-tooltip>{{item.name}}</paper-tooltip></paper-card>
                          </template>
                      </div>
                  </iron-pages>
@@ -246,8 +244,8 @@ This element provides filter box in glyconnect
                         <p>Hex, HexNAc, dHex (e.g. fucose), NeuAc, NeuGc, Pen (e.g. xylose), S (sulphate), P (phosphate), KDN, KDO, HexA (e.g. GlcA), Met (methyl), Ac (acetyl), Other</p>
                         <p>e.g. Hex HexNAc3 dHex4 (for more than 1 monosaccharide specify the corresponding number)</p>
                        </div>
-                       <paper-button class="indigo updateButton" raised on-tap="exampleOx">Oxford input example</paper-button>
-                       <paper-button class="indigo updateButton" raised on-tap="exampleMon">Monosaccharides input example</paper-button>
+                       <paper-button class="indigo updateButton" raised on-tap="inputOxford">Oxford input example</paper-button>
+                       <paper-button class="indigo updateButton" raised on-tap="inputMonosac">Monosaccharide abbreviations input example</paper-button>
                        <paper-input style ="padding: 10px" label="input comma-separated compositions" id="compoCommaList" value="{{compositions}}"></paper-input>
                        <div class="horizontal end-justified layout">
                          <paper-button class="indigo updateButton" on-tap='_getCompoList'>Search</paper-button>
@@ -380,12 +378,7 @@ This element provides filter box in glyconnect
       attached () {
           this.async(function(){this._setTogglesAndRSliders();},1);
       }
-      exampleOx() {
-        Polymer.dom(this.root).querySelector("#compoCommaList").value="M3, Fa2, A2, A2[3]G1, A2G2, FA2, FA2[6]G1, FA2G2S2, A4G4, Hy, C"
-      }
-      exampleMon() {
-        Polymer.dom(this.root).querySelector("#compoCommaList").value="Hex3 HexNAc5, HexNAc dHex NeuAc, Hex4 HexNAc3 Pen, Hex5 HexNAc4 P"
-      }
+
       connectedCallback (){
         super.connectedCallback();
         this.$.ajaxDictionary.url = this.resolveUrl('dictionary/jsonGlobalProperties.json');
@@ -395,6 +388,12 @@ This element provides filter box in glyconnect
       }
       handleResponse(data){
         this.jsonGlobalProperties = data.detail.response;
+      }
+      inputOxford() {
+        Polymer.dom(this.root).querySelector("#compoCommaList").value="M3, Fa2, A2, A2[3]G1, A2G2, FA2, FA2[6]G1, FA2G2S2, A4G4, Hy, C"
+      }
+      inputMonosac() {
+        Polymer.dom(this.root).querySelector("#compoCommaList").value="Hex3 HexNAc5, HexNAc dHex NeuAc, Hex4 HexNAc3 Pen, Hex5 HexNAc4 P"
       }
       populate(event) {
         Polymer.dom(this.root).querySelector('#proteinSection').hidden=true;
@@ -609,6 +608,7 @@ This element provides filter box in glyconnect
        var list = Polymer.dom(this.root).querySelector("#selected"+typeTag);
        var sourceEl = event.target;
        var cloneEl = sourceEl.cloneNode(true);
+       console.log(cloneEl);
        for(var i in sourceEl.properties) {
           cloneEl[i] = sourceEl[i]
         }
