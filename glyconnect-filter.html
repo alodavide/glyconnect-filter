@@ -355,15 +355,18 @@ This element provides filter box in glyconnect
             type: String,
           },
           jsonGlobalProperties: {
-              type: Object,
-              reflectToAttribute: true
+              type: Object
           },
           imgsrc: {
               type: String,
               value: function() {
                   return this.resolveUrl('./selected_png')
               }
-          }
+          },
+          apiServer: {
+            type: String,
+            reflectToAttribute: true
+          },
         };
       }
       constructor() {
@@ -390,7 +393,7 @@ This element provides filter box in glyconnect
         super.connectedCallback();
         this.$.ajaxDictionary.url = this.resolveUrl('dictionary/jsonGlobalProperties.json');
         this.$.ajaxDictionary.generateRequest();
-        this.$.proteinDictionary.url = this.resolveUrl('http://mendel.isb-sib.ch:8083/api/proteins');
+        this.$.proteinDictionary.url = this.resolveUrl(this.apiServer+'/api/proteins');
         this.$.proteinDictionary.generateRequest();
       }
       handleResponse(data){
