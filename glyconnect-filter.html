@@ -347,6 +347,12 @@ This element provides filter box in glyconnect
           protSpecies: {
               type: Object,
           },
+          idSpecies: {
+              type: Object,
+          },
+          allUniprot: {
+              type: Array,
+          },
           count: {
               type: Array,
           },
@@ -427,7 +433,6 @@ This element provides filter box in glyconnect
         jsonParam.glycanType = this.linkIcon.toLowerCase()+'-linked';
       }
         this.filterOutput = jsonParam;
-        console.log(this.filterOutput);
       }
       clearFilter(event) {
         var typeGlyco = event.target.getAttribute("typeLink");
@@ -461,6 +466,7 @@ This element provides filter box in glyconnect
         var proteinList = [];
         var proteinIds = [];
         var nameSpecies = {};
+        var uniprotSpecies = {};
         var allSp = [];
         for (var f =0; f < jsonProtein.length; f ++){
           var protFeatures = jsonProtein[f];
@@ -477,8 +483,10 @@ This element provides filter box in glyconnect
             var accs = protFeatures['uniprots'];
             var uniAcc;
             for ( uniAcc in accs){
-              nameSpecies[accs[uniAcc]['uniprot_acc'].toLowerCase()]=[tax];
-              proteinIds.push(accs[uniAcc]['uniprot_acc']);
+              var unip = accs[uniAcc]['uniprot_acc'];
+              nameSpecies[unip.toLowerCase()]=[tax];
+              uniprotSpecies[unip.toLowerCase()]=[tax];
+              proteinIds.push(unip);
             };
           };
         };
@@ -494,12 +502,19 @@ This element provides filter box in glyconnect
         var elements = proteinList;//["Hydrogen", "Helium", "Silicon"];
         combobox.items = elements;
         this.protSpecies = nameSpecies;
+        this.idSpecies = uniprotSpecies;
+        this.allUniprot = proteinIds;
       }
       printSP (e){
         var val = Polymer.dom(this.root).querySelector('#protDropDown').value;
         if(val != ''){
-          var speciesForChoice = this.protSpecies[val.toLowerCase().replace(" ","")];
-          var newSpecies = speciesForChoice.slice(0);
+          if(val in this.allUniprot){
+            var speciesForChoice = this.idSpecies[val.toLowerCase().replace(" ","")];
+            var newSpecies = speciesForChoice.slice(0);
+          }else{
+            var speciesForChoice = this.protSpecies[val.toLowerCase().replace(" ","")];
+            var newSpecies = speciesForChoice.slice(0);
+          }
         }else{
           var newSpecies = [];
         };
