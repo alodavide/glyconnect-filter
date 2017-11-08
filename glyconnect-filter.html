@@ -121,10 +121,13 @@ This element provides filter box in glyconnect
             #buttons {
                 width: 20%;
             }
-            #selection {
+            .selection {
               margin-left: 20px;
               min-width: 70%;
               max-width: 70%;
+            }
+            .home {
+              padding: 10px;
             }
             paper-card[hidden] {
               display: none;
@@ -150,7 +153,18 @@ This element provides filter box in glyconnect
                 <paper-button id="O" typeLink="" class="indigo updateButton filterToggleButton" raised on-tap="populate">O-linked glycans</paper-button>
                 <paper-button id="Free" typeLink="" class="indigo updateButton filterToggleButton" raised on-tap="populate">Free glycans</paper-button>
           </div>
-          <div id="selection" >
+          <div class="selection" >
+              <div id="home">
+                <div class="home layout materialCard flex">
+                  <p><b>Glyconnect</b> is a platform integrating several sources of information to characterise the molecular actors of glycosylation. It was designed to ease querying data even with limited knowledge of glycobiology. <br>
+                  The purpose of Glyconnect is to bring out in a single resource the relationships between glycans, the proteins that carry them, the enzymes that synthesise or degrade them and the proteins that bind them.
+                  It will be a while before this goal of tight integration is reached but Glyconnect will gradually grow towards it.<br>
+                  The first focus of Glyconnect is on glycoproteins, that is, the relationships between glycans and proteins that bear them.
+                  The user can navigate from glycan structures to proteins and back while exploring possible associations between tissue expression or site-specific glycosylation. <br>
+                  In the next release:<br>
+                  We are preparing the visualisation of quantitative glycome data in a selection of tissues.</p>
+                </div>
+              </div>
               <div  id="chosen">
                 <div class="layout materialCard flex">
                       <app-toolbar>
@@ -379,6 +393,7 @@ This element provides filter box in glyconnect
       }
       ready() {
        super.ready();
+       Polymer.dom(this.root).querySelector('#home').hidden=false;
        Polymer.dom(this.root).querySelector('#chosen').hidden=true;
        Polymer.dom(this.root).querySelector('#proteinSection').hidden=true;
        Polymer.dom(this.root).querySelector('#compoSection').hidden=true;
@@ -406,6 +421,7 @@ This element provides filter box in glyconnect
       }
       populate(event) {
         Polymer.dom(this.root).querySelector('#proteinSection').hidden=true;
+        Polymer.dom(this.root).querySelector('#home').hidden=true;
         Polymer.dom(this.root).querySelector('#compoSection').hidden=true;
         this.clearFilter(event);
         Polymer.dom(this.root).querySelector('#chosen').hidden=false;
@@ -444,6 +460,7 @@ This element provides filter box in glyconnect
         }
       }
       _toggleProtein () {
+        Polymer.dom(this.root).querySelector('#home').hidden=true;
         Polymer.dom(this.root).querySelector('#chosen').hidden=true;
         Polymer.dom(this.root).querySelector('#proteinSection').hidden=false;
         Polymer.dom(this.root).querySelector('#compoSection').hidden=true;
@@ -457,6 +474,7 @@ This element provides filter box in glyconnect
         }
       }
       _toggleCompo () {
+        Polymer.dom(this.root).querySelector('#home').hidden=true;
         Polymer.dom(this.root).querySelector('#chosen').hidden=true;
         Polymer.dom(this.root).querySelector('#proteinSection').hidden=true;
         Polymer.dom(this.root).querySelector('#compoSection').hidden=false;
