@@ -736,8 +736,10 @@ This element provides filter box in glyconnect
           for(var key in mono){
             if (mono.hasOwnProperty(key)) {
                 monoMerge += mono[key].toString();
+                monoMerge += ',';
             };
           };
+          monoMerge = monoMerge.substr(0, monoMerge.length - 1);
           listOfFourteen.push(monoMerge);
         };
         return listOfFourteen;
@@ -860,7 +862,7 @@ This element provides filter box in glyconnect
                     }
                 }
             }
-            translated = '' + hex + hexnac + deHex + neuac + "0000000000";
+            translated = '' + hex + ',' + hexnac + ',' + deHex + ',' + neuac + ',' + "0,0,0,0,0,0,0,0,0,0";
             translated2.push(translated)
           }
           return translated2;
