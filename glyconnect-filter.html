@@ -166,19 +166,9 @@ This element provides filter box in glyconnect
                 </div>
               </div>
               <div  id="chosen">
-                <div class="layout materialCard flex">
-                      <app-toolbar>
-                          <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
-                          <span class="title">{{linkIcon}}-Glycans</span>
-                      </app-toolbar>
-                      <div id="selected" class="enzymeSelected">
-                       </div>
-                      <div class="horizontal end-justified layout">
-                          <paper-button class="indigo updateButton" on-tap="selectedFeature">Search</paper-button>
-                          <paper-button typeLink="" class="indigo updateButton" on-tap="clearFilter">Clear</paper-button>
-                      </div>
-                </div>
                 <div class="layout vertical flex">
+                  <p style= "padding-left:20px">Choose glycan feature category by clicking the table headers.
+                  <p style= "padding-left:20px">Select and deselect glycan features by clicking the colored buttons.</p>
                    <paper-tabs selected="{{selected}}" no-bar>
                        <paper-tab>Cores</paper-tab>
                        <paper-tab>Structural properties</paper-tab>
@@ -204,9 +194,22 @@ This element provides filter box in glyconnect
                      </div>
                  </iron-pages>
                </div>
+               <div class="layout materialCard flex">
+                     <app-toolbar>
+                         <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
+                         <span class="title">{{linkIcon}}-Glycans</span>
+                     </app-toolbar>
+                     <div id="selected" class="enzymeSelected">
+                      </div>
+                     <div class="horizontal end-justified layout">
+                         <paper-button class="indigo updateButton" on-tap="selectedFeature">Search</paper-button>
+                         <paper-button typeLink="" class="indigo updateButton" on-tap="clearFilter">Clear</paper-button>
+                     </div>
+               </div>
              </div>
              <div id="proteinSection">
-               <vaadin-combo-box style="margin:20px" typeLink="Protein" id="protDropDown" required label="Protein"></vaadin-combo-box>
+               <vaadin-combo-box style="margin:20px" typeLink="Protein" id="protDropDown" required label="Enter a protein name or a UniProt id"></vaadin-combo-box>
+               <p style= "padding-left:20px">If more than one species is available select and deselect it by clicking the corresponding button.</p>
                  <div class="layout materialCard flex">
                    <app-toolbar>
                        <paper-icon-button disabled style="color: white" icon="icons:view-list"></paper-icon-button>
@@ -233,6 +236,7 @@ This element provides filter box in glyconnect
             </div>
             <div id="compoSection">
                 <div class="layout vertical flex">
+                  <p style= "padding-left:20px">Choose the format of your composition input by clicking the table headers.</p>
                    <paper-tabs selected="{{selected}}" no-bar>
                        <paper-tab>File upload</paper-tab>
                        <paper-tab>List of composition</paper-tab>
