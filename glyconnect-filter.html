@@ -120,14 +120,17 @@ This element provides filter box in glyconnect
             }
             #buttons {
                 width: 20%;
+                padding-top: 10px;
             }
             .selection {
               margin-left: 20px;
               min-width: 70%;
               max-width: 70%;
+              margin-top: 5px;
             }
             .home {
               padding: 10px;
+              padding-top: 5px;
             }
             paper-card[hidden] {
               display: none;
@@ -145,6 +148,17 @@ This element provides filter box in glyconnect
                 method="GET"
                 on-response="handleProtein"
         ></iron-ajax>
+        <!-- <iron-ajax id="postExample"
+            method="POST"
+            body='{{postBody}}'
+            handle-as="json"
+            content-type="application/json"
+            on-response="serverSuccessCb"
+            last-response="{{serverSuccessObj}}"
+            on-error="serverErrorCb"
+            last-error="{{serverErrorObj}}"
+            url="https://jsonplaceholder.typicode.com/posts">
+        </iron-ajax> -->
         <div class="layout horizontal">
           <div class="layout vertical" id="buttons">
                 <paper-button class="indigo updateButton filterToggleButton" raised on-tap="_toggleProtein">Protein</paper-button>
@@ -153,21 +167,26 @@ This element provides filter box in glyconnect
                 <paper-button id="O" typeLink="" class="indigo updateButton filterToggleButton" raised on-tap="populate">O-linked glycans</paper-button>
                 <paper-button id="Free" typeLink="" class="indigo updateButton filterToggleButton" raised on-tap="populate">Free glycans</paper-button>
           </div>
-          <div class="selection" >
+          <!-- <iron-form id='ironForm'>
+            <form method="get" action="http://glycoproteome.expasy.org/glycositealign/mass/False/20">
+              <input value="{{postBody}}">
+            </form>
+          </iron-form>
+          <paper-button raised on-tap="submitForm">Submit</paper-button> -->
+          <div class="selection">
               <div id="home">
                 <div class="home layout materialCard flex">
-                  <p><b>Glyconnect</b> is a platform integrating sources of information to help characterise the molecular components of protein glycosylation. It was designed to enable the easy querying of data by researchers regardless of the depth of their knowledge of glycobiology. <br>
-                    The purpose of Glyconnect is to provide a single resource for the study of the relationships between glycans, the proteins that carry them, the enzymes that synthesise or degrade them and the proteins that bind  them. This goal of tight integration will take some time to be achieved but Glyconnect will continue to grow as the data becomes available.<br>
-                    The first focus of Glyconnect is on the relationships between glycans and proteins that bear them. The user can navigate from glycan structures to proteins and back while exploring possible associations between tissue expression or site-specific glycosylation.<br>
-                    In the next release:<br>
+                  <p><b>GlyConnect is a platform integrating sources of information to help characterise the molecular components of protein glycosylation.</b> <br><br>It was designed to enable the easy querying of data by researchers regardless of the depth of their knowledge of glycobiology. <br><br>
+                    The purpose of GlyConnect is to provide a single resource for the study of the relationships between glycans, the proteins that carry them, the enzymes that synthesise or degrade them and the proteins that bind  them. This goal of tight integration will take some time to be achieved but GlyConnect will continue to grow as the data becomes available.<br><br>
+                    The first focus of GlyConnect is on the relationships between glycans and proteins that bear them. The user can navigate from glycan structures to proteins and back while exploring possible associations between tissue expression or site-specific glycosylation.<br><br>
+                    <b><i>In the next release:</i></b><br>
                     We are preparing the visualisation of quantitative glycome data in a selection of tissues as well as that of enhanced protein site-specific information.
                   </p>
                 </div>
               </div>
               <div  id="chosen">
                 <div class="layout vertical flex">
-                  <p style= "padding-left:20px">Choose glycan feature category by clicking the table headers.
-                  <p style= "padding-left:20px">Select and deselect glycan features by clicking the colored buttons.</p>
+                  <p style= "padding-left:20px">Choose glycan feature category by clicking on the tab header. Select and deselect glycan features by clicking the colored buttons.</p>
                    <paper-tabs selected="{{selected}}" no-bar>
                        <paper-tab>Cores</paper-tab>
                        <paper-tab>Structural properties</paper-tab>
@@ -205,8 +224,9 @@ This element provides filter box in glyconnect
                          <paper-button typeLink="" class="indigo updateButton" on-tap="clearFilter">Clear</paper-button>
                      </div>
                </div>
+
              </div>
-             <div id="proteinSection">
+             <div id="proteinSection" style='margin-top:10px'>
                <vaadin-combo-box style="margin:20px" typeLink="Protein" id="protDropDown" required label="Enter a protein name or a UniProt id"></vaadin-combo-box>
                <p style= "padding-left:20px">If more than one species is available select and deselect it by clicking the corresponding button.</p>
                  <div class="layout materialCard flex">
@@ -235,7 +255,7 @@ This element provides filter box in glyconnect
             </div>
             <div id="compoSection">
                 <div class="layout vertical flex">
-                  <p style= "padding-left:20px">Choose the format of your composition input by clicking the table headers.</p>
+                  <p style= "padding-left:20px">Choose the format of your composition input by clicking on the tab header.</p>
                    <paper-tabs selected="{{selected}}" no-bar>
                        <paper-tab>File upload</paper-tab>
                        <paper-tab>List of composition</paper-tab>
@@ -316,6 +336,10 @@ This element provides filter box in glyconnect
             type: String,
             value: 0
           },
+          // postBody: {
+          //     type: Object,
+          //     value: {"minimum": "200","maximum": "1000","proteinn": false,"proteino": false,"proteinc": false,"proteinall": true}
+          // },
           filterOutput: {
             type: Array,
             reflectToAttribute: true,
@@ -389,6 +413,19 @@ This element provides filter box in glyconnect
             type: String,
             reflectToAttribute: true
           },
+          priority: {
+              type: String,
+              value: ['Sialylated (any)','Mono-sialylated','Di-sialylated','Over-two-sialylated','Non-sialylated']
+          },
+          priority2: {
+              type: Object,
+              value: {
+                  1: 'Fucosylated (any)',
+                  2: 'Core-fucosylated',
+                  3: 'Non-core-fucosylated',
+                  4: 'Non-fucosylated',
+              }
+          },
         };
       }
       constructor() {
@@ -405,6 +442,21 @@ This element provides filter box in glyconnect
       }
       attached () {
           this.async(function(){this._setTogglesAndRSliders();},1);
+      }
+      // sendDataPost (event) {
+      //     console.log(this.postBody);
+      //     Polymer.dom(this.root).querySelector('#postExample').generateRequest();
+      //     console.log(this.postBody);
+      // }
+      // getPostBody (i1, i2, i3) {
+      //     return {
+      //       i1: i1,
+      //       i2: i2,
+      //       i3: i3
+      //     };
+      // }
+      submitForm() {
+        document.getElementById('iron-form').submit();
       }
       exampleOx() {
         Polymer.dom(this.root).querySelector("#compoCommaList").value="M3, Fa2, A2, A2[3]G1, A2G2, FA2, FA2[6]G1, FA2G2S2, A4G4, Hy, C"
@@ -433,6 +485,12 @@ This element provides filter box in glyconnect
           this.core = this.jsonGlobalProperties['N-linked']['core'];
           this.det = this.jsonGlobalProperties['N-linked']['det'];
           this.prop = this.jsonGlobalProperties['N-linked']['prop'];
+          // var prop = this.jsonGlobalProperties['N-linked']['prop'];
+          // var prior = this.priority
+          // for (var b = 0; b < toClear.length; b++) {
+          //   Polymer.dom(this.root).querySelector('paper-card[id='+toClear[i].id.replace("-clone",'')+']').hidden=false;
+          //   toClear[i].remove();
+          // }
         }else if (this.linkIcon === "O"){
           this.core = this.jsonGlobalProperties['O-linked']['core'];
           this.prop = this.jsonGlobalProperties['O-linked']['prop'];
