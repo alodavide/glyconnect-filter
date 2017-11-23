@@ -19,6 +19,7 @@
 <link rel="import" href="../iron-autogrow-textarea/iron-autogrow-textarea.html">
 <link rel="import" href="../paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../neon-animation/web-animations.html">
+<link rel="import" href="../iron-form/iron-form.html">
 <!--
 `glyconnect-filter`
 This element provides filter box in glyconnect
@@ -166,12 +167,12 @@ This element provides filter box in glyconnect
                 <paper-button id="O" typeLink="" class="indigo updateButton filterToggleButton" raised on-tap="populate">O-linked glycans</paper-button>
                 <paper-button id="Free" typeLink="" class="indigo updateButton filterToggleButton" raised on-tap="populate">Free glycans</paper-button>
           </div>
-          <!-- <iron-form id='ironForm'>
-            <form method="get" action="http://glycoproteome.expasy.org/glycositealign/mass/False/20">
-              <input value="{{postBody}}">
+          <iron-form id='ironForm' allow-redirect=true>
+            <form method="get" action="https://glycoproteome.expasy.org/glycositealign/mass/False/20">
+              <input value='{"minimum": "200","maximum": "1000","proteinn": false,"proteino": false,"proteinc": false,"proteinall": true}'>
             </form>
           </iron-form>
-          <paper-button raised on-tap="submitForm">Submit</paper-button> -->
+          <paper-button raised on-tap="submitForm">Submit</paper-button>
           <div class="selection">
               <div id="home">
                 <div class="home layout materialCard flex">
@@ -335,10 +336,10 @@ This element provides filter box in glyconnect
             type: String,
             value: 0
           },
-          // postBody: {
-          //     type: Object,
-          //     value: {"minimum": "200","maximum": "1000","proteinn": false,"proteino": false,"proteinc": false,"proteinall": true}
-          // },
+          postBody: {
+              type: Object,
+              value: {"minimum": "200","maximum": "1000","proteinn": false,"proteino": false,"proteinc": false,"proteinall": true}
+          },
           filterOutput: {
             type: Array,
             reflectToAttribute: true,
@@ -367,21 +368,8 @@ This element provides filter box in glyconnect
           },
           labels: {
               type: Object,
-              value: {
-                  'Hex': 'Hex',
-                  'HexNAc': 'HexNAc',
-                  'dHex': 'dHex',
-                  'NeuAc': 'NeuAc',
-                  'NeuGc': 'NeuGc',
-                  'Pen': 'Pentose',
-                  'S': 'Sulphate',
-                  'P': 'Phosphate',
-                  'Kdn': 'Kdn',
-                  'Kdo': 'Kdo',
-                  'HexA': 'HexA',
-                  'Methyl' : 'Methyl',
-                  'Acetyl' : 'Acetyl',
-                  'Other': 'Other'
+              value: {'Hex': 'Hex','HexNAc': 'HexNAc','dHex': 'dHex','NeuAc': 'NeuAc','NeuGc': 'NeuGc','Pen': 'Pentose','S': 'Sulphate','P': 'Phosphate','Kdn': 'Kdn',
+                  'Kdo': 'Kdo','HexA': 'HexA','Methyl' : 'Methyl','Acetyl' : 'Acetyl','Other': 'Other'
               }
           },
           protSpecies: {
@@ -414,38 +402,14 @@ This element provides filter box in glyconnect
           },
           priority: {
               type: Object,
-              value: {
-                  'Core-fucosylated':1,
-                  'Non-core-fucosylated':2,
-                  'Fucosylated (any)':3,
-                  'Non-fucosylated':4,
-                  'Mono-sialylated':5,
-                  'Di-sialylated':6,
-                  'Over-two-sialylated':7,
-                  'Sialylated (any)':8,
-                  'Non-sialylated':9,
-                  'Bi-antennary':10,
-                  'Tri-antennary':11,
-                  'Tetra-antennary':12,
-                  'Over-tetra-antennary':13,
+              value: {'Core-fucosylated':1,'Non-core-fucosylated':2,'Fucosylated (any)':3,'Non-fucosylated':4,'Mono-sialylated':5,'Di-sialylated':6,
+                  'Over-two-sialylated':7,'Sialylated (any)':8,'Non-sialylated':9,'Bi-antennary':10,'Tri-antennary':11,'Tetra-antennary':12,'Over-tetra-antennary':13,
               }
           },
           priorityInv: {
               type: Object,
-              value: {
-                  1:'Core-fucosylated',
-                  2:'Non-core-fucosylated',
-                  3:'Fucosylated (any)',
-                  4:'Non-fucosylated',
-                  5:'Mono-sialylated',
-                  6:'Di-sialylated',
-                  7:'Over-two-sialylated',
-                  8:'Sialylated (any)',
-                  9:'Non-sialylated',
-                  10:'Bi-antennary',
-                  11:'Tri-antennary',
-                  12:'Tetra-antennary',
-                  13:'Over-tetra-antennary',
+              value: {1:'Core-fucosylated',2:'Non-core-fucosylated',3:'Fucosylated (any)',4:'Non-fucosylated',5:'Mono-sialylated',6:'Di-sialylated',7:'Over-two-sialylated',
+                  8:'Sialylated (any)',9:'Non-sialylated',10:'Bi-antennary',11:'Tri-antennary',12:'Tetra-antennary',13:'Over-tetra-antennary',
               }
           },
         };
@@ -478,7 +442,7 @@ This element provides filter box in glyconnect
       //     };
       // }
       submitForm() {
-        document.getElementById('iron-form').submit();
+        Polymer.dom(this.root).querySelector('#ironForm').submit();
       }
       exampleOx() {
         Polymer.dom(this.root).querySelector("#compoCommaList").value="M3, Fa2, A2, A2[3]G1, A2G2, FA2, FA2[6]G1, FA2G2S2, A4G4, Hy, C"
