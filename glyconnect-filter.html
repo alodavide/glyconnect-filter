@@ -194,17 +194,17 @@ This element provides filter box in glyconnect
                    <iron-pages selected="{{selected}}">
                     <div class="layout materialCard flex">
                          <template is="dom-repeat" items="{{core}}">
-                              <paper-card typeLink="" id={{idCreator(item.name)}} raised data-id$="{{item.class}}={{item.name}}" coreTypeN="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-card>
+                              <paper-card typeLink="" id={{idCreator(item.name)}} raised data-id$="{{item.class}}={{item.name}}" coreTypeN="{{item}}" class="card" style$="background-color:{{item.color}}" on-click="createTag">{{item.name}}</paper-card>
                          </template>
                      </div>
                      <div class="layout materialCard flex">
                          <template is="dom-repeat" items="{{prop}}">
-                             <paper-card typeLink="" id="{{idCreator(item.name)}}" raised data-id$="{{item.class}}={{item.name}}" propN="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-card>
+                             <paper-card typeLink="" id="{{idCreator(item.name)}}" raised data-id$="{{item.class}}={{item.name}}" propN="{{item}}" class="card" style$="background-color:{{item.color}}" on-click="createTag">{{item.name}}</paper-card>
                          </template>
                      </div>
                      <div class="layout materialCard flex"><link rel="import" href="../iron-list/iron-list.html">
                          <template is="dom-repeat" items="{{det}}">
-                           <paper-card typeLink="" id="{{idCreator(item.name)}}" raised data-id$="{{item.class}}={{item.name}}" detN="{{item}}" image="{{imgsrc}}/[[item.modifiedName]].png" class="deter" style$="background-color:{{item.color}}" on-tap="createTag"><paper-tooltip>{{item.name}}</paper-tooltip></paper-card>
+                           <paper-card typeLink="" id="{{idCreator(item.name)}}" raised data-id$="{{item.class}}={{item.name}}" detN="{{item}}" image="{{imgsrc}}/[[item.modifiedName]].png" class="deter" style$="background-color:{{item.color}}" on-click="createTag"><paper-tooltip>{{item.name}}</paper-tooltip></paper-card>
                              <!-- <paper-button typeLink="" id="{{idCreator(item.name)}}" raised data-id$="{{item.class}}={{item.name}}" detN="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag"> -->
                             <!-- {{item.name}}</paper-button> -->
                          </template>
@@ -710,7 +710,7 @@ This element provides filter box in glyconnect
        event.target.hidden=true;
        cloneEl.id=cloneEl.id+"-clone";
        list.insertBefore(cloneEl, null);
-       cloneEl.addEventListener('tap', e => {this.destroyTag(e)});
+       cloneEl.addEventListener('click', e => {this.destroyTag(e)});
      }
      createSelector(event) {
        if(Polymer.dom(this.root).querySelector('#'+event.target.id+'toHide').hidden == true){
