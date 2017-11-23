@@ -200,7 +200,7 @@ This element provides filter box in glyconnect
                      </div>
                      <div class="layout materialCard flex">
                          <template is="dom-repeat" items="{{prop}}">
-                             <paper-card typeLink="" id="{{item.name}}" raised data-id$="{{item.class}}={{item.name}}" propN="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-card>
+                             <paper-card typeLink="" id="{{idCreator(item.name)}}" raised data-id$="{{item.class}}={{item.name}}" propN="{{item}}" class="card" style$="background-color:{{item.color}}" on-tap="createTag">{{item.name}}</paper-card>
                          </template>
                      </div>
                      <div class="layout materialCard flex"><link rel="import" href="../iron-list/iron-list.html">
@@ -504,7 +504,6 @@ This element provides filter box in glyconnect
       selectedFeature (){
         var sel =  Polymer.dom(this.$.selected).querySelectorAll("paper-card");
         var jsonParam = this.param(sel);
-        console.log(jsonParam);
         if( this.linkIcon === "Free"){
          jsonParam.glycanType = this.linkIcon.toLowerCase();
        }else{
@@ -722,7 +721,14 @@ This element provides filter box in glyconnect
        };
     }
      destroyTag(pr) {
-       Polymer.dom(this.root).querySelector('paper-card[id='+pr.target.id.replace("-clone",'')+']').hidden=false;
+       var idd = pr.target.id;
+       if (idd==='Fucosylated (any)-clone'){
+         idd = "Fucosylated-clone"
+       }
+       if (idd==='Sialylated (any)-clone'){
+         idd = "Sialylated-clone"
+       }
+       Polymer.dom(this.root).querySelector('paper-card[id='+idd.replace("-clone",'')+']').hidden=false;
       //  Polymer.dom(this.root).querySelector('paper-button[id='+pr.target.id.replace("-clone",'')+']').hidden=false;
       pr.target.remove();
      }
