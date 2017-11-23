@@ -413,16 +413,39 @@ This element provides filter box in glyconnect
             reflectToAttribute: true
           },
           priority: {
-              type: String,
-              value: ['Sialylated (any)','Mono-sialylated','Di-sialylated','Over-two-sialylated','Non-sialylated']
-          },
-          priority2: {
               type: Object,
               value: {
-                  1: 'Fucosylated (any)',
-                  2: 'Core-fucosylated',
-                  3: 'Non-core-fucosylated',
-                  4: 'Non-fucosylated',
+                  'Core-fucosylated':1,
+                  'Non-core-fucosylated':2,
+                  'Fucosylated (any)':3,
+                  'Non-fucosylated':4,
+                  'Mono-sialylated':5,
+                  'Di-sialylated':6,
+                  'Over-two-sialylated':7,
+                  'Sialylated (any)':8,
+                  'Non-sialylated':9,
+                  'Bi-antennary':10,
+                  'Tri-antennary':11,
+                  'Tetra-antennary':12,
+                  'Over-tetra-antennary':13,
+              }
+          },
+          priorityInv: {
+              type: Object,
+              value: {
+                  1:'Core-fucosylated',
+                  2:'Non-core-fucosylated',
+                  3:'Fucosylated (any)',
+                  4:'Non-fucosylated',
+                  5:'Mono-sialylated',
+                  6:'Di-sialylated',
+                  7:'Over-two-sialylated',
+                  8:'Sialylated (any)',
+                  9:'Non-sialylated',
+                  10:'Bi-antennary',
+                  11:'Tri-antennary',
+                  12:'Tetra-antennary',
+                  13:'Over-tetra-antennary',
               }
           },
         };
@@ -483,22 +506,40 @@ This element provides filter box in glyconnect
         if(this.linkIcon === "N"){
           this.core = this.jsonGlobalProperties['N-linked']['core'];
           this.det = this.jsonGlobalProperties['N-linked']['det'];
-          this.prop = this.jsonGlobalProperties['N-linked']['prop'];
-          // var prop = this.jsonGlobalProperties['N-linked']['prop'];
-          // var prior = this.priority
-          // for (var b = 0; b < toClear.length; b++) {
-          //   Polymer.dom(this.root).querySelector('paper-card[id='+toClear[i].id.replace("-clone",'')+']').hidden=false;
-          //   toClear[i].remove();
-          // }
+          this.prop = this.sortProp('N-linked','prop');
         }else if (this.linkIcon === "O"){
           this.core = this.jsonGlobalProperties['O-linked']['core'];
-          this.prop = this.jsonGlobalProperties['O-linked']['prop'];
+          this.prop = this.sortProp('O-linked','prop');
           this.det = this.jsonGlobalProperties['O-linked']['det'];
         }else{
-          this.prop = this.jsonGlobalProperties['Non attached to proteins']['prop'];
+          this.prop = this.sortProp('Non attached to proteins','prop');
           this.det = this.jsonGlobalProperties['Non attached to proteins']['det'];
           this.core = this.jsonGlobalProperties['Non attached to proteins']['core'];
         }
+      }
+      sortProp(typeoflink,feat){
+        var propl = this.jsonGlobalProperties[typeoflink][feat];
+        var prior = this.priority;
+        var newp = [];
+        for (var b = 0; b < propl.length; b++){
+          if(prior.hasOwnProperty(propl[b].name)){
+            newp.push(prior[propl[b].name]);
+          }
+        };
+        newp = newp.sort();
+        var selec =[];
+        var remaining = [];
+        for (var y = 0; y < (newp.length)+1; y++){
+          if(this.priorityInv.hasOwnProperty(y)){
+            for (var w = 0; w < propl.length; w++){
+              if(this.priorityInv[y]===propl[w].name){
+                selec.push(propl[w]);
+              }else{remaining.push(propl[w])};
+            };
+          }
+        };
+        selec = selec.concat(remaining)
+        return selec.reduce(function(a,b){if(a.indexOf(b)<0)a.push(b);return a;},[]);
       }
       selectedFeature (){
         var sel =  Polymer.dom(this.$.selected).querySelectorAll("paper-card");
