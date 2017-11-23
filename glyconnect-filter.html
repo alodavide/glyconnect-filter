@@ -721,14 +721,7 @@ This element provides filter box in glyconnect
        };
     }
      destroyTag(pr) {
-       var idd = pr.target.id;
-       if (idd==='Fucosylated (any)-clone'){
-         idd = "Fucosylated-clone"
-       }
-       if (idd==='Sialylated (any)-clone'){
-         idd = "Sialylated-clone"
-       }
-       Polymer.dom(this.root).querySelector('paper-card[id='+idd.replace("-clone",'')+']').hidden=false;
+       Polymer.dom(this.root).querySelector('paper-card[id='+pr.target.id.replace("-clone",'')+']').hidden=false;
       //  Polymer.dom(this.root).querySelector('paper-button[id='+pr.target.id.replace("-clone",'')+']').hidden=false;
       pr.target.remove();
      }
