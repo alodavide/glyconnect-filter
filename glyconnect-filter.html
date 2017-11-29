@@ -19,7 +19,7 @@
 <link rel="import" href="../iron-autogrow-textarea/iron-autogrow-textarea.html">
 <link rel="import" href="../paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../neon-animation/web-animations.html">
-<link rel="import" href="../iron-form/iron-form.html">
+<!-- <link rel="import" href="../iron-form/iron-form.html"> -->
 <!--
 `glyconnect-filter`
 This element provides filter box in glyconnect
@@ -167,20 +167,21 @@ This element provides filter box in glyconnect
                 <paper-button id="O" typeLink="" class="indigo updateButton filterToggleButton" raised on-tap="populate">O-linked glycans</paper-button>
                 <paper-button id="Free" typeLink="" class="indigo updateButton filterToggleButton" raised on-tap="populate">Free glycans</paper-button>
           </div>
-          <iron-form id='ironForm' allow-redirect=true>
-            <form method="get" action="https://glycoproteome.expasy.org/glycositealign/mass/False/20">
-              <input value='{"minimum": "200","maximum": "1000","proteinn": false,"proteino": false,"proteinc": false,"proteinall": true}'>
-            </form>
+          <!-- <iron-form id='ironForm' allow-redirect=true>
+            <form method="get" action="https://glycoproteome.expasy.org/glycositealign/mass/False/20"> -->
+              <!-- <input value='{"minimum": "200","maximum": "1000","proteinn": false,"proteino": false,"proteinc": false,"proteinall": true}'> -->
+            <!-- </form>
           </iron-form>
-          <paper-button raised on-tap="submitForm">Submit</paper-button>
+          <paper-button raised on-tap="submitForm">Submit</paper-button> -->
           <div class="selection">
               <div id="home">
                 <div class="home layout materialCard flex">
-                  <p><b>GlyConnect is a platform integrating sources of information to help characterise the molecular components of protein glycosylation.</b> <br><br>It was designed to enable the easy querying of data by researchers regardless of the depth of their knowledge of glycobiology. <br><br>
-                    The purpose of GlyConnect is to provide a single resource for the study of the relationships between glycans, the proteins that carry them, the enzymes that synthesise or degrade them and the proteins that bind  them. This goal of tight integration will take some time to be achieved but GlyConnect will continue to grow as the data becomes available.<br><br>
-                    The first focus of GlyConnect is on the relationships between glycans and proteins that bear them. The user can navigate from glycan structures to proteins and back while exploring possible associations between tissue expression or site-specific glycosylation.<br><br>
-                    <b><i>In the next release:</i></b><br>
-                    We are preparing the visualisation of quantitative glycome data in a selection of tissues as well as that of enhanced protein site-specific information.
+                  <h2>Search homepage</h2>
+                  <p>GlyConnect brings out the contextual information that characterises the many aspects of glycoconjugate structure and function.
+                    Searching can be performed by <b>protein names, individual</b> or a <b>set of monosaccharide compositions</b>, by <b>structural properties</b> of <b>N-linked</b> or <b>O-linked glycans</b>
+                    or by those of <b>free glycans.</b> <br><br>The results are shown in a <b>graph connecting glycan structures to glycoproteins via glycan compositions</b> unless no data matches the query.
+                    The graph is interactive so that either glycan structures or glycoproteins can be further explored.<br><br>
+                    Details and tips for searching are given the Help pages.
                   </p>
                 </div>
               </div>
