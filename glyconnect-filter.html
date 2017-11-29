@@ -449,7 +449,7 @@ This element provides filter box in glyconnect
         Polymer.dom(this.root).querySelector("#compoCommaList").value="A5G4F, BFS, A2S, A3F2"
       }
       exampleMon() {
-        Polymer.dom(this.root).querySelector("#compoCommaList").value="Hex3 HexNAc5, HexNAc dHex NeuAc, Hex4 HexNAc3 Pen, Hex5 HexNAc4 P"
+        Polymer.dom(this.root).querySelector("#compoCommaList").value="Hex3 HexNAc5, Hex4 HexNAc3 Pen, Hex5 HexNAc4 NeuAc"
       }
       connectedCallback (){
         super.connectedCallback();
@@ -750,6 +750,7 @@ This element provides filter box in glyconnect
            var parsedCompo = this.parseCompo(compolist);
         };
        compoRequest['composition']=parsedCompo;
+       console.log(compoRequest);
        this.filterOutput = compoRequest;
       }
       parseCompo(listOfCompo){
