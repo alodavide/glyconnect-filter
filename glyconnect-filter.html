@@ -446,7 +446,7 @@ This element provides filter box in glyconnect
         Polymer.dom(this.root).querySelector('#ironForm').submit();
       }
       exampleOx() {
-        Polymer.dom(this.root).querySelector("#compoCommaList").value="M3, Fa2, A2, A2[3]G1, A2G2, FA2, FA2[6]G1, FA2G2S2, A4G4, Hy, C"
+        Polymer.dom(this.root).querySelector("#compoCommaList").value="A5G4F, BFS, A2S, A3F2"
       }
       exampleMon() {
         Polymer.dom(this.root).querySelector("#compoCommaList").value="Hex3 HexNAc5, HexNAc dHex NeuAc, Hex4 HexNAc3 Pen, Hex5 HexNAc4 P"
@@ -659,7 +659,9 @@ This element provides filter box in glyconnect
             };
           };
         }
-        myJson['protein']=protein;
+        if (this.allUniprot.indexOf(protein) != -1){
+            myJson['uniprot']=protein;
+        }else{myJson['protein']=protein};
         this.filterOutput = myJson;
       }
       uploadExperiment (event){
@@ -873,7 +875,7 @@ This element provides filter box in glyconnect
             var hexnac = 2; //Hexnac
             var deHex = 0; //Deoxyhexose
             var neuac = 0; //NeuAC
-            var e = compolist[el];
+            var e = compolist[el].toUpperCase();
             var translated = "";
             if (e.includes("(") === true) { //if it contains a percentage
                 var splitCap = e.split(/(?=[A-Z ])/); //Split should occur by capital letter and space
