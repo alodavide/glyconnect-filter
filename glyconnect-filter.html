@@ -237,7 +237,7 @@ This element provides filter box in glyconnect
                    </app-toolbar>
                    <div id="availableSpecies" class="enzymeSelected">
                      <template is="dom-repeat" items="{{species}}">
-                          <paper-card typeLink="Protein" id="{{_getLabelSpecies(item)}}Prot" speciesButton="{{item}}" class="card" on-tap="checkHowmany">{{item}}</paper-card>
+                          <paper-card typeLink="Protein" id="{{_getLabelSpecies(item)}}Prot" speciesButton="{{item}}" class="card" on-click="checkHowmany">{{item}}</paper-card>
                      </template>
                    </div>
                  </div>
