@@ -222,7 +222,7 @@ This element provides filter box in glyconnect
                       </div>
                      <div class="horizontal end-justified layout">
                          <paper-button class="indigo updateButton" on-tap="selectedFeature">Search</paper-button>
-                         <paper-button typeLink="" class="indigo updateButton" on-tap="clearFilter">Clear</paper-button>
+                         <paper-button typeLink="" class="indigo updateButton" on-tap="clearFilter" disabled="{{disab}}">Clear</paper-button>
                      </div>
                </div>
 
@@ -250,8 +250,8 @@ This element provides filter box in glyconnect
                         </div>
                  </div>
                  <div class="horizontal end-justified layout">
-                   <paper-button typeLink="Protein" class="indigo updateButton" on-tap="clearFilter">Clear</paper-button>
                    <paper-button class="indigo updateButton" taxo="{{item}}" id="sendDataProt" raised on-tap="_searchProtein">Search</paper-button>
+                   <paper-button typeLink="Protein" class="indigo updateButton" on-tap="clearFilter">Clear</paper-button>
                 </div>
             </div>
             <div id="compoSection">
@@ -413,12 +413,13 @@ This element provides filter box in glyconnect
                   8:'Sialylated (any)',9:'Non-sialylated',10:'Bi-antennary',11:'Tri-antennary',12:'Tetra-antennary',13:'Over-tetra-antennary',
               }
           },
-          couple: {
-              type: Object,
-              value: {'Core-fucosylated':1,'Non-core-fucosylated':1,'Fucosylated (any)':2,'Non-fucosylated':2,'Mono-sialylated':3,'Di-sialylated':4,
-                  'Over-two-sialylated':5,'Sialylated (any)':8,'Non-sialylated':9,'Bi-antennary':10,'Tri-antennary':11,'Tetra-antennary':12,'Over-tetra-antennary':13,
-              }
-          },
+          // couple: {
+          //     type: Object,
+          //     value: {'Core-fucosylated':1,'Non-core-fucosylated':1,'Fucosylated (any)':1,'Non-fucosylated':1,'Mono-sialylated':2,'Di-sialylated':2,
+          //         'Over-two-sialylated':2,'Sialylated (any)':2,'Non-sialylated':2,'Bi-antennary':3,'Tri-antennary':3,'Tetra-antennary':3,'Over-tetra-antennary':3,
+          //         'Bisecting':4, 'Non-bisecting':4, 'Galactosylated':5, 'Non-galactosylated':5, 'Xylosylated':6, 'Non-xylosylated':6
+          //     }
+          // },
         };
       }
       constructor() {
