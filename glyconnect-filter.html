@@ -728,7 +728,7 @@ This element provides filter box in glyconnect
        var typeTag = event.target.getAttribute("typeLink");
        var list = Polymer.dom(this.root).querySelector("#selected"+typeTag);
        var sourceEl = event.target;
-       this.cardids.push(sourceEl.id);
+       // this.cardids.push(sourceEl.id);
        var cloneEl = sourceEl.cloneNode(true);
        for(var i in sourceEl.properties) {
           cloneEl[i] = sourceEl[i]
