@@ -19,6 +19,7 @@
 <link rel="import" href="../iron-autogrow-textarea/iron-autogrow-textarea.html">
 <link rel="import" href="../paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../neon-animation/web-animations.html">
+<link rel="import" href="../paper-dialog/paper-dialog.html">
 <!-- <link rel="import" href="../iron-form/iron-form.html"> -->
 <!--
 `glyconnect-filter`
@@ -198,6 +199,11 @@ This element provides filter box in glyconnect
                          <template is="dom-repeat" items="{{core}}">
                               <paper-card typeLink="" id={{idCreator(item.name)}} raised data-id$="{{item.class}}={{item.name}}" coreTypeN="{{item}}" class="card" style$="background-color:{{item.color}}" on-click="createTag">{{item.name}}</paper-card>
                          </template>
+                         <paper-dialog id="dialog" modal>
+                           <div class="buttons">
+                             <paper-button dialog-confirm autofocus>Close</paper-button>
+                           </div>
+                        </paper-dialog>
                      </div>
                      <div class="layout materialCard flex">
                          <template is="dom-repeat" items="{{prop}}">
@@ -413,13 +419,16 @@ This element provides filter box in glyconnect
                   8:'Sialylated (any)',9:'Non-sialylated',10:'Bi-antennary',11:'Tri-antennary',12:'Tetra-antennary',13:'Over-tetra-antennary',
               }
           },
-          // couple: {
-          //     type: Object,
-          //     value: {'Core-fucosylated':1,'Non-core-fucosylated':1,'Fucosylated (any)':1,'Non-fucosylated':1,'Mono-sialylated':2,'Di-sialylated':2,
-          //         'Over-two-sialylated':2,'Sialylated (any)':2,'Non-sialylated':2,'Bi-antennary':3,'Tri-antennary':3,'Tetra-antennary':3,'Over-tetra-antennary':3,
-          //         'Bisecting':4, 'Non-bisecting':4, 'Galactosylated':5, 'Non-galactosylated':5, 'Xylosylated':6, 'Non-xylosylated':6
-          //     }
-          // },
+          couple: {
+              type: Object,
+              value: {'d_Core-fucosylated':1,'d_Non-core-fucosylated':1,'d_Fucosylatedany':1,'d_Non-fucosylated':1,'d_Mono-sialylated':2,'d_Di-sialylated':2,
+                  'd_Over-two-sialylated':2,'d_Sialylatedany':2,'d_Non-sialylated':2,'d_Bi-antennary':3,'d_Tri-antennary':3,'d_Tetra-antennary':3,'d_Over-tetra-antennary':3,
+                  'd_Bisecting':4, 'd_Non-bisecting':4, 'd_Galactosylated':5, 'd_Non-galactosylated':5, 'd_Xylosylated':6, 'd_Non-xylosylated':6
+              }
+          },
+          cardids: {
+            type: Array,
+          }
         };
       }
       constructor() {
@@ -521,6 +530,7 @@ This element provides filter box in glyconnect
        }else{
         jsonParam.glycanType = this.linkIcon.toLowerCase()+'-linked';
       }
+      console.log(jsonParam);
         this.filterOutput = jsonParam;
       }
       clearFilter(event) {
@@ -718,6 +728,7 @@ This element provides filter box in glyconnect
        var typeTag = event.target.getAttribute("typeLink");
        var list = Polymer.dom(this.root).querySelector("#selected"+typeTag);
        var sourceEl = event.target;
+       this.cardids.push(sourceEl.id);
        var cloneEl = sourceEl.cloneNode(true);
        for(var i in sourceEl.properties) {
           cloneEl[i] = sourceEl[i]
@@ -725,6 +736,13 @@ This element provides filter box in glyconnect
        event.target.hidden=true;
        cloneEl.id=cloneEl.id+"-clone";
        list.insertBefore(cloneEl, null);
+       // var allcard = Polymer.dom(this.root).querySelector("#selected"+typeTag).querySelectorAll("paper-card");
+       // console.log(allcard);
+       // for(var w =0; w<allcard.length; w ++){
+       //  if (allcard[w].id){
+       //
+       //  }
+       // }
        cloneEl.addEventListener('click', e => {this.destroyTag(e)});
      }
      createSelector(event) {
@@ -744,6 +762,9 @@ This element provides filter box in glyconnect
               var monosaccharide = this.monosaccharides[idx];
               Polymer.dom(this.root).querySelector("#"+monosaccharide+"RangeMin").value = 0;
           }
+      }
+      openDialog() {
+        this.$.dialog.open();
       }
       _getCompoList () {
         var compoRequest= {};
