@@ -199,11 +199,11 @@ This element provides filter box in glyconnect
                          <template is="dom-repeat" items="{{core}}">
                               <paper-card typeLink="" id={{idCreator(item.name)}} raised data-id$="{{item.class}}={{item.name}}" coreTypeN="{{item}}" class="card" style$="background-color:{{item.color}}" on-click="createTag">{{item.name}}</paper-card>
                          </template>
-                         <paper-dialog id="dialog" modal>
+                         <!-- <paper-dialog id="dialog" modal>
                            <div class="buttons">
                              <paper-button dialog-confirm autofocus>Close</paper-button>
                            </div>
-                        </paper-dialog>
+                        </paper-dialog> -->
                      </div>
                      <div class="layout materialCard flex">
                          <template is="dom-repeat" items="{{prop}}">
@@ -530,7 +530,6 @@ This element provides filter box in glyconnect
        }else{
         jsonParam.glycanType = this.linkIcon.toLowerCase()+'-linked';
       }
-      console.log(jsonParam);
         this.filterOutput = jsonParam;
       }
       clearFilter(event) {
@@ -1002,6 +1001,9 @@ This element provides filter box in glyconnect
         for (var i = 0; i < propArray.length; i++) {
           var x = propArray[i].getAttribute("data-id");
           var s = x.split("=");
+          if (s[1]==='Undefined'){
+            s[1] = "Undefined core"
+          }
           if (s[1]==='Fucosylated (any)'){
             s[1] = "Fucosylated"
           }
