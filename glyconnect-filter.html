@@ -19,7 +19,7 @@
 <link rel="import" href="../iron-autogrow-textarea/iron-autogrow-textarea.html">
 <link rel="import" href="../paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../neon-animation/web-animations.html">
-<link rel="import" href="../paper-dialog/paper-dialog.html">
+<!-- <link rel="import" href="../paper-dialog/paper-dialog.html"> -->
 <!-- <link rel="import" href="../iron-form/iron-form.html"> -->
 <!--
 `glyconnect-filter`
@@ -240,7 +240,7 @@ This element provides filter box in glyconnect
 
              </div>
              <div id="proteinSection" style='margin-top:10px'>
-               <vaadin-combo-box style="margin:20px" typeLink="Protein" id="protDropDown" required label="Enter a protein name or a UniProt id"></vaadin-combo-box>
+               <vaadin-combo-box style="margin:20px" typeLink="Protein" id="protDropDown" required error-message="Invalid input" label="Enter a protein name or a UniProt id" invalid="[[invalidInput]]"></vaadin-combo-box>
                <p style= "padding-left:20px">If more than one species is available select and deselect it by clicking the corresponding button.</p>
                  <div class="layout materialCard flex">
                    <app-toolbar>
@@ -668,6 +668,12 @@ This element provides filter box in glyconnect
       _searchProtein(){
         var myJson={};
         var protein = Polymer.dom(this.root).querySelector('#protDropDown').value;
+        if(!protein || protein === ""){
+          this.invalidInput = true;
+          return
+        }
+        this.invalidInput = false;
+        console.log(protein);
         if (Polymer.dom(this.root).querySelector('#selectedSpecies').hidden==false){
           var allTaxo = Polymer.dom(this.$.selectedProtein).querySelectorAll("paper-card");
           for (var i = 0; i < allTaxo.length; i++) {
