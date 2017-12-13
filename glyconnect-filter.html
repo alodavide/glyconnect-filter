@@ -491,13 +491,13 @@ This element provides filter box in glyconnect
         Polymer.dom(this.root).querySelector('#chosen').hidden=false;
         this.linkIcon = event.target.id;
         if(this.linkIcon === "N"){
-          this.core = this.jsonGlobalProperties['N-linked']['core'];
-          this.det = this.jsonGlobalProperties['N-linked']['det'];
-          this.prop = this.sortProp('N-linked','prop');
+          this.core = this.jsonGlobalProperties['N-Linked']['core'];
+          this.det = this.jsonGlobalProperties['N-Linked']['det'];
+          this.prop = this.sortProp('N-Linked','prop');
         }else if (this.linkIcon === "O"){
-          this.core = this.jsonGlobalProperties['O-linked']['core'];
-          this.prop = this.sortProp('O-linked','prop');
-          this.det = this.jsonGlobalProperties['O-linked']['det'];
+          this.core = this.jsonGlobalProperties['O-Linked']['core'];
+          this.prop = this.sortProp('O-Linked','prop');
+          this.det = this.jsonGlobalProperties['O-Linked']['det'];
         }else{
           this.prop = this.sortProp('Non attached to proteins','prop');
           this.det = this.jsonGlobalProperties['Non attached to proteins']['det'];
