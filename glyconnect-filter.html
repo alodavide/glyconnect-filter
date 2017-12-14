@@ -194,7 +194,8 @@ This element provides filter box in glyconnect
               </div>
               <div  id="chosen">
                 <div class="layout vertical flex">
-                  <p style= "padding-left:20px">Choose glycan feature category by clicking on the tab header. Select and deselect glycan features by clicking the colored buttons.</p>
+                  <p style= "padding-left:20px">Choose glycan feature category by clicking on the tab header. Select and deselect glycan features by clicking the colored buttons.<br>
+                  </p>
                    <paper-tabs selected="{{selected}}" no-bar>
                        <paper-tab>Cores</paper-tab>
                        <paper-tab>Structural properties</paper-tab>
@@ -673,7 +674,6 @@ This element provides filter box in glyconnect
           return
         }
         this.invalidInput = false;
-        console.log(protein);
         if (Polymer.dom(this.root).querySelector('#selectedSpecies').hidden==false){
           var allTaxo = Polymer.dom(this.$.selectedProtein).querySelectorAll("paper-card");
           for (var i = 0; i < allTaxo.length; i++) {
@@ -789,7 +789,6 @@ This element provides filter box in glyconnect
            var parsedCompo = this.parseCompo(compolist);
         };
        compoRequest['composition']=parsedCompo;
-       console.log(compoRequest);
        this.filterOutput = compoRequest;
       }
       parseCompo(listOfCompo){
