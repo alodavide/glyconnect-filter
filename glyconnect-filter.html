@@ -537,6 +537,7 @@ This element provides filter box in glyconnect
        }else{
         jsonParam.glycanType = this.linkIcon.toLowerCase()+'-linked';
       }
+        console.log(jsonParam);
         this.filterOutput = jsonParam;
       }
       clearFilter(event) {
@@ -1014,6 +1015,9 @@ This element provides filter box in glyconnect
           var s = x.split("=");
           if (s[1]==='Undefined'){
             s[1] = "Undefined core"
+          }
+          if (s[1]==='High-Mannose (Oligomannose)'){
+            s[1] = "High-Mannose"
           }
           if (s[1]==='Fucosylated (any)'){
             s[1] = "Fucosylated"
