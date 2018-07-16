@@ -457,7 +457,7 @@ This element provides filter box in glyconnect
           super.connectedCallback();
           this.$.ajaxDictionary.url = this.resolveUrl('dictionary/jsonGlobalProperties.json');
           this.$.ajaxDictionary.generateRequest();
-          this.$.proteinDictionary.url = this.resolveUrl(this.apiServer+'/api/proteins');
+          this.$.proteinDictionary.url = this.resolveUrl(this.apiServer+'/api/proteins/all');
           this.$.proteinDictionary.generateRequest();
         }
         handleResponse(data){
